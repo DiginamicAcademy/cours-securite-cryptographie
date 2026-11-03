@@ -1,4 +1,4 @@
-[← Chapitre précédent](01-Exemple%20de%20cours%20en%20un%20seul%20fichier.md) · [Sommaire](Readme.md) · [Chapitre suivant →](02-Exemple%20de%20cours%20en%20multi-fichier.md)
+[Sommaire](Readme.md)
 
 # Histoire et services de la cryptographie
 
@@ -155,4 +155,4 @@ la journée.*
 
 ---
 
-[← Chapitre précédent](01-Exemple%20de%20cours%20en%20un%20seul%20fichier.md) · [Sommaire](Readme.md) · [Chapitre suivant →](02-Exemple%20de%20cours%20en%20multi-fichier.md)
+[Sommaire](Readme.md)
