@@ -10,8 +10,8 @@ course:
   name: "La cryptographie"
   RNCP:     ## Expert en informatique et systèmes d'information (EISI)
     - RNCP40573
-  RNCPBloc: ## spécialisation 4B — Big Data & IA
-    - RNCP40573BC05
+  RNCPBloc: ## brique transversale sécurité — adossée à BC03 (compétence C25)
+    - RNCP40573BC03
   timing: 2 ## durée prévue en jours
 
 credits:
