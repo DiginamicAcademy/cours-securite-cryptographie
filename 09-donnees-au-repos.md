@@ -1,3 +1,5 @@
+[← Chapitre précédent](08-pki-et-certificats.md) · [Sommaire](Readme.md) · [Chapitre suivant →](10-secrets.md)
+
 # Données au repos
 
 > Un ordinateur portable est volé dans un train. Il contient le dossier de patients
@@ -227,3 +229,7 @@ journée.*
   usuel, à documenter.
 - Une sauvegarde se chiffre, se sépare de sa clé, et se **teste** : la restauration est
   la seule preuve qu'elle existe.
+
+---
+
+[← Chapitre précédent](08-pki-et-certificats.md) · [Sommaire](Readme.md) · [Chapitre suivant →](10-secrets.md)

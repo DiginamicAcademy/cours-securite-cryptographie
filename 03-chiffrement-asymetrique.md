@@ -1,3 +1,5 @@
+[← Chapitre précédent](02-chiffrement-symetrique.md) · [Sommaire](Readme.md) · [Chapitre suivant →](04-hachage-et-signature.md)
+
 # Le chiffrement asymétrique
 
 > Au XVe siècle, deux rois qui veulent s'entendre échangent leurs codes par des
@@ -187,3 +189,7 @@ journée.*
   avec le symétrique : c'est le principe hybride de TLS et des messageries chiffrées.
 - La clé privée est le seul secret du système : sa protection et sa rotation priment
   sur le choix de l'algorithme.
+
+---
+
+[← Chapitre précédent](02-chiffrement-symetrique.md) · [Sommaire](Readme.md) · [Chapitre suivant →](04-hachage-et-signature.md)

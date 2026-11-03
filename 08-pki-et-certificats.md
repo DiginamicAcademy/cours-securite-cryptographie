@@ -1,3 +1,5 @@
+[← Chapitre précédent](07-tls-en-pratique.md) · [Sommaire](Readme.md) · [Chapitre suivant →](09-donnees-au-repos.md)
+
 # PKI et certificats
 
 > Le sceau du roi est reconnu de tous parce que tout le monde connaît le sceau. Une
@@ -220,3 +222,7 @@ journée.*
   Dans les cas graves, on **remplace** plutôt qu'on ne révoque.
 - La confiance est transitive et se rompt d'un coup — l'affaire DigiNotar (2011) a
   conduit à la **transparence des certificats**, qui rend chaque émission visible.
+
+---
+
+[← Chapitre précédent](07-tls-en-pratique.md) · [Sommaire](Readme.md) · [Chapitre suivant →](09-donnees-au-repos.md)

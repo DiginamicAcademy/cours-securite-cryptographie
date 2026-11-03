@@ -1,3 +1,5 @@
+[← Chapitre précédent](05-erreurs-classiques.md) · [Sommaire](Readme.md) · [Chapitre suivant →](07-tls-en-pratique.md)
+
 # L'aléa et la gestion des clés
 
 > Les armées changent de code après chaque bataille. Non pas parce que l'ancien
@@ -186,3 +188,7 @@ journée.*
   migration, puis on détruit l'ancienne clé.
 - L'**inventaire** des clés précède tout choix d'algorithme : une clé perdue de vue est
   une clé compromise.
+
+---
+
+[← Chapitre précédent](05-erreurs-classiques.md) · [Sommaire](Readme.md) · [Chapitre suivant →](07-tls-en-pratique.md)

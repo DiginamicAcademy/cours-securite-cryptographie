@@ -1,3 +1,5 @@
+[← Chapitre précédent](10-secrets.md) · [Sommaire](Readme.md) · [Chapitre suivant →](12-compromis.md)
+
 # Chiffrement des données data
 
 > Une chaîne de traitement extrait chaque nuit les données clients d'une base de
@@ -193,3 +195,7 @@ journée.*
   agrégation en amont — trois réponses à trois usages.
 - Le RGPD rejoint la sécurité par la **minimisation** : la donnée non stockée ne fuit
   pas. Anonymiser réellement, ou pseudonymiser en séparant la ré-identification.
+
+---
+
+[← Chapitre précédent](10-secrets.md) · [Sommaire](Readme.md) · [Chapitre suivant →](12-compromis.md)

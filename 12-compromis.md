@@ -1,3 +1,5 @@
+[← Chapitre précédent](11-chiffrement-data.md) · [Sommaire](Readme.md)
+
 # Compromis et réponse
 
 > La cryptographie a un coût : cycles de processeur, latence, complexité
@@ -174,3 +176,7 @@ journée.*
   ordre, puis fermer la voie par laquelle elle est partie.
 - La menace post-quantique agit déjà sur les données à longue durée de vie : les
   standards sont publiés, l'inventaire est le premier chantier.
+
+---
+
+[← Chapitre précédent](11-chiffrement-data.md) · [Sommaire](Readme.md)

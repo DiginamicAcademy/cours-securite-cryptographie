@@ -1,3 +1,5 @@
+[← Chapitre précédent](03-chiffrement-asymetrique.md) · [Sommaire](Readme.md) · [Chapitre suivant →](05-erreurs-classiques.md)
+
 # Le hachage et la signature numérique
 
 > Au Moyen Âge, on scelle une lettre avec une médaille de cire : le destinataire
@@ -228,3 +230,7 @@ journée.*
   chronométrage.
 - Hachage, HMAC et signature répondent à trois questions différentes : **intact**,
   **authentique**, **prouvable**.
+
+---
+
+[← Chapitre précédent](03-chiffrement-asymetrique.md) · [Sommaire](Readme.md) · [Chapitre suivant →](05-erreurs-classiques.md)

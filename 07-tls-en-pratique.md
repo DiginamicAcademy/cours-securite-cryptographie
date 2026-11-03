@@ -1,3 +1,5 @@
+[← Chapitre précédent](06-alea-et-cles.md) · [Sommaire](Readme.md) · [Chapitre suivant →](08-pki-et-certificats.md)
+
 # TLS en pratique
 
 > Avant HTTPS, le Wi-Fi du café laissait lire toutes vos requêtes en clair : le mot
@@ -254,3 +256,7 @@ journée.*
 - **HSTS** interdit le retour en clair et protège contre les attaques de *downgrade*.
 - Les erreurs les plus coûteuses ne sont pas mathématiques mais opérationnelles :
   certificat non renouvelé, versions obsolètes laissées ouvertes, contenu mixte.
+
+---
+
+[← Chapitre précédent](06-alea-et-cles.md) · [Sommaire](Readme.md) · [Chapitre suivant →](08-pki-et-certificats.md)

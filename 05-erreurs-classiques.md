@@ -1,3 +1,5 @@
+[← Chapitre précédent](04-hachage-et-signature.md) · [Sommaire](Readme.md) · [Chapitre suivant →](06-alea-et-cles.md)
+
 # Les erreurs classiques de cryptographie
 
 > Bruce Schneier, qui a passé sa carrière à concevoir et à casser des algorithmes,
@@ -173,3 +175,7 @@ journée.*
   réutilisé, sel absent, messages d'erreur trop précis.
 - Une revue de code crypto tient en six questions : bibliothèque, origine de la clé,
   unicité du nonce, comparaison constante, sel, uniformité des réponses.
+
+---
+
+[← Chapitre précédent](04-hachage-et-signature.md) · [Sommaire](Readme.md) · [Chapitre suivant →](06-alea-et-cles.md)

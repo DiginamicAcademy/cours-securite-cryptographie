@@ -1,3 +1,5 @@
+[← Chapitre précédent](09-donnees-au-repos.md) · [Sommaire](Readme.md) · [Chapitre suivant →](11-chiffrement-data.md)
+
 # Gestion des secrets
 
 > En septembre 2023, les chercheurs de la société Wiz découvrent qu'un jeton d'accès
@@ -211,3 +213,7 @@ journée.*
 - Face à une fuite : **révoquer, remplacer, nettoyer, prévenir** — dans cet ordre.
 - La rotation borne la durée d'exposition ; elle suppose un registre et une période de
   recouvrement pour ne jamais interrompre le service.
+
+---
+
+[← Chapitre précédent](09-donnees-au-repos.md) · [Sommaire](Readme.md) · [Chapitre suivant →](11-chiffrement-data.md)

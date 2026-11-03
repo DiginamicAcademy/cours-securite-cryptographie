@@ -1,3 +1,5 @@
+[← Chapitre précédent](01-histoire-et-services.md) · [Sommaire](Readme.md) · [Chapitre suivant →](03-chiffrement-asymetrique.md)
+
 # Du chiffre de César à AES
 
 > En 58 av. J.-C., César envoie ses ordres à ses légions par des messagers qu'il ne
@@ -269,3 +271,7 @@ journée.*
 - La **clé** doit être aléatoire et secrète ; le **vecteur d'initialisation** doit être
   aléatoire et jamais réutilisé, sans être secret.
 - Le hasard se génère avec un **CSPRNG** (`secrets`, `os.urandom`) — jamais avec `random`.
+
+---
+
+[← Chapitre précédent](01-histoire-et-services.md) · [Sommaire](Readme.md) · [Chapitre suivant →](03-chiffrement-asymetrique.md)
