@@ -1,0 +1,23 @@
+# Déclaration du cours, en deux sections. Vérifiée à chaque push qui la modifie
+# (workflow « Vérifier »). Voir le chapitre 00-Creer-un-depot-de-cours.md.
+#
+# - course : ce que vise le cours. Recopiée à chaque version dans sa partie
+#   pédagogique, le dépôt privé <ce-dépôt>-Peda, où elle sert à produire
+#   RNCP.yaml et le syllabus (chapitre 05-Partie-pedagogique.md).
+# - credits : qui signe le cours, et avec quels comptes GitHub. Reprise
+#   par le support de cours, elle reste dans ce dépôt (chapitre
+#   04-Auteurs-et-contributeurs.md).
+course:
+  name: "Nom du cours"
+  RNCP:     ## liste des titres RNCP dans lesquels ce cours entre
+    - RNCP0000
+  RNCPBloc: ## liste éventuelle des blocs optionnels visés, titre suivi du bloc (exemple EISI-devpops : RNCP40573BC06)
+            ## cette liste peut être vide
+    - RNCP40573BC06
+  timing: 2 ## durée prévue en jours
+
+credits:
+  authors: ## signataires du cours, dans l'ordre où ils doivent apparaître
+    - name: Jean-François Vial
+      github: ## comptes GitHub avec lesquels il commite, pour reconnaître ses commits
+        - JeffDiginamic
