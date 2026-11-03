@@ -1,4 +1,4 @@
-[← Chapitre précédent](01-Exemple%20de%20cours%20en%20un%20seul%20fichier.md) · [Sommaire](Readme.md) · [Chapitre suivant →](03-Slides.md)
+[← Chapitre précédent](01-histoire-et-services.md) · [Sommaire](Readme.md) · [Chapitre suivant →](03-Slides.md)
 
 # Organiser un cours en plusieurs fichiers
 
@@ -151,4 +151,4 @@ workflow à la main : il produit l'artefact sans créer de release.
 
 ---
 
-[← Chapitre précédent](01-Exemple%20de%20cours%20en%20un%20seul%20fichier.md) · [Sommaire](Readme.md) · [Chapitre suivant →](03-Slides.md)
+[← Chapitre précédent](01-histoire-et-services.md) · [Sommaire](Readme.md) · [Chapitre suivant →](03-Slides.md)

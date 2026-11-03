@@ -1,4 +1,4 @@
-[← Chapitre précédent](00-Creer-un-depot-de-cours.md) · [Sommaire](Readme.md) · [Chapitre suivant →](02-Exemple%20de%20cours%20en%20multi-fichier.md)
+[← Chapitre précédent](00-Creer-un-depot-de-cours.md) · [Sommaire](Readme.md) · [Chapitre suivant →](01-histoire-et-services.md)
 
 # Template de cours : exemple de cours mono fichier
 
@@ -143,4 +143,4 @@ chapitres devient préférable : un fichier par chapitre, recollés automatiquem
 
 ---
 
-[← Chapitre précédent](00-Creer-un-depot-de-cours.md) · [Sommaire](Readme.md) · [Chapitre suivant →](02-Exemple%20de%20cours%20en%20multi-fichier.md)
+[← Chapitre précédent](00-Creer-un-depot-de-cours.md) · [Sommaire](Readme.md) · [Chapitre suivant →](01-histoire-et-services.md)
