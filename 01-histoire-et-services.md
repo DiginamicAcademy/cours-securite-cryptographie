@@ -1,5 +1,3 @@
-[← Chapitre précédent](01-Exemple%20de%20cours%20en%20un%20seul%20fichier.md) · [Sommaire](Readme.md) · [Chapitre suivant →](02-Exemple%20de%20cours%20en%20multi-fichier.md)
-
 # Histoire et services de la cryptographie
 
 > 400 av. J.-C., Sparte : un général enroule une bande de cuir autour d'un bâton de
@@ -63,7 +61,7 @@ asymétrique.
 
 > 🧪 **Atelier rapide (5 min)**
 >
-> La fromagerie **DIGICHEESE** (cas d'étude de la formation) doit prévenir son
+> La fromagerie **DIGICHEESE** (la fromagerie du fil rouge) doit prévenir son
 > transporteur de l'heure de passage.
 > Écrivez « Rendez-vous 22h », puis décalez chaque lettre de trois rangs dans
 > l'alphabet (A devient D, B devient E, et ainsi de suite). Que donne le message ?
@@ -152,7 +150,3 @@ la journée.*
   des messages, pas sur leur présence.
 - Elle ne remplace ni le contrôle d'accès, ni la vigilance des utilisateurs, ni une
   politique de sécurité : elle est un maillon de la chaîne, pas la chaîne.
-
----
-
-[← Chapitre précédent](01-Exemple%20de%20cours%20en%20un%20seul%20fichier.md) · [Sommaire](Readme.md) · [Chapitre suivant →](02-Exemple%20de%20cours%20en%20multi-fichier.md)

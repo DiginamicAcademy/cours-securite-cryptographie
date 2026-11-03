@@ -7,7 +7,7 @@
 
 ## Contexte
 
-La fromagerie **DIGICHEESE** (cas d'étude de la formation) finalise sa boutique en
+La fromagerie **DIGICHEESE** (la fromagerie du fil rouge) finalise sa boutique en
 ligne. L'équipe a noté ses besoins
 de sécurité au tableau blanc, mais personne n'est d'accord sur la technique à
 employer : « on chiffre tout », « on hache tout », « une signature, c'est pareil
