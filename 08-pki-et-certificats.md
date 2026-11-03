@@ -1,0 +1,222 @@
+# PKI et certificats
+
+> Le sceau du roi est reconnu de tous parce que tout le monde connaît le sceau. Une
+> lettre qui le porte emprunte la confiance accordée au souverain, sans que le
+> destinataire ait jamais rencontré l'émetteur. La **PKI** moderne fonctionne sur le
+> même principe : des **autorités de certification** dont les navigateurs font
+> confiance par défaut, et une chaîne de signatures qui relie votre site à l'une
+> d'entre elles.
+
+**Durée de lecture :** 60 min · **Prérequis :** le chapitre [TLS en pratique](07-tls-en-pratique.md)
+
+---
+
+## Objectifs
+
+À l'issue de ce chapitre, vous serez capable de :
+
+- **Décrire** la chaîne de confiance d'un certificat, de la feuille serveur jusqu'à la
+  racine de confiance.
+- **Distinguer** les rôles d'une autorité de certification, d'un mécanisme de
+  révocation et d'un journal de transparence.
+- **Vérifier** la chaîne de certificats d'un site avec `openssl`.
+- **Planifier** le renouvellement et la rotation d'un certificat sans interruption de
+  service.
+
+---
+
+## I. Chaîne de confiance
+
+### Une infrastructure, pas un fichier
+
+Une **PKI** (*Public Key Infrastructure*, infrastructure à clé publique) est
+l'ensemble des rôles, des documents et des procédures qui permet de dire « cette clé
+publique appartient bien à ce nom ». Son produit visible est le **certificat** ; son
+produit réel est la **confiance**. Trois acteurs la composent :
+
+- l'**autorité de certification** (AC, *certificate authority*) : elle signe les
+  certificats. Sa signature est ce que le navigateur reconnaît ;
+- le **demandeur** : le propriétaire d'un domaine, qui prouve qu'il le contrôle et
+  reçoit un certificat à son nom ;
+- le **client** : navigateur ou application, qui détient une liste d'autorités racines
+  de confiance et vérifie chaque certificat qui lui est présenté.
+
+### De la feuille à la racine
+
+En production, un certificat n'est presque jamais signé directement par une racine.
+La chaîne compte trois niveaux :
+
+```text
+Racine (root CA)                — auto-signée, rangée hors ligne,
+   |                              présente dans le magasin de confiance
+   | signe                        du navigateur et du système
+   v
+Autorité intermédiaire          — signe les certificats du quotidien,
+   |                              reste révocable sans toucher la racine
+   | signe
+   v
+Certificat feuille (serveur)    — celui que présente votre site,
+                                  à son nom de domaine
+```
+
+Cette organisation répond à une contrainte concrète : la racine est la clé de voûte,
+on ne la sort du coffre que pour signer une intermédiaire. Si une intermédiaire est
+compromise, on la révoque et on en émet une autre — la racine, elle, survit. C'est
+pourquoi votre site présente souvent **deux** certificats : le sien et celui de
+l'autorité intermédiaire.
+
+### Ce que le client vérifie
+
+À la réception du certificat, le navigateur contrôle quatre choses :
+
+1. **La signature** : chaque maillon est bien signé par le suivant, jusqu'à une
+   racine qu'il fait confiance.
+2. **Le nom de domaine** : le champ *Subject Alternative Name* du certificat couvre
+   bien le domaine demandé.
+3. **Les dates** : la date d'émission est passée, la date d'expiration n'est pas
+   atteinte.
+4. **La révocation** : le certificat n'a pas été annulé avant son terme (voir
+   partie III).
+
+Un seul contrôle qui échoue, et le navigateur affiche un avertissement plein écran.
+
+> [!TIP]
+> Pour voir la chaîne telle que la reçoit un client, une commande suffit :
+> `openssl s_client -connect www.exemple.fr:443 -showcerts`. La section
+> `Certificate chain` liste les certificats du plus proche (votre serveur) au plus
+> lointain (l'autorité intermédiaire) — la racine elle-même n'est presque jamais
+> envoyée : le client la possède déjà.
+
+> 🧪 **Atelier rapide (5 min)**
+>
+> Affichez la chaîne de certificats d'un service réel, en une seule connexion :
+>
+> ```bash
+> openssl s_client -connect tutor.diginamic.fr:443 -showcerts
+> ```
+>
+> Dans la sortie, repérez la section `Certificate chain` : combien de certificats
+> sont envoyés ? Recherchez ensuite `CN =` (le nom commun) et `depth` pour identifier
+> le rôle de chacun. Notez le nombre de maillons — c'est la longueur réelle de la
+> chaîne de confiance de ce site.
+
+---
+
+## II. Let's Encrypt et la rotation
+
+### Renouveler sans y penser
+
+Un certificat expire. Tant que le renouvellement est manuel, l'expiration est une
+question de temps — et les pannes les plus spectaculaires de l'histoire du web viennent
+de certificats oubliés, pas d'algorithmes cassés. **Let's Encrypt**, autorité lancée
+en 2015 par l'ISRG (*Internet Security Research Group*), a changé l'équation en
+rendant les certificats gratuits, courts (90 jours) et **renouvelés par script**, via
+le protocole **ACME** (*Automated Certificate Management Environment*).
+
+Le client ACME dialogue avec l'autorité, prouve le contrôle du domaine (en déposant
+un jeton sur le site ou un enregistrement DNS), reçoit son certificat, l'installe et
+recharge le serveur. Le cycle complet se déclenche tout seul, typiquement deux fois
+par mois.
+
+### La rotation des clés
+
+Renouveler un certificat n'est pas tout à fait la même chose que **tourner la clé**.
+Le renouvellement prolonge la validité ; la rotation remplace la paire de clés
+elle-même. Les deux se font ensemble quand on le peut : à chaque renouvellement,
+générer une nouvelle paire de clés limite la durée d'exposition d'une clé donnée —
+si elle fuit, la fenêtre de risque est bornée par la date du prochain renouvellement.
+
+Trois réflexes opérationnels :
+
+- **Automatiser** : un minuteur système, pas un rappel dans un agenda.
+- **Surveiller** : une alerte si un certificat expire dans moins de quinze jours, ou
+  si le dernier renouvellement a échoué. L'automatisation sans surveillance échoue
+  en silence.
+- **Tester la reprise** : vérifier après déploiement que la chaîne complète est bien
+  servie (certificat + intermédiaire). Un certificat valide servi sans son
+  intermédiaire casse la chaîne pour une partie des clients.
+
+> [!WARNING]
+> Un certificat renouvelé automatiquement n'est pas un certificat surveillé
+> automatiquement. Le scénario classique : le script de renouvellement échoue sur un
+> changement de configuration, personne n'est prévenu, et le site affiche un
+> avertissement trois mois plus tard. La notification fait partie du dispositif.
+
+---
+
+## III. Quand la chaîne casse
+
+La confiance est **transitive** : vous faites confiance à la racine, donc à ce
+qu'elle signe, donc au certificat de votre banque. Cette transitivité est une force
+et une fragilité — elle se rompt à tous les maillons.
+
+### Révoquer un certificat
+
+Un certificat compromis — clé privée volée, domaine changé de propriétaire, erreur
+d'émission — doit être **annulé avant son expiration**. Deux mécanismes existent :
+
+- la **CRL** (*Certificate Revocation List*, liste de révocation) : l'autorité publie
+  la liste des certificats annulés, que le client télécharge ;
+- l'**OCSP** (*Online Certificate Status Protocol*) : le client interroge l'autorité
+  sur un certificat précis.
+
+Les deux ont la même faiblesse : en cas de doute ou d'indisponibilité, les clients
+**continuent souvent** (comportement dit *soft-fail*). Révoquer n'est donc pas
+toujours suffisant — dans les cas graves, on remplace le certificat et on retire
+l'autorité des magasins de confiance.
+
+### Le cas DigiNotar (2011)
+
+En 2011, l'autorité néerlandaise **DigiNotar** est compromise : un attaquant émet des
+certificats valides pour des domaines qu'il ne contrôle pas, dont `*.google.com`, et
+les utilise pour intercepter des connexions. L'affaire est découverte en août ; en
+quelques semaines, les navigateurs retirent la racine DigiNotar de leurs magasins de
+confiance, et l'entreprise est mise en faillite.
+
+La leçon structure le paysage actuel : **une autorité corrompue casse la chaîne
+entière**, pour tous ses clients, d'un seul coup. D'où les garde-fous apparus depuis —
+la transparence des certificats (partie IV), les contraintes DNS sur les autorités
+habilitées, et la séparation stricte entre racines hors ligne et autorités
+intermédiaires.
+
+> [!DANGER]
+> « Faire confiance à une autorité » n'est pas un sentiment, c'est une décision
+> inscrite dans un magasin de confiance — et qui se retire. Quand une autorité est
+> compromise, la bonne réaction n'est pas de « mieux vérifier les certificats » :
+> c'est de retirer l'autorité et de remplacer tout ce qu'elle a signé.
+
+---
+
+## IV. Aller plus loin
+
+*Ces approfondissements sont facultatifs : ils ne sont jamais exigés pour terminer la
+journée.*
+
+- **Certificate Transparency (CT)** : depuis 2018, les navigateurs exigent que les
+  certificats émis pour les domaines publics soient inscrits dans des **journaux
+  publics** et infalsifiables. Chaque certificat s'accompagne de preuves d'inscription
+  (*SCT*, *Signed Certificate Timestamp*). Résultat : une émission abusive devient
+  visible par tout le monde en quelques heures — exactement ce qui aurait immédiatement
+  trahi DigiNotar.
+- **Les enregistrements CAA** (*Certification Authority Authorization*) : une entrée
+  DNS qui déclare quelles autorités sont habilitées à émettre pour votre domaine. Une
+  autorité conforme refuse d'émettre si elle n'est pas listée — une barrière de plus
+  contre une émission par erreur ou par une autorité tierce.
+- **La durée de vie des certificats** : le secteur réduit continuellement la durée
+  maximale — 90 jours chez Let's Encrypt, et des discussions actuelles pour des
+  certificats de quelques jours. Plus un certificat vit peu, moins une clé volée
+  sert longtemps.
+
+---
+
+## Points clés
+
+- Une PKI repose sur une **chaîne de signatures** : feuille, autorité intermédiaire,
+  racine de confiance — la racine reste hors ligne, l'intermédiaire travaille.
+- Le client vérifie quatre choses : **signature, nom de domaine, dates, révocation**.
+- **Let's Encrypt** a rendu le renouvellement gratuit et automatique ; la **rotation**
+  remplace en plus la paire de clés, ce qui borne la durée d'exposition.
+- Révoquer (CRL, OCSP) est fragile : les clients contournent souvent la vérification.
+  Dans les cas graves, on **remplace** plutôt qu'on ne révoque.
+- La confiance est transitive et se rompt d'un coup — l'affaire DigiNotar (2011) a
+  conduit à la **transparence des certificats**, qui rend chaque émission visible.

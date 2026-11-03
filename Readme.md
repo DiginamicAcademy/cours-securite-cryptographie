@@ -7,80 +7,48 @@
 
 # La cryptographie
 
-> Cours d'**autoformation** · **RNCP40573** Expert en informatique et systèmes d'information · spécialisation **4B Big Data & IA**
-> 2 journée(s) · supports **rédigés par IA**, relus et validés.
+> Cours d'**autoformation** · **RNCP40573** (Répertoire national des certifications professionnelles) — Expert en informatique et systèmes d'information · **brique transversale de sécurité** adossée au bloc **BC03** (conception et développement applicatif)
+> 2 journée(s) · supports **rédigés par IA** (intelligence artificielle), relus et validés.
 
 ---
 
 ## Pourquoi ce cours
 
-Chiffrer ne consiste pas seulement à rendre un message illisible : la cryptographie
-répond à quatre questions précises — qui peut lire, si le contenu a été modifié en
-route, qui l'a envoyé, et qui ne peut pas le nier. Ce cours donne les réflexes pour
-poser ces questions avant de choisir un outil, du secret partagé de la scytale aux
-clés d'aujourd'hui.
+Un mot de passe mal stocké, une sauvegarde non chiffrée, une clé laissée dans le code source : la cryptographie ne se règle pas à la fin d'un projet, elle se décide au début. Mal employée, elle donne un sentiment de protection ; bien employée, elle couvre des besoins très concrets — cacher un prix fournisseur, vérifier qu'une fiche technique n'a pas été modifiée, prouver l'origine d'un bon de commande.
 
-Le fil rouge est **DIGICHEESE** (la fromagerie du fil rouge) : ses prix fournisseurs,
-ses bons de commande et sa boutique en ligne circulent sur des canaux qu'elle ne
-maîtrise pas. Chaque notion s'y applique, puis s'étend à un environnement data :
-TLS (Transport Layer Security), chaînes de certificats, chiffrement des données au
-repos, gestion des secrets.
+Les incidents le rappellent régulièrement : en 2011, l'attaque de la PlayStation Network a exposé les données de 77 millions de comptes. La leçon tient en une ligne : chiffrer ne sert à rien si la clé est à portée de l'attaquant.
 
-Les enjeux sont concrets : une implémentation négligée annule les garanties de
-l'algorithme le plus solide, et une clé mal gérée fuit plus sûrement qu'aucun
-chiffrement ne protège.
+Ce cours donne les repères pour choisir et mettre en œuvre les bons outils : distinguer hachage, chiffrement et signature ; comprendre ce que garantissent TLS (Transport Layer Security) et les certificats ; chiffrer les données au repos ; gérer les secrets sans les laisser traîner. Tout au long des deux journées, les exemples suivent la fromagerie **DIGICHEESE** (la fromagerie du fil rouge) : ses prix fournisseurs, ses bons de commande, sa boutique en ligne et ses bases de données.
 
 ## À l'issue de ce cours
 
-Vous serez capable de :
-
-- **Nommer** les quatre services rendus par la cryptographie — confidentialité,
-  intégrité, authentification, non-répudiation — et les distinguer de la
-  disponibilité.
-- **Distinguer** chiffrement symétrique, chiffrement asymétrique, hachage et signature
-  numérique.
-- **Chiffrer** et **déchiffrer** des données avec une bibliothèque cryptographique
-  standard en Python.
-- **Hacher** une donnée et contrôler son intégrité avec les fonctions de hachage SHA
-  (Secure Hash Algorithm), dans leurs versions SHA-2 et SHA-3.
-- **Identifier** les erreurs d'implémentation classiques : mode ECB (Electronic
-  Codebook), MD5 (Message Digest 5), sel absent, vecteur d'initialisation réutilisé.
-- **Choisir** un algorithme et une longueur de clé adaptés à un usage donné.
-- **Décrire** le déroulement d'une poignée de main TLS et la confiance établie par les
-  certificats.
-- **Mettre en œuvre** le chiffrement des données au repos et la gestion des secrets
-  (coffre de secrets, rotation des clés).
-- **Analyser** les faiblesses d'une configuration TLS et de gestion des secrets dans un
-  projet type.
-- **Évaluer** le compromis entre sécurité, performance et coût d'un choix
-  cryptographique.
+- **Décrire** les quatre services rendus par la cryptographie : confidentialité, intégrité, authentification et non-répudiation.
+- **Expliquer** le principe du chiffrement symétrique et celui du chiffrement asymétrique.
+- **Distinguer** hachage, chiffrement et signature, et choisir la bonne primitive pour un besoin donné.
+- **Utiliser** une bibliothèque de cryptographie standard pour chiffrer, déchiffrer et hacher.
+- **Repérer** les erreurs d'implémentation courantes : mode ECB (Electronic Codebook), hachage MD5 (Message-Digest 5), sel absent, vecteur d'initialisation réutilisé.
+- **Choisir** un algorithme et une taille de clé adaptés à un usage donné.
+- **Décrire** le fonctionnement de TLS et de la confiance par certificats.
+- **Expliquer** le rôle d'une autorité de certification dans une infrastructure à clés publiques.
+- **Appliquer** le chiffrement des données au repos : bases de données, fichiers, sauvegardes.
+- **Mettre en œuvre** la gestion des secrets : coffre de secrets, variables d'environnement, rotation.
+- **Analyser** les failles de configuration courantes de HTTPS (Hypertext Transfer Protocol Secure) et de TLS.
+- **Évaluer** le compromis entre protection, performance et coût des choix de cryptographie.
 
 ## Sommaire
 
-| # | Chapitre | Durée de lecture |
-| --- | --- | --- |
-| 01 | [Histoire et services de la cryptographie](01-histoire-et-services.md) | 45 min |
+1. [Histoire et services de la cryptographie](01-histoire-et-services.md) — ce que fait (et ne fait pas) la cryptographie, et ses quatre services. *45 min de lecture.*
+
+**Travaux pratiques**
+
+- [Classer les primitives](tp/01-classer-primitives.md) — associer chaque besoin de sécurité à la primitive qui le couvre. *20 min · [corrigé](tp/corrige/01-classer-primitives.md).*
 
 ---
 
 ## Aller plus loin
 
-*Ces approfondissements sont facultatifs : ils ne sont jamais exigés pour terminer
-le cours.*
+*Ces approfondissements sont facultatifs : ils ne sont jamais exigés pour terminer le cours.*
 
-- **ANSSI (Agence nationale de la sécurité des systèmes d'information) — Guide de
-  sélection d'algorithmes cryptographiques** : la référence française pour choisir les
-  mécanismes et les tailles de clés à l'état de l'art.
-  <https://messervices.cyber.gouv.fr/guides/mecanismes-cryptographiques>
-- **OWASP (Open Worldwide Application Security Project) — Cryptographic Storage
-  Cheat Sheet** : les bonnes pratiques de stockage cryptographique côté applicatif.
-  <https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html>
-- **France Compétences — fiche RNCP40573** : le référentiel officiel du titre visé,
-  dont ce cours couvre la brique sécurité.
-  <https://www.francecompetences.fr/recherche/rncp/40573>
-- **pyca/cryptography — la bibliothèque cryptographique de référence en Python** :
-  recettes et primitives pour chiffrer, hacher et signer.
-  <https://cryptography.io/>
-- **Let's Encrypt — documentation officielle** : la délivrance et le renouvellement
-  automatisés des certificats, en pratique.
-  <https://letsencrypt.org/docs/>
+- **Les recommandations de l'ANSSI** (Agence nationale de la sécurité des systèmes d'information) : l'autorité française en matière de cybersécurité publie les algorithmes et les tailles de clés jugés fiables pour un usage professionnel.
+- **Deux ouvrages de référence** : *Applied Cryptography* (Bruce Schneier) pour les fondements, *Serious Cryptography* (Jean-Philippe Aumasson) pour une vision moderne et pratique.
+- **La cryptographie post-quantique** : les algorithmes conçus pour résister aux ordinateurs quantiques commencent à être standardisés — un sujet à suivre pour tout choix de long terme.

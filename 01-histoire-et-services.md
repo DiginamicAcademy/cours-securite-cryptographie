@@ -1,5 +1,3 @@
-[Sommaire](Readme.md)
-
 # Histoire et services de la cryptographie
 
 > 400 av. J.-C., Sparte : un général enroule une bande de cuir autour d'un bâton de
@@ -152,7 +150,3 @@ la journée.*
   des messages, pas sur leur présence.
 - Elle ne remplace ni le contrôle d'accès, ni la vigilance des utilisateurs, ni une
   politique de sécurité : elle est un maillon de la chaîne, pas la chaîne.
-
----
-
-[Sommaire](Readme.md)

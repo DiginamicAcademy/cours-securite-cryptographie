@@ -1,0 +1,230 @@
+# Le hachage et la signature numérique
+
+> Au Moyen Âge, on scelle une lettre avec une médaille de cire : le destinataire
+> reconnaît le sceau, la cire montre si quelqu'un a ouvert le pli, et l'expéditeur ne
+> peut pas prétendre ne pas l'avoir envoyée. Trois garanties, un seul geste. La
+> cryptographie moderne répond aux mêmes trois questions — avec des empreintes et des
+> signatures numériques.
+
+**Durée de lecture :** 60 min · **Prérequis :** [Histoire et services de la cryptographie](01-histoire-et-services.md)
+
+---
+
+## Objectifs
+
+À l'issue de ce chapitre, vous serez capable de :
+
+- **Calculer** l'empreinte d'un fichier et **détecter** la moindre modification.
+- **Choisir** une fonction de hachage adaptée à un usage, et **écarter** les fonctions
+  obsolètes.
+- **Distinguer** une empreinte d'un code d'authentification à clé (HMAC).
+- **Signer** un document et **vérifier** une signature, en expliquant ce que la
+  signature apporte de plus qu'un hachage.
+- **Relier** hachage, HMAC et signature aux trois questions : intact ? authentique ?
+  prouvable ?
+
+---
+
+## I. Le hachage : l'empreinte numérique
+
+Une **fonction de hachage** transforme un contenu de n'importe quelle longueur en une
+empreinte de taille fixe, que l'on appelle aussi **condensat** ou *hash*. Changer un
+seul bit du contenu change complètement l'empreinte. C'est un aller simple : de
+l'empreinte, on ne revient pas au contenu.
+
+> 🧪 **Atelier rapide (8 min)**
+>
+> 1. Dans un terminal, hachez une phrase :
+>
+> ```bash
+> echo -n "bonjour" | sha256sum
+> ```
+>
+> 2. Notez l'empreinte obtenue.
+> 3. Changez un seul caractère — `bonjour` devient `bonjouR` — et relancez. Comparez les
+> deux empreintes : elles ne se ressemblent pas, alors qu'un seul caractère a bougé.
+> 4. Relancez la première commande : l'empreinte est **toujours la même**. Le hachage
+> est déterministe.
+
+Une bonne fonction de hachage possède quatre propriétés :
+
+| Propriété | Ce qu'elle garantit | Conséquence pratique |
+| --- | --- | --- |
+| Déterministe | Le même contenu donne toujours la même empreinte | On peut comparer deux empreintes à distance |
+| Rapide à calculer | Le hachage d'un gros fichier reste instantané | Vérification systématique possible |
+| À sens unique | On ne remonte pas de l'empreinte au contenu | L'empreinte ne révèle rien du fichier |
+| Résistante aux collisions | On ne trouve pas deux contenus de même empreinte | Personne ne peut substituer un fichier sans changer l'empreinte |
+
+### À quoi ça sert concrètement
+
+- **Vérifier un téléchargement** : un éditeur publie l'empreinte de son fichier ; après
+  téléchargement, on recalcule et on compare. Une différence signale une altération.
+- **Vérifier une mise à jour logicielle** : avant d'installer un paquet, le gestionnaire
+  de paquets compare l'empreinte attendue et l'empreinte reçue.
+- **Détecter une modification de données** : dans un jeu de données, on peut hacher
+  chaque ligne pour repérer un changement entre deux exports.
+
+> [!TIP]
+> Comparer des empreintes se fait sur la totalité de la valeur, jamais sur un extrait.
+> Une empreinte tronquée perd sa résistance aux collisions : deux fichiers différents
+> peuvent alors partager le même début d'empreinte.
+
+### Quelles fonctions utiliser ?
+
+Les fonctions SHA (Secure Hash Algorithm) ne se valent pas toutes, et les plus anciennes sont cassées :
+
+| Fonction | Statut | À retenir |
+| --- | --- | --- |
+| MD5 | Cassée | Des collisions sont produites depuis des années : à proscrire, même pour vérifier un fichier. |
+| SHA-1 | Cassée | Collision publiée en 2017 : ne plus l'utiliser pour de la sécurité. |
+| SHA-2 (Secure Hash Algorithm, famille 2) | Recommandée | SHA-256 et SHA-512 sont le choix par défaut aujourd'hui. |
+| SHA-3 (Secure Hash Algorithm, famille 3) | Recommandée | Autre construction, même niveau de sécurité : utile pour diversifier. |
+
+**HMAC (Hash-based Message Authentication Code)** et les signatures s'appuient sur ces
+fonctions — le choix de la fonction de hachage conditionne donc la solidité de tout ce
+qui suit.
+
+> [!DANGER]
+> MD5 et SHA-1 ne sont pas « un peu faibles » : ils sont cassés au sens cryptographique,
+> c'est-à-dire qu'on fabrique des collisions volontairement. Les employer pour
+> authentifier un contenu, c'est accepter qu'un adversaire puisse en produire un autre de
+> même empreinte.
+
+---
+
+## II. HMAC : authentifier un message avec une clé
+
+Le hachage seul pose un problème : **n'importe qui** peut recalculer l'empreinte d'un
+fichier. Si un adversaire remplace le fichier, il remplace aussi l'empreinte affichée à
+côté, et la comparaison reste bonne. L'empreinte prouve l'intégrité d'un contenu par
+rapport à une valeur connue — pas l'origine de cette valeur.
+
+La réponse est d'ajouter une **clé** au hachage : c'est **HMAC**. Le calcul mélange la
+clé et le message de façon à ce que :
+
+- sans la clé, on ne peut pas produire un code valide pour un message donné ;
+- deux messages différents donnent des codes sans rapport ;
+- la vérification se fait avec la même clé, partagée entre l'émetteur et le
+  destinataire.
+
+```python
+import hmac
+import hashlib
+
+cle = b"cle-partagee-entre-nous"
+message = b"commande: 12 fromages"
+
+code = hmac.new(cle, message, hashlib.sha256).hexdigest()
+print(code)
+
+# côté destinataire : on recalcule et on compare
+attendu = hmac.new(cle, message, hashlib.sha256).hexdigest()
+print(hmac.compare_digest(code, attendu))  # True
+```
+
+> [!WARNING]
+> La comparaison des codes se fait avec `hmac.compare_digest`, jamais avec `==`. Une
+> comparaison ordinaire s'arrête au premier caractère différent : en mesurant le temps
+> de réponse, un attaquant reconstruit le code caractère par caractère. C'est une fuite
+> par chronométrage (*timing attack*).
+
+### HMAC ou hachage simple : le bon réflexe
+
+| Besoin | Outil |
+| --- | --- |
+| Vérifier qu'un fichier téléchargé est le bon | Hachage simple, empreinte publiée par l'éditeur |
+| Vérifier qu'un message vient d'un partenaire qui partage une clé | HMAC |
+| Prouver l'origine devant un tiers | Signature numérique |
+
+En pratique, HMAC protège les webhooks (le serveur qui reçoit une notification vérifie
+qu'elle vient bien de son partenaire), les jetons de session, et les échanges entre
+services d'une même application.
+
+---
+
+## III. La signature numérique
+
+Reste la question la plus difficile : **prouver**. Le HMAC prouve qu'un message vient de
+quelqu'un qui connaît la clé — mais la clé est partagée : l'émetteur peut nier, et le
+destinataire, qui connaît aussi la clé, peut fabriquer un message à la place de
+l'émetteur. Devant un tiers, personne ne sait qui dit vrai.
+
+La **signature numérique** tranche, en utilisant la paire de clés du chiffrement
+asymétrique, mais **à l'envers** :
+
+1. l'émetteur signe avec sa **clé privée** — lui seul peut le faire ;
+2. tout le monde vérifie avec sa **clé publique** — sans rien détenir de secret.
+
+Le sceau de cire numérique : le signataire scelle le contenu, le destinataire reconnaît
+le sceau, et l'altération du contenu casse le sceau.
+
+| Question | Hachage | HMAC | Signature |
+| --- | --- | --- | --- |
+| Le contenu a-t-il changé ? | Oui | Oui | Oui |
+| L'émetteur est-il authentifié ? | Non | Oui, entre partenaires | Oui, pour tous |
+| L'émetteur peut-il nier ? | — | Oui (clé partagée) | Non (clé privée unique) |
+
+### Signer et vérifier, en pratique
+
+Une signature ne porte pas sur le message lui-même mais sur son **empreinte** : signer
+un condensat de taille fixe est rapide, quel que soit le volume du document.
+
+```bash
+# l'émetteur signe le condensat de son fichier
+openssl dgst -sha256 -sign cle-privee.pem -out commande.sig commande.txt
+
+# le destinataire vérifie avec la clé publique du signataire
+openssl dgst -sha256 -verify cle-publique.pem -signature commande.sig commande.txt
+```
+
+Cas d'usage quotidiens :
+
+- **un éditeur de logiciel signe ses releases** : l'utilisateur vérifie que le paquet
+  vient bien de l'éditeur et n'a pas été remplacé ;
+- **une facture électronique est signée** : le client et l'administration fiscale
+  reconnaissent l'émetteur, qui ne peut pas nier l'avoir émise ;
+- **un gestionnaire de paquets vérifie les signatures** avant d'installer quoi que ce
+  soit sur un serveur.
+
+> [!TIP]
+> Une signature prouve **l'origine et l'intégrité**, pas la **vérité** du contenu. Une
+  commande erronée signée reste une commande erronée — mais elle engage celui qui l'a
+  signée.
+
+---
+
+## IV. Aller plus loin
+
+*Ces approfondissements sont facultatifs : ils ne sont jamais exigés pour terminer la
+journée.*
+
+- **La résistance aux collisions, en chiffres** : avec une empreinte de 256 bits, trouver
+  deux contenus de même empreinte demande, en théorie, un nombre d'essais de l'ordre de
+  2^128 — c'est la borne de l'attaque par anniversaire, qui explique pourquoi une
+  empreinte deux fois plus longue ne double pas la sécurité, mais la carré.
+- **PGP (Pretty Good Privacy)** : le modèle de signature et de chiffrement de la fin des
+  années 1990, toujours utilisé pour signer des paquets logiciels et des courriels. Son
+  « réseau de confiance » — chacun certifie les clés de ses contacts — est une réponse
+  organisationnelle à un problème technique.
+- **Signer des données structurées** : signer un document JSON (JavaScript Object
+  Notation) demande de fixer d'abord sa forme canonique (ordre des champs, espaces) ;
+  sinon, deux sérialisations du même contenu donnent deux empreintes différentes.
+- **Le hachage dans les blockchains** : chaque bloc référence l'empreinte du bloc
+  précédent. C'est une application directe de la résistance aux collisions — et une
+  occasion de discuter de ce que cette construction garantit réellement.
+
+---
+
+## Points clés
+
+- Une fonction de hachage produit une **empreinte de taille fixe**, déterministe, à sens
+  unique et résistante aux collisions : elle détecte toute modification.
+- **MD5 et SHA-1 sont cassés** : SHA-2 et SHA-3 sont les choix recommandés.
+- Le hachage seul n'authentifie pas : **HMAC** ajoute une clé partagée pour prouver
+  qu'un message vient d'un partenaire.
+- La **signature numérique** signe avec la clé privée et se vérifie avec la clé
+  publique : elle apporte authentification **et** non-répudiation.
+- Comparer des codes avec `hmac.compare_digest` : une comparaison ordinaire fuite par
+  chronométrage.
+- Hachage, HMAC et signature répondent à trois questions différentes : **intact**,
+  **authentique**, **prouvable**.
