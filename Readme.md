@@ -41,8 +41,8 @@ Vous serez capable de :
   numérique.
 - **Chiffrer** et **déchiffrer** des données avec une bibliothèque cryptographique
   standard en Python.
-- **Hacher** une donnée et contrôler son intégrité avec les fonctions SHA-2 (Secure
-  Hash Algorithm 2) et SHA-3.
+- **Hacher** une donnée et contrôler son intégrité avec les fonctions de hachage SHA
+  (Secure Hash Algorithm), dans leurs versions SHA-2 et SHA-3.
 - **Identifier** les erreurs d'implémentation classiques : mode ECB (Electronic
   Codebook), MD5 (Message Digest 5), sel absent, vecteur d'initialisation réutilisé.
 - **Choisir** un algorithme et une longueur de clé adaptés à un usage donné.
