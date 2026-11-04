@@ -37,11 +37,34 @@ Ce cours donne les repères pour choisir et mettre en œuvre les bons outils : 
 
 ## Sommaire
 
-1. [Histoire et services de la cryptographie](01-histoire-et-services.md) — ce que fait (et ne fait pas) la cryptographie, et ses quatre services. *45 min de lecture.*
+| # | Chapitre | Durée de lecture |
+| --- | --- | --- |
+| 01 | [Histoire et services de la cryptographie](01-histoire-et-services.md) | 45 min |
+| 02 | [Du chiffre de César à AES](02-chiffrement-symetrique.md) | 75 min |
+| 03 | [Le chiffrement asymétrique](03-chiffrement-asymetrique.md) | 70 min |
+| 04 | [Le hachage et la signature numérique](04-hachage-et-signature.md) | 60 min |
+| 05 | [Les erreurs classiques de cryptographie](05-erreurs-classiques.md) | 45 min |
+| 06 | [L'aléa et la gestion des clés](06-alea-et-cles.md) | 45 min |
+| 07 | [TLS en pratique](07-tls-en-pratique.md) | 75 min |
+| 08 | [PKI et certificats](08-pki-et-certificats.md) | 60 min |
+| 09 | [Données au repos](09-donnees-au-repos.md) | 65 min |
+| 10 | [Gestion des secrets](10-secrets.md) | 55 min |
+| 11 | [Chiffrement des données data](11-chiffrement-data.md) | 55 min |
+| 12 | [Compromis et réponse](12-compromis.md) | 45 min |
 
 **Travaux pratiques**
 
-- [Classer les primitives](tp/01-classer-primitives.md) — associer chaque besoin de sécurité à la primitive qui le couvre. *20 min · [corrigé](tp/corrige/01-classer-primitives.md).*
+| | Sujet | Durée |
+| --- | --- | --- |
+| 🟢 | [Exercice — Classer les primitives](tp/01-classer-primitives.md) · [corrigé](tp/corrige/01-classer-primitives.md) | 20 min |
+| 🟢 | [Exercice — Casser le chiffre de César](tp/02-crypter-cesar.md) · [corrigé](tp/corrige/02-crypter-cesar.md) | 30 min |
+| 🟡 | [Exercice — Chiffrer un fichier avec AES-GCM](tp/03-chiffrer-python.md) · [corrigé](tp/corrige/03-chiffrer-python.md) | 45 min |
+| 🔵 | [Exercice — Auditer un code qui utilise mal la crypto](tp/05-auditer-crypto.md) · [corrigé](tp/corrige/05-auditer-crypto.md) | 55 min |
+| 🔴 | [Défi — Concevoir un plan de gestion des clés](tp/06-defi-projet-cles.md) · [corrigé](tp/corrige/06-defi-projet-cles.md) | — |
+| 🟢 | [Exercice — Diagnostiquer une configuration TLS](tp/07-diagnostiquer-tls.md) · [corrigé](tp/corrige/07-diagnostiquer-tls.md) | 25 min |
+| 🟡 | [Exercice — Chiffrer une colonne sensible](tp/09-chiffrer-bdd.md) · [corrigé](tp/corrige/09-chiffrer-bdd.md) | 45 min |
+| 🔵 | [Exercice — Auditer la gestion des secrets](tp/10-audit-secrets.md) · [corrigé](tp/corrige/10-audit-secrets.md) | 55 min |
+| 🔴 | [Exercice — Défi : planifier une rotation de clés](tp/12-defi-rotation.md) · [corrigé](tp/corrige/12-defi-rotation.md) | — |
 
 ---
 
