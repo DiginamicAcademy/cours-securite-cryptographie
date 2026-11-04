@@ -68,6 +68,29 @@ Ce cours donne les repères pour choisir et mettre en œuvre les bons outils : 
 
 ---
 
+## ✅ Checkpoints de fin de journée
+
+À cocher avant de passer à la journée suivante. En cas de doute : ne pas
+avancer, revenir au concept concerné, refaire l'exercice.
+
+### Jour 5 — chapitres 01 à 06
+
+- [ ] J'ai lu les chapitres 01 à 06 et les points clés sont clairs.
+- [ ] J'ai fait au moins les exercices 🟢 et 🟡 (partie principale), et vérifié mes réponses dans `tp/corrige/`. Les extensions « Pour aller plus loin » sont facultatives.
+- [ ] J'ai répondu au QCM formatif, lorsqu'il est disponible, et identifié mes notions à revoir.
+- [ ] Je sais expliquer, avec mes mots, les 2-3 idées principales de la journée.
+- [ ] Je peux appliquer ces idées à un cas simple (un extrait de code, une config, un flux).
+
+### Jour 6 — chapitres 07 à 12
+
+- [ ] J'ai lu les chapitres 07 à 12 et les points clés sont clairs.
+- [ ] J'ai fait au moins les exercices 🟢 et 🟡 (partie principale), et vérifié mes réponses dans `tp/corrige/`. Les extensions « Pour aller plus loin » sont facultatives.
+- [ ] J'ai répondu au QCM formatif, lorsqu'il est disponible, et identifié mes notions à revoir.
+- [ ] Je sais expliquer, avec mes mots, les 2-3 idées principales de la journée.
+- [ ] Je peux appliquer ces idées à un cas simple (un extrait de code, une config, un flux).
+
+---
+
 ## Aller plus loin
 
 *Ces approfondissements sont facultatifs : ils ne sont jamais exigés pour terminer le cours.*
