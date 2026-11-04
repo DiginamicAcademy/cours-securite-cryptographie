@@ -1,3 +1,5 @@
+[← Chapitre précédent](12-compromis.md) · [Sommaire](Readme.md)
+
 # Glossaire et ressources
 
 Ce document rassemble les acronymes employés dans le cours, les termes techniques clés et une sélection de ressources pour aller plus loin. Chaque acronyme y est donné avec sa signification complète, comme à sa première occurrence dans le cours, suivi des chapitres où il est employé. Les adresses des ressources ont été vérifiées le 4 novembre 2026.
@@ -132,3 +134,7 @@ Adresses vérifiées le 4 novembre 2026.
 | RFC 8446 — TLS 1.3 | Le texte de référence du protocole TLS 1.3 | https://www.rfc-editor.org/rfc/rfc8446.html |
 | HashiCorp Vault | Un coffre de secrets complet : dépôt, accès tracés, rotation | https://developer.hashicorp.com/vault |
 | keylength.com | Comparaison des tailles de clés recommandées selon les organismes | https://www.keylength.com/ |
+
+---
+
+[← Chapitre précédent](12-compromis.md) · [Sommaire](Readme.md)

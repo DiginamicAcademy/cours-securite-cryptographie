@@ -1,4 +1,4 @@
-[← Chapitre précédent](11-chiffrement-data.md) · [Sommaire](Readme.md)
+[← Chapitre précédent](11-chiffrement-data.md) · [Sommaire](Readme.md) · [Chapitre suivant →](A-Glossaire-et-ressources.md)
 
 # Compromis et réponse
 
@@ -179,4 +179,4 @@ journée.*
 
 ---
 
-[← Chapitre précédent](11-chiffrement-data.md) · [Sommaire](Readme.md)
+[← Chapitre précédent](11-chiffrement-data.md) · [Sommaire](Readme.md) · [Chapitre suivant →](A-Glossaire-et-ressources.md)
