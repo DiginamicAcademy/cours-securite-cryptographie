@@ -5,8 +5,7 @@
 > **Objectif :** rédiger un plan de gestion des clés complet pour une plateforme data
 > qui traite des données personnelles.
 
-*Cet exercice est facultatif : il ne bloque jamais la progression de la journée. Il est
-noté ni chronométré : on y va quand les autres blocs sont solides.*
+*Cet exercice est facultatif : il ne bloque jamais la progression de la journée. Il n'est ni noté ni chronométré : on y va quand les autres blocs sont solides.*
 
 ---
 
