@@ -1,6 +1,7 @@
 # Exercice — Chiffrer une colonne sensible
 
-> 🟡 **À vous de jouer** · **Durée :** 45 min · **Lien :** chapitre [Données au repos](../09-donnees-au-repos.md)
+> **Nature :** exercice · **Durée :** 1 h 15 · **Notion :** données au repos — chiffrer une colonne, migrer les lignes, retrouver une fiche
+> **Lien :** chapitre [Données au repos](../09-donnees-au-repos.md)
 > **Objectif :** rendre une colonne de coordonnées bancaires illisible dans la base,
 > tout en restant capable de payer les salariés et de retrouver une fiche.
 

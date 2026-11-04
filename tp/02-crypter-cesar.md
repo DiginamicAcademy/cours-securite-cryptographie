@@ -1,6 +1,7 @@
 # Exercice — Casser le chiffre de César
 
-> 🟢 **Échauffement** · **Durée :** 30 min · **Lien :** chapitre [Du chiffre de César à AES](../02-chiffrement-symetrique.md)
+> **Nature :** exercice · **Durée :** 30 min · **Notion :** chiffrement symétrique — décalage, espace des clés, force brute
+> **Lien :** chapitre [Du chiffre de César à AES](../02-chiffrement-symetrique.md)
 > **Objectif :** implémenter le chiffre de César en Python, le casser par force brute,
 > puis expliquer pourquoi un chiffrement moderne résiste là où César cède.
 

@@ -1,6 +1,7 @@
 # Exercice — Chiffrer un fichier avec AES-GCM
 
-> 🟡 **À vous de jouer** · **Durée :** 45 min · **Lien :** chapitre [Le chiffrement asymétrique](../03-chiffrement-asymetrique.md)
+> **Nature :** exercice · **Durée :** 45 min · **Notion :** chiffrement symétrique authentifié (AES-GCM) — chiffrer un fichier, détecter une altération, échanger la clé
+> **Lien :** chapitre [Le chiffrement asymétrique](../03-chiffrement-asymetrique.md)
 > **Objectif :** chiffrer puis déchiffrer un fichier de données avec une bibliothèque
 > crypto standard, et vérifier que toute altération du chiffré est détectée.
 

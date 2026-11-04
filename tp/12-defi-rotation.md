@@ -1,6 +1,7 @@
 # Exercice — Défi : planifier une rotation de clés
 
-> 🔴 **Défi** · **Durée :** libre · **Lien :** chapitre [Compromis et réponse](../12-compromis.md)
+> **Nature :** élément intégrable dans le TP (défi de conception, facultatif) · **Durée :** 1 h 15 (indicatif) · **Notion :** rotation de clés — bascule sans interruption de service
+> **Lien :** chapitre [Compromis et réponse](../12-compromis.md)
 > **Objectif :** concevoir un plan de rotation de clés qui ne coupe jamais le service.
 > Cet exercice est **facultatif** : il n'est jamais noté, jamais chronométré, et ne
 > bloque pas la progression de la journée.

@@ -1,6 +1,7 @@
 # Exercice — Diagnostiquer une configuration TLS
 
-> 🟢 **Échauffement** · **Durée :** 25 min · **Lien :** chapitre [TLS en pratique](../07-tls-en-pratique.md)
+> **Nature :** exercice · **Durée :** 45 min · **Notion :** TLS — diagnostiquer et corriger une configuration HTTPS
+> **Lien :** chapitre [TLS en pratique](../07-tls-en-pratique.md)
 > **Objectif :** lire une configuration HTTPS, repérer ses faiblesses et proposer la
 > correction qui va avec.
 

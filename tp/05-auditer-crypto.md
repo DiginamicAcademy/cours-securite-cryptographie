@@ -1,6 +1,7 @@
 # Exercice — Auditer un code qui utilise mal la crypto
 
-> 🔵 **Intégration** · **Durée :** 55 min · **Lien :** chapitre [Les erreurs classiques de cryptographie](../05-erreurs-classiques.md)
+> **Nature :** exercice d'audit · **Durée :** 50 min · **Notion :** erreurs classiques — repérer et corriger les mauvais usages de la cryptographie
+> **Lien :** chapitre [Les erreurs classiques de cryptographie](../05-erreurs-classiques.md)
 > **Objectif :** repérer les mauvais usages de la cryptographie dans un extrait de code,
 > hiérarchiser les corrections et en proposer deux.
 

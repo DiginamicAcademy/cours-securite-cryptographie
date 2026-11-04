@@ -1,6 +1,7 @@
 # Exercice — Auditer la gestion des secrets
 
-> 🔵 **Intégration** · **Durée :** 55 min · **Lien :** chapitre [Gestion des secrets](../10-secrets.md)
+> **Nature :** exercice d'audit · **Durée :** 1 h · **Notion :** gestion des secrets — inventorier, évaluer les risques, remédier
+> **Lien :** chapitre [Gestion des secrets](../10-secrets.md)
 > **Objectif :** auditer la gestion des secrets d'un projet réel, hiérarchiser les
 > risques et produire un plan de remédiation exécutable.
 

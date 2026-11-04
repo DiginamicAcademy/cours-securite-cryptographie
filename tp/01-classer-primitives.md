@@ -1,6 +1,7 @@
 # Exercice — Classer les primitives
 
-> 🟢 **Débutant** · **Durée :** 20 min · **Lien :** chapitre [Histoire et services de la cryptographie](../01-histoire-et-services.md)
+> **Nature :** exercice · **Durée :** 20 min · **Notion :** services de la cryptographie — choisir la primitive qui couvre un besoin
+> **Lien :** chapitre [Histoire et services de la cryptographie](../01-histoire-et-services.md)
 > **Objectif :** associer chaque besoin de sécurité à la primitive qui le couvre (hachage, chiffrement, signature).
 
 ---

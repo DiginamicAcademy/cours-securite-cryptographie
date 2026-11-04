@@ -1,6 +1,7 @@
 # Défi — Concevoir un plan de gestion des clés
 
-> 🔴 **Défi** · **Durée :** libre · **Lien :** chapitre [L'aléa et la gestion des clés](../06-alea-et-cles.md)
+> **Nature :** élément intégrable dans le TP (défi de conception, facultatif) · **Durée :** 1 h 30 (indicatif) · **Notion :** gestion des clés — plan de vie des clés (inventaire, stockage, rotation, destruction)
+> **Lien :** chapitre [L'aléa et la gestion des clés](../06-alea-et-cles.md)
 > **Objectif :** rédiger un plan de gestion des clés complet pour une plateforme data
 > qui traite des données personnelles.
 
