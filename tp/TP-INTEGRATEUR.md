@@ -136,24 +136,6 @@ Tout ce qui est scripté doit être **exécutable de bout en bout** sur une mach
 
 ---
 
-## Grille d'évaluation — /20
-
-| # | Critère | Points |
-| --- | --- | --- |
-| 1 | Besoins recensés et primitives choisies, justifiées (étape 1) | 1 |
-| 2 | Données au repos : fichier chiffré, colonne migrée, recherche possible, clé hors du code (étape 2) | 4 |
-| 3 | Échange de clé sans livrer le secret (étape 3) | 2 |
-| 4 | Hachage et signature : empreinte, signature, vérification, mots de passe salés (étape 4) | 3 |
-| 5 | Clés et secrets : carte complète, secrets sortis du code, garde-fous (étape 5) | 3 |
-| 6 | TLS et certificats : configuration conforme, vérifications à l'appui (étape 6) | 3 |
-| 7 | Trajet de la donnée et minimisation (étape 7) | 2 |
-| 8 | Incident : rotation sans interruption, preuve de complétude, repli (étape 8) | 2 |
-| | **Total** | **20** |
-
-Appréciation transversale : un dossier qui ne s'exécute pas, un secret laissé dans le code ou une erreur classique non corrigée dégradent le critère concerné.
-
----
-
 ## ✅ Auto-évaluation
 
 Avant de rendre le dossier, vérifiez que :
