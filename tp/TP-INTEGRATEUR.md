@@ -2,7 +2,7 @@
 
 > **Nature :** TP intégrateur noté · **Durée :** 3 h 30 · **Notion :** mobilise les douze chapitres du cours, de la primitive à la réponse à incident
 
-Ce TP est **noté** : il compte pour la totalité de la note pratique du cours (grille d'évaluation en fin de document). Comptez 3 h 30 de travail, à répartir entre les deux journées comme vous l'entendez : tous les supports sont remis d'un coup, avancez à votre rythme.
+Ce TP est **noté** : il compte pour la totalité de la note pratique du cours. Comptez 3 h 30 de travail, à répartir entre les deux journées comme vous l'entendez : tous les supports sont remis d'un coup, avancez à votre rythme.
 
 ---
 
