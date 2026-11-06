@@ -66,7 +66,7 @@ Ce cours donne les repères pour choisir et mettre en œuvre les bons outils : 
 | 🟡 | [Exercice — Chiffrer une colonne sensible](tp/09-chiffrer-bdd.md) · [corrigé](tp/corrige/09-chiffrer-bdd.md) | 45 min |
 | 🔵 | [Exercice — Auditer la gestion des secrets](tp/10-audit-secrets.md) · [corrigé](tp/corrige/10-audit-secrets.md) | 55 min |
 | 🔴 | [Exercice — Défi : planifier une rotation de clés](tp/12-defi-rotation.md) · [corrigé](tp/corrige/12-defi-rotation.md) | — |
-| 🎯 | **TP intégrateur — seul élément noté du cours** · [Sécuriser un système de bout en bout](tp/TP-INTEGRATEUR.md) | 3 h 30 |
+| 🎯 | **TP intégrateur — facultatif, seul élément noté s'il est rendu** · [Sécuriser un système de bout en bout](tp/TP-INTEGRATEUR.md) | 3 h 30 |
 
 ---
 
