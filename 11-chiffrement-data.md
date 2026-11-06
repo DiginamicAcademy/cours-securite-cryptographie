@@ -198,25 +198,21 @@ d'obligatoire n'en dépend.
 
 ## 🧠 Vérifiez vos acquis
 
-*Formatif, jamais noté. Répondez sans relire le chapitre, puis cochez. Les réponses sont juste après le séparateur : ce qui compte est de repérer où vous vacillez, pas de faire 5 sur 5.*
+*Formatif, jamais noté. Répondez sans relire le chapitre, puis dépliez « Vérifier ses réponses ». Ce qui compte est de repérer où vous vacillez, pas de faire 5 sur 5.*
 
 **1.** Un collègue refuse de chiffrer les flux entre l'orchestrateur et l'entrepôt : « tout cela reste dans notre réseau ». Que répond le cours ?
 
-- A. Il a raison : le chiffrement n'a d'intérêt que sur Internet
-- B. L'objection ne tient plus : clusters partagés, services managés par des tiers, accès de support, et une machine compromise dans le réseau lit tout ce qui passe en clair
-- C. Il a raison si le pare-feu est correctement configuré
-- D. L'objection ne tient plus, mais seulement pour les données de santé
-
-- [ ] ✓ je savais
+- A. Il a raison : le chiffrement n'a d'intérêt que sur un canal non maîtrisé, donc sur Internet seulement
+- B. L'objection ne tient plus : clusters partagés, tiers managés, accès de support — une machine compromise lit tout en clair
+- C. Il a raison si le pare-feu est correctement configuré : le réseau interne devient un périmètre de confiance
+- D. L'objection ne tient plus, mais seulement pour les données de santé et autres données sensibles au sens du RGPD
 
 **2.** Un fichier de ventes est livré à un partenaire via un transport déjà chiffré. Que faut-il faire de plus ?
 
-- A. Rien : le transport protège déjà la donnée
+- A. Rien : le transport déjà chiffré protège la donnée de bout en bout, c'est précisément le rôle de TLS
 - B. Chiffrer le fichier lui-même pour ce partenaire seul, la clé étant transmise par un autre canal
-- C. Renommer le fichier pour qu'il ne soit pas repérable
-- D. Le découper en plusieurs envois
-
-- [ ] ✓ je savais
+- C. Renommer le fichier pour qu'il ne soit pas repérable par un observateur placé sur le transport
+- D. Le découper en plusieurs envois sur des canaux différents, pour qu'aucun ne livre le tout
 
 **3.** Pourquoi prévoir une clé par **domaine** de données dans l'entrepôt, plutôt qu'une clé unique ?
 
@@ -225,22 +221,19 @@ d'obligatoire n'en dépend.
 - C. Parce que chaque analyste doit avoir sa propre clé
 - D. Parce que l'entrepôt ne sait chiffrer qu'avec des clés courtes
 
-- [ ] ✓ je savais
-
 **4.** Dans un export destiné à un partenaire d'étude, on a supprimé la colonne `nom` mais gardé l'adresse exacte, la date de naissance et le compteur individuel. Que constate le cours sur ce genre de pratique ?
 
-- A. C'est de l'anonymisation : le nom a disparu
+- A. C'est de l'anonymisation : le nom était le seul identifiant direct, et il a disparu
 - B. Ce n'est pas anonymiser : avec ce qui reste, quelques croisements suffisent à ré-identifier la personne
-- C. C'est de la pseudonymisation, dès lors que l'export est chiffré
-- D. C'est conforme au RGPD, qui n'impose que la suppression du nom
-
-- [ ] ✓ je savais
+- C. C'est de la pseudonymisation, et non de l'anonymisation, dès lors que l'export est chiffré
+- D. C'est conforme au RGPD, qui n'impose que la suppression du nom et des identifiants directs
 
 **5.** *Question ouverte (2-3 lignes).* Une colonne chiffrée ne s'agrège plus : pas de `SUM`, pas de `GROUP BY`, pas de jointure. Quels sont les trois contournements du cours, et pour quel usage chacun ?
 
-- [ ] ✓ je savais
-
 ---
+
+<details>
+<summary>Vérifier ses réponses</summary>
 
 ### Réponses
 
@@ -258,6 +251,8 @@ d'obligatoire n'en dépend.
 
 **5.** Attendu : **déchiffrer dans une vue contrôlée** (l'entrepôt garde le chiffré, une vue réservée déchiffre pour les traitements qui l'exigent) ; **pseudonymiser** (jeton stable, clé de ré-identification conservée ailleurs — les analyses restent possibles, la donnée brute hors de portée) ; **agréger en amont** (ne charger que des totaux, comptages, profils — jamais la ligne individuelle).
 **Pourquoi :** trois réponses à trois usages ; le RGPD renforce la troisième par la minimisation — la donnée non stockée ne peut ni fuir, ni être détournée, ni être réclamée.
+
+</details>
 
 ---
 

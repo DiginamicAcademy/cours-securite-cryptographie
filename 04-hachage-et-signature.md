@@ -228,25 +228,21 @@ journée.*
 
 ## 🧠 Vérifiez vos acquis
 
-*Formatif, jamais noté. Répondez sans relire le chapitre, puis cochez. Les réponses sont juste après le séparateur : ce qui compte est de repérer où vous vacillez, pas de faire 5 sur 5.*
+*Formatif, jamais noté. Répondez sans relire le chapitre, puis dépliez « Vérifier ses réponses ». Ce qui compte est de repérer où vous vacillez, pas de faire 5 sur 5.*
 
 **1.** On modifie un seul caractère d'un fichier, puis on recalcule son empreinte. Que constate-t-on ?
 
-- A. L'empreinte change très peu : elle reflète la proximité des contenus
+- A. L'empreinte change très peu : elle est conçue pour refléter la proximité entre deux contenus
 - B. L'empreinte est complètement différente, alors que le même contenu redonne toujours la même
-- C. L'empreinte ne change pas : elle ne porte que sur la longueur
-- D. Impossible à prévoir : le hachage n'est pas déterministe
-
-- [ ] ✓ je savais
+- C. L'empreinte ne change pas : elle ne porte que sur la longueur du fichier, pas sur son contenu
+- D. Impossible à prévoir : le hachage incorpore une part de hasard, il n'est donc pas déterministe
 
 **2.** Un collègue vérifie l'intégrité des installateurs téléchargés avec MD5, « parce que c'est plus court ». Que lui répondez-vous ?
 
-- A. C'est acceptable : MD5 suffit dès qu'il ne s'agit pas de secrets
+- A. C'est acceptable : MD5 reste recommandé dès qu'il ne protège pas un secret, seulement une intégrité
 - B. MD5 est cassée : on fabrique des collisions volontairement, elle est à proscrire même pour vérifier un fichier
-- C. MD5 est seulement un peu faible : il faut la combiner avec SHA-1
-- D. Il faut utiliser SHA-1, qui est la recommandation actuelle
-
-- [ ] ✓ je savais
+- C. MD5 est seulement un peu faible : il suffit de la combiner avec SHA-1 pour retrouver une marge
+- D. Il faut utiliser SHA-1 à la place : c'est lui la recommandation actuelle pour les installateurs
 
 **3.** DIGICHEESE reçoit des notifications de son transporteur et veut vérifier qu'elles viennent bien de lui ; une clé est partagée entre les deux partenaires. Quel outil choisir ?
 
@@ -255,22 +251,19 @@ journée.*
 - C. Une signature avec la clé privée de DIGICHEESE
 - D. Une comparaison des longueurs de message
 
-- [ ] ✓ je savais
-
 **4.** Dans le code de vérification, le code reçu est comparé au code recalculé avec `==`. Quel est le problème ?
 
-- A. Aucun : c'est la comparaison attendue en Python
+- A. Aucun : `==` compare les deux chaînes en entier, caractère par caractère, sans information de temps
 - B. La comparaison s'arrête au premier caractère différent : en mesurant le temps de réponse, un attaquant reconstruit le code
-- C. `==` ne compare pas les chaînes de manière déterministe
-- D. La comparaison doit se faire sur un extrait du code, pas sur la totalité
-
-- [ ] ✓ je savais
+- C. `==` ne compare pas les chaînes de manière déterministe : le résultat varie d'une exécution à l'autre
+- D. La comparaison doit se faire sur un extrait du code, pas sur la totalité : c'est ce qui la rend rapide
 
 **5.** *Question ouverte (2-3 lignes).* Le HMAC authentifie l'émetteur, mais ne permet pas de trancher devant un tiers. Expliquez pourquoi, et ce que la signature numérique apporte de plus.
 
-- [ ] ✓ je savais
-
 ---
+
+<details>
+<summary>Vérifier ses réponses</summary>
 
 ### Réponses
 
@@ -288,6 +281,8 @@ journée.*
 
 **5.** Attendu : la clé HMAC est **partagée**, donc l'émetteur peut nier et le destinataire, qui la connaît aussi, pourrait fabriquer un message à sa place — devant un tiers, personne ne sait qui dit vrai. La signature se produit avec la **clé privée** de l'émetteur (lui seul) et se vérifie avec sa **clé publique** : authentification pour tous et **non-répudiation**.
 **Pourquoi :** une clé unique et non partagée rend le geste attribuable ; la signature ne prouve pour autant ni la vérité du contenu, ni la confidentialité.
+
+</details>
 
 ---
 

@@ -124,6 +124,177 @@ régulière prend son sens : elle borne la fenêtre d'exposition.
 
 ---
 
+### Exercice bonus — Concevoir un plan de gestion des clés (1 h 30, facultatif)
+
+*Cet exercice est facultatif : il ne bloque jamais la progression de la journée. Il n'est ni noté ni chronométré : on y va quand les autres blocs sont solides.*
+
+#### Contexte
+
+**AquaVallée**, un opérateur de distribution d'eau, exploite une plateforme data qui
+collecte les relevés de compteurs et les coordonnées des abonnés. La chaîne est la
+suivante :
+
+- des compteurs connectés envoient leurs relevés vers une file d'attente ;
+- un orchestrateur (Airflow) charge les données dans un stockage objet (MinIO) ;
+- un entrepôt alimente les tableaux de bord de facturation ;
+- un export mensuel part vers un prestataire d'analyse, sous format CSV (comma-separated
+  values).
+
+Les données sont personnelles : le RGPD (Règlement général sur la protection des
+données) s'applique. L'entreprise vient de découvrir qu'une clé de chiffrement figure
+depuis deux ans dans un script d'import — et que personne ne sait dire combien d'autres
+clés existent, ni où elles sont.
+
+Le directeur des systèmes d'information vous demande un **plan de gestion des clés**,
+qui servira de référence pour les équipes.
+
+#### Consigne
+
+Rédigez le plan sous forme de document structuré. Il doit couvrir au moins les points
+suivants :
+
+1. **Inventaire** — recenser les clés et secrets de la plateforme (chiffrement des
+   données au repos, jetons d'API (Application Programming Interface), comptes de
+   service, certificats), et indiquer pour chacun : propriétaire, emplacement, usage.
+2. **Création et stockage** — fixer la manière dont une clé naît et où elle vit,
+   en distinguant les environnements de test et de production.
+3. **Distribution et accès** — définir qui a le droit de voir ou d'utiliser chaque clé,
+   et par quel canal elle transite.
+4. **Rotation** — fixer les périodicités et les événements qui déclenchent une rotation,
+   et décrire la procédure pour que les données déjà chiffrées restent lisibles.
+5. **Révocation et incident** — décrire ce qu'on fait le jour où une clé est suspecte,
+   y compris la communication interne et la remédiation.
+6. **Destruction** — préciser quand et comment une clé est détruite, et comment on le
+   prouve.
+
+Pour chaque section, le plan doit dire **qui fait quoi** — un plan sans responsable est
+une intention, pas une procédure.
+
+#### Attendu
+
+- Un document d'une à trois pages, structuré en six sections.
+- Un tableau d'inventaire initial, même partiel.
+- Une procédure de rotation applicable sans interruption de service.
+
+#### Vérification
+
+Un plan est jugé recevable quand :
+
+- chaque clé identifiée a un **propriétaire** et un **emplacement** ;
+- la rotation décrite **ne casse pas** la lecture des données déjà chiffrées ;
+- la section incident dit **qui décide** et **dans quel délai** ;
+- le plan distingue explicitement test et production.
+
+#### ✅ Auto-évaluation
+
+Avant de confronter votre travail à la grille de vérification, vérifiez que :
+
+- [ ] Mon inventaire liste au moins les quatre familles de secrets de la plateforme.
+- [ ] Chaque ligne de l'inventaire nomme un responsable et un emplacement de stockage.
+- [ ] Ma procédure de rotation préserve la lisibilité des données existantes.
+- [ ] Ma section incident fixe un décideur et un délai.
+- [ ] Mon plan distingue les environnements de test et de production.
+- [ ] Je peux défendre chaque choix devant une équipe qui ne fait pas de sécurité.
+
+#### Pour aller plus loin (exercice)
+
+*Facultatif.* Ajoutez une section sur la **preuve** : comment démontrer à un auditeur
+que la rotation a bien eu lieu, et que les anciennes clés ont été détruites.
+
+<details>
+<summary>Voir la correction</summary>
+
+#### Comment utiliser cette grille
+
+Pour chaque section, cochez ce que votre plan contient réellement. Une case non cochée
+signale un trou à combler — pas une erreur de formulation. Un plan dont toutes les
+cases sont cochées est recevable en l'état.
+
+#### 1. Inventaire
+
+- [ ] Les quatre familles de secrets sont recensées : chiffrement des données au repos,
+      jetons d'API (Application Programming Interface), comptes de service, certificats.
+- [ ] Chaque entrée nomme un **propriétaire** (une personne ou une équipe, jamais
+      « l'informatique »).
+- [ ] Chaque entrée indique l'**emplacement** de stockage et l'**usage**.
+- [ ] Les secrets encore en clair dans les scripts sont listés explicitement, avec leur
+      remédiation.
+
+**Ce qui fait la différence :** un inventaire qui distingue ce qui existe de ce qui
+traîne encore. Le script signalé dans l'énoncé doit y figurer — sinon le plan part d'un
+constat incomplet.
+
+#### 2. Création et stockage
+
+- [ ] La création se fait avec un générateur adapté à la cryptographie (et non un
+      générateur pseudo-aléatoire ordinaire).
+- [ ] Le stockage est **hors du code source**, avec un emplacement unique par
+      environnement.
+- [ ] Test et production sont **séparés** : jamais la même clé des deux côtés.
+- [ ] Les accès au stockage de clés sont eux-mêmes protégés et journalisés.
+
+#### 3. Distribution et accès
+
+- [ ] Le plan dit **qui** a accès à **quelle** clé, et selon quel rôle.
+- [ ] La distribution se fait par un canal chiffré ou par enveloppement avec la clé
+      publique du destinataire.
+- [ ] Les accès sont revus à chaque changement d'équipe (arrivée, départ, changement de
+      poste).
+- [ ] Aucune clé n'est transmise par courriel, ticket ou messagerie instantanée.
+
+#### 4. Rotation
+
+- [ ] Une **périodicité** est fixée pour chaque famille de clés.
+- [ ] Les **événements déclencheurs** sont listés (départ, fuite suspectée, changement
+      d'usage, dépréciation d'algorithme).
+- [ ] La procédure **versionne** les clés : les données déjà chiffrées restent lisibles.
+- [ ] La migration des données au repos est prévue, avec une étape de destruction de
+      l'ancienne clé.
+
+**Ce qui fait la différence :** une rotation qui préserve la lecture de l'existant. Un
+plan qui remplace la clé sans versionner casse la plateforme — et sera contourné par les
+équipes.
+
+#### 5. Révocation et incident
+
+- [ ] Un **décideur** est nommé, avec un **délai** pour révoquer.
+- [ ] La révocation est **immédiate** dès qu'une clé est suspecte, avant l'analyse de la
+      fuite.
+- [ ] La communication interne est décrite : qui est prévenu, dans quel ordre.
+- [ ] La remédiation couvre ce qui a déjà été chiffré avec la clé compromise (rotation
+      des données, notification si nécessaire).
+
+#### 6. Destruction
+
+- [ ] Les critères de destruction sont posés (fin d'usage, fin de conservation, fin de
+      migration).
+- [ ] La destruction est **prouvable** (journal, attestation) et pas seulement déclarée.
+- [ ] Les copies (sauvegardes, réplicas, exports) sont couvertes par la même exigence.
+
+#### Ce qu'un bon plan apporte de plus
+
+- **Des responsables nommés**, pas des équipes anonymes.
+- **Des délais**, pas « dès que possible ».
+- **Une traçabilité** : on peut démontrer après coup ce qui a été fait.
+- **Une proportionnalité** : la lourdeur de la procédure est calibrée sur la sensibilité
+  des données — un plan applicable vaut mieux qu'un plan parfait qu'on ignore.
+
+#### Points à retenir
+
+- Un plan de gestion des clés commence par un **inventaire** : sans lui, la rotation est
+  impossible.
+- Chaque clé a un **propriétaire**, un **emplacement**, un **usage** — et une date de
+  fin.
+- La rotation se conçoit pour **ne pas casser** la lecture des données existantes :
+  versionner, migrer, détruire.
+- La révocation est **immédiate** et **décidée** : un plan sans décideur ni délai ne
+  sert pas le jour de l'incident.
+- La destruction se **prouve** — y compris dans les sauvegardes.
+
+</details>
+
+---
+
 ## IV. Aller plus loin
 
 *Ces approfondissements sont facultatifs : ils ne sont jamais exigés pour terminer la
@@ -162,49 +333,42 @@ journée.*
 
 ## 🧠 Vérifiez vos acquis
 
-*Formatif, jamais noté. Répondez sans relire le chapitre, puis cochez. Les réponses sont juste après le séparateur : ce qui compte est de repérer où vous vacillez, pas de faire 5 sur 5.*
+*Formatif, jamais noté. Répondez sans relire le chapitre, puis dépliez « Vérifier ses réponses ». Ce qui compte est de repérer où vous vacillez, pas de faire 5 sur 5.*
 
 **1.** Qu'est-ce qu'un CSPRNG comme `secrets` ou `os.urandom` ajoute par rapport à `random` ?
 
-- A. Une sortie plus longue à chaque appel
+- A. Une sortie plus longue à chaque appel : il produit des clés de 512 bits là où `random` s'arrête à 128
 - B. De l'entropie : il puise dans l'activité imprévisible de la machine
-- C. Un algorithme tenu secret, donc incassable
-- D. Une graine fixe, qui rend la suite reproductible
-
-- [ ] ✓ je savais
+- C. Un algorithme tenu secret, contrairement à `random` dont le code est public et donc attaquable
+- D. Une graine fixe, qui rend la suite reproductible et donc vérifiable par un auditeur
 
 **2.** Pourquoi « une clé, un usage » ?
 
-- A. Parce qu'une clé ne peut techniquement servir qu'à un seul algorithme
+- A. Parce qu'une clé ne peut techniquement servir qu'à un seul algorithme : le format du secret l'impose
 - B. Parce que mélanger les usages multiplie les dégâts d'une fuite : une clé qui tombe, on sait exactement ce qui est touché
-- C. Parce que les clés sont numérotées dans le coffre
-- D. Parce qu'un usage unique accélère le chiffrement
-
-- [ ] ✓ je savais
+- C. Parce que les clés sont numérotées dans le coffre et qu'un numéro ne peut désigner qu'un seul usage
+- D. Parce qu'un usage unique accélère le chiffrement : la clé reste en cache dans le processus
 
 **3.** On fait tourner la clé qui chiffre les exports de DIGICHEESE. Pourquoi versionner les clés (chaque message porte la référence de celle qui l'a produit) ?
 
 - A. Pour que les messages déjà chiffrés avec l'ancienne restent lisibles pendant la migration
-- B. Pour accélérer le chiffrement des nouveaux messages
-- C. Pour pouvoir détruire l'ancienne clé immédiatement
-- D. Pour prouver que la rotation a eu lieu auprès de l'auditeur
-
-- [ ] ✓ je savais
+- B. Pour accélérer le chiffrement des nouveaux messages : la version évite de tester les clés une par une
+- C. Pour pouvoir détruire l'ancienne clé immédiatement après la rotation, sans avoir rien à vérifier
+- D. Pour prouver auprès de l'auditeur que la rotation a bien eu lieu, grâce à un horodatage des messages
 
 **4.** Que fait une révocation de clé ?
 
 - A. Elle rend la clé inutilisable pour les opérations futures, mais ne protège pas ce qui a déjà été chiffré avec
-- B. Elle rend illisibles toutes les données chiffrées avec cette clé
-- C. Elle remplace la clé par une nouvelle, sans intervention
-- D. Elle n'a d'effet qu'après la publication de l'inventaire
-
-- [ ] ✓ je savais
+- B. Elle rend illisibles toutes les données chiffrées avec cette clé, y compris les archives conservées
+- C. Elle remplace la clé par une nouvelle, sans intervention humaine ni reprise des données existantes
+- D. Elle n'a d'effet qu'après la publication de l'inventaire des clés auprès des équipes concernées
 
 **5.** *Question ouverte (2-3 lignes).* Une clé de service utilisée depuis six mois est découverte dans un dépôt devenu public. Décrivez la réaction, dans l'ordre, et dites ce que la rotation régulière aurait changé rétrospectivement.
 
-- [ ] ✓ je savais
-
 ---
+
+<details>
+<summary>Vérifier ses réponses</summary>
 
 ### Réponses
 
@@ -222,6 +386,8 @@ journée.*
 
 **5.** Attendu : révoquer **immédiatement** la clé exposée, émettre et injecter la nouvelle (hors dépôt : variable d'environnement, coffre), vérifier que le secret ne reste pas dans l'historique du dépôt et dans les copies, inventorier ce qu'elle protégeait et ce qui a pu être lu pendant six mois, puis documenter l'événement et déclencher la rotation des voisines. Rétrospectivement, une rotation régulière aurait **borné la fenêtre d'exposition** : six mois de validité, c'est la surface attaquable.
 **Pourquoi :** une clé dont on a perdu la trace est une clé compromise — l'inventaire (où sont mes clés, qui y a accès, quand elles ont tourné) précède tout choix d'algorithme.
+
+</details>
 
 ---
 

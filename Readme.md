@@ -61,15 +61,15 @@ facultatifs et ne sont pas comptés dans ces durées.*
 
 | | Sujet | Durée |
 | --- | --- | --- |
-| 🟢 | [Exercice — Classer les primitives](tp/01-classer-primitives.md) · [corrigé](tp/corrige/01-classer-primitives.md) | 20 min |
-| 🟢 | [Exercice — Casser le chiffre de César](tp/02-crypter-cesar.md) · [corrigé](tp/corrige/02-crypter-cesar.md) | 30 min |
-| 🟡 | [Exercice — Chiffrer un fichier avec AES-GCM](tp/03-chiffrer-python.md) · [corrigé](tp/corrige/03-chiffrer-python.md) | 45 min |
-| 🔵 | [Exercice — Auditer un code qui utilise mal la crypto](tp/05-auditer-crypto.md) · [corrigé](tp/corrige/05-auditer-crypto.md) | 50 min |
-| 🔴 | [Défi — Concevoir un plan de gestion des clés](tp/06-defi-projet-cles.md) · [corrigé](tp/corrige/06-defi-projet-cles.md) | 1 h 30 (indicatif) |
-| 🟢 | [Exercice — Diagnostiquer une configuration TLS](tp/07-diagnostiquer-tls.md) · [corrigé](tp/corrige/07-diagnostiquer-tls.md) | 30 min |
-| 🟡 | [Exercice — Chiffrer une colonne sensible](tp/09-chiffrer-bdd.md) · [corrigé](tp/corrige/09-chiffrer-bdd.md) | 1 h |
-| 🔵 | [Exercice — Auditer la gestion des secrets](tp/10-audit-secrets.md) · [corrigé](tp/corrige/10-audit-secrets.md) | 55 min |
-| 🔴 | [Exercice — Défi : planifier une rotation de clés](tp/12-defi-rotation.md) · [corrigé](tp/corrige/12-defi-rotation.md) | 1 h 15 (indicatif) |
+| 🟢 | Exercice — Classer les primitives (énoncé + correction) | 20 min · dans le chapitre 1 |
+| 🟢 | Exercice — Casser le chiffre de César (énoncé + correction) | 30 min · dans le chapitre 2 |
+| 🟡 | Exercice — Chiffrer un fichier avec AES-GCM (énoncé + correction) | 45 min · dans le chapitre 3 |
+| 🔵 | Exercice — Auditer un code qui utilise mal la crypto (énoncé + correction) | 50 min · dans le chapitre 5 |
+| 🔴 | Exercice bonus — Concevoir un plan de gestion des clés (énoncé + correction) | 1 h 30 (indicatif) · dans le chapitre 6 |
+| 🟢 | Exercice — Diagnostiquer une configuration TLS (énoncé + correction) | 30 min · dans le chapitre 7 |
+| 🟡 | Exercice — Chiffrer une colonne sensible (énoncé + correction) | 1 h · dans le chapitre 9 |
+| 🔵 | Exercice — Auditer la gestion des secrets (énoncé + correction) | 55 min · dans le chapitre 10 |
+| 🔴 | Exercice bonus — Planifier une rotation de clés (énoncé + correction) | 1 h 15 (indicatif) · dans le chapitre 12 |
 | 🎯 | **TP intégrateur — facultatif, seul élément noté s'il est rendu** · [Sécuriser un système de bout en bout](tp/TP-INTEGRATEUR.md) | 3 h 30 |
 
 ---
@@ -82,7 +82,7 @@ avancer, revenir au concept concerné, refaire l'exercice.
 ### Jour 5 — chapitres 01 à 06
 
 - [ ] J'ai lu les chapitres 01 à 06 et les points clés sont clairs.
-- [ ] J'ai fait au moins les exercices 🟢 et 🟡 (partie principale), et vérifié mes réponses dans `tp/corrige/`. Les extensions « Pour aller plus loin » sont facultatives.
+- [ ] J'ai fait au moins les exercices 🟢 et 🟡 (partie principale), et déplié « Voir la correction » dans le chapitre concerné. Les extensions « Pour aller plus loin » sont facultatives.
 - [ ] J'ai répondu au QCM formatif, lorsqu'il est disponible, et identifié mes notions à revoir.
 - [ ] Je sais expliquer, avec mes mots, les 2-3 idées principales de la journée.
 - [ ] Je peux appliquer ces idées à un cas simple (un extrait de code, une config, un flux).
@@ -90,7 +90,7 @@ avancer, revenir au concept concerné, refaire l'exercice.
 ### Jour 6 — chapitres 07 à 12
 
 - [ ] J'ai lu les chapitres 07 à 12 et les points clés sont clairs.
-- [ ] J'ai fait au moins les exercices 🟢 et 🟡 (partie principale), et vérifié mes réponses dans `tp/corrige/`. Les extensions « Pour aller plus loin » sont facultatives.
+- [ ] J'ai fait au moins les exercices 🟢 et 🟡 (partie principale), et déplié « Voir la correction » dans le chapitre concerné. Les extensions « Pour aller plus loin » sont facultatives.
 - [ ] J'ai répondu au QCM formatif, lorsqu'il est disponible, et identifié mes notions à revoir.
 - [ ] Je sais expliquer, avec mes mots, les 2-3 idées principales de la journée.
 - [ ] Je peux appliquer ces idées à un cas simple (un extrait de code, une config, un flux).

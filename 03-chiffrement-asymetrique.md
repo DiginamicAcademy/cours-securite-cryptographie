@@ -140,6 +140,258 @@ symétrique à **discuter**.
 
 ---
 
+### Exercice 1 — Chiffrer un fichier avec AES-GCM (45 min)
+
+#### Contexte
+
+**VéloCité**, un opérateur de vélos en libre-service, confie à un laboratoire
+universitaire un extrait de ses données de location pour une étude de mobilité. Le
+fichier contient des données personnelles (dates, durées, habitudes de déplacement) :
+il doit être chiffré **avant** de quitter l'infrastructure de l'opérateur, et seul le
+laboratoire doit pouvoir le lire.
+
+L'équipe data a retenu le mode GCM (Galois/Counter Mode) du standard AES (Advanced
+Encryption Standard) : il chiffre et authentifie en une seule passe. La bibliothèque
+retenue est `cryptography`, la référence en Python — elle s'installe avec
+`pip install cryptography`.
+
+Voici le fichier à protéger, `export-locations.csv` :
+
+```csv
+date,station,duree_min,abonne
+2026-10-05,Gare Centrale,12,1
+2026-10-05,Place du Marche,7,0
+2026-10-06,Universite,23,1
+```
+
+Les repères de l'équipe, à respecter à la lettre :
+
+- la clé de chiffrement fait **32 octets** (soit **256 bits**), tirés au hasard ;
+- le **nonce** (valeur de départ unique) fait **12 octets** (soit **96 bits**), tirés
+  au hasard, et il est **préfixé** au fichier chiffré pour que le déchiffrement
+  retrouve tout seul ;
+- le nonce ne doit **jamais** être réutilisé avec la même clé.
+
+#### Consignes
+
+##### Partie 1 — Générer la clé et le nonce
+
+1. Écrivez un script `chiffrer.py` qui génère la clé et le nonce avec le module
+   `secrets` (et non `random`, qui est prévisible).
+2. Affichez leur longueur en octets pour vérifier qu'elle correspond aux repères
+   ci-dessus.
+
+##### Partie 2 — Chiffrer le fichier
+
+1. Lisez `export-locations.csv` **en binaire** (`read_bytes`).
+2. Chiffrez-le avec la classe AESGCM (AES en mode GCM), sans donnée additionnelle.
+3. Écrivez le résultat dans `export-locations.csv.chiffre`, sous la forme
+   `nonce + chiffré` (le nonce d'abord, puis le corps chiffré).
+4. Constatez que le fichier produit est illisible : ouvrez-le, il ne doit ressembler à
+   rien de lisible.
+
+##### Partie 3 — Déchiffrer et vérifier
+
+1. Écrivez `dechiffrer.py` : il lit le fichier chiffré, sépare le nonce du corps,
+   déchiffre, et réécrit `export-locations-relu.csv`.
+2. Vérifiez que `export-locations-relu.csv` est **identique octet à octet** au fichier
+   d'origine.
+
+##### Partie 4 — Détecter une altération
+
+1. Modifiez **un seul octet** du corps chiffré dans `export-locations.csv.chiffre`, par
+   exemple en lui ajoutant 1.
+2. Relancez `dechiffrer.py` : que se passe-t-il ?
+3. Notez le nom de l'exception levée, et expliquez en deux phrases pourquoi ce
+   comportement est un avantage et non un défaut.
+
+##### Partie 5 — Poser la question de la clé
+
+Le laboratoire est distant : comment lui transmettre la clé de chiffrement sans la
+livrer à quiconque écouterait le canal ? Répondez en trois phrases maximum, en
+utilisant ce que le chapitre sur le chiffrement asymétrique décrit.
+
+#### Attendu
+
+- `chiffrer.py` et `dechiffrer.py`, exécutables de bout en bout.
+- Le fichier chiffré produit, et le fichier relu identique à l'original.
+- Le compte rendu de la partie 4 (exception observée + explication).
+- La réponse courte de la partie 5.
+
+#### Vérification
+
+Vous avez réussi quand :
+
+- `export-locations.csv.chiffre` commence bien par le nonce, et son contenu est
+  illisible ;
+- `export-locations-relu.csv` est identique au fichier d'origine ;
+- une altération d'un seul octet fait échouer le déchiffrement au lieu de produire un
+  fichier corrompu ;
+- votre réponse de la partie 5 ne propose **pas** d'envoyer la clé en clair.
+
+#### ✅ Auto-évaluation
+
+Avant de passer au corrigé, vérifiez que :
+
+- [ ] Ma clé et mon nonce sont tirés avec `secrets`, et leur longueur est vérifiée.
+- [ ] Mon fichier chiffré contient le nonce en tête, puis le corps chiffré.
+- [ ] Le déchiffrement restitue un fichier identique octet à octet.
+- [ ] J'ai observé le refus de déchiffrer un contenu altéré et je sais l'expliquer.
+- [ ] J'ai décrit une transmission de clé qui ne passe pas par un canal en clair.
+
+#### Pour aller plus loin (exercice)
+
+*Facultatif.* Plutôt que de tirer la clé au hasard, dérivez-la d'une phrase secrète
+avec PBKDF2, puis vérifiez que deux phrases secrètes différentes produisent deux clés
+différentes. Notez ce que cela change si la phrase secrète est faible.
+
+<details>
+<summary>Voir la correction</summary>
+
+#### Partie 1 — Générer la clé et le nonce
+
+**Éléments attendus :**
+
+```python
+import secrets
+
+cle = secrets.token_bytes(32)    # 256 bits, tirés par un CSPRNG
+nonce = secrets.token_bytes(12)  # 96 bits, unique pour cette clé
+
+print(len(cle), len(nonce))      # 32 12
+```
+
+**Ce qu'il faut retenir :** `secrets` tire des octets imprévisibles ; `random` produirait
+une suite reproductible à partir de sa graine, et donc une clé devinable. La longueur
+se vérifie à l'exécution : une clé trop courte ne se rattrape pas après coup.
+
+**Erreurs fréquentes :**
+
+- Générer la clé avec `random.randbytes` ou `os.urandom` mal employé : seul `secrets`
+  (ou `os.urandom`) est adapté à la cryptographie.
+- Oublier de tirer le nonce au hasard, ou le fixer « pour simplifier » : deux messages
+  chiffrés avec le même nonce et la même clé se comparent.
+
+#### Partie 2 — Chiffrer le fichier
+
+**Éléments attendus :**
+
+```python
+from pathlib import Path
+
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+
+donnees = Path("export-locations.csv").read_bytes()
+corps = AESGCM(cle).encrypt(nonce, donnees, None)  # None : pas de donnée additionnelle
+
+# le nonce est préfixé : il voyage avec le message, en clair
+Path("export-locations.csv.chiffre").write_bytes(nonce + corps)
+```
+
+**Ce qu'il faut retenir :** `encrypt` renvoie le chiffré **accompagné de son tag
+d'authentification** — c'est ce qui rend le mode GCM « authentifiant ». Le nonce n'est
+pas secret : il est préfixé au fichier pour que le déchiffrement sache par où commencer.
+
+**Erreurs fréquentes :**
+
+- Lire le fichier en texte (`read_text`) : les accents et les fins de ligne se
+  transforment, et le déchiffrement ne restituera pas l'original. On travaille en
+  **octets**.
+- Écrire le nonce dans un fichier séparé, qu'on finit par perdre : sans nonce, le
+  message est indéchiffrable.
+- Réutiliser le nonce pour chiffrer un second fichier avec la même clé.
+
+#### Partie 3 — Déchiffrer et vérifier
+
+**Éléments attendus :**
+
+```python
+from pathlib import Path
+
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+
+brut = Path("export-locations.csv.chiffre").read_bytes()
+nonce_lu, corps = brut[:12], brut[12:]
+
+clair = AESGCM(cle).decrypt(nonce_lu, corps, None)
+Path("export-locations-relu.csv").write_bytes(clair)
+
+assert clair == Path("export-locations.csv").read_bytes()
+```
+
+**Ce qu'il faut retenir :** la découpe `[:12]` / `[12:]` est la contrepartie exacte du
+préfixage de la partie 2. La comparaison octet à octet est la seule vérification qui
+vaille : « le fichier s'ouvre » ne prouve pas qu'il est intact.
+
+**Erreurs fréquentes :**
+
+- Découper à la mauvaise longueur : le nonce lu ne correspond pas à celui utilisé, et
+  le déchiffrement échoue alors que le fichier est sain.
+- Comparer les fichiers « à l'œil » plutôt que par leur contenu binaire.
+
+#### Partie 4 — Détecter une altération
+
+**Éléments attendus :**
+
+```python
+from cryptography.exceptions import InvalidTag
+
+brut = bytearray(Path("export-locations.csv.chiffre").read_bytes())
+brut[12] = brut[12] + 1   # on altère un seul octet du corps chiffré
+
+try:
+    AESGCM(cle).decrypt(bytes(brut[:12]), bytes(brut[12:]), None)
+    print("accepté : c'est un problème")
+except InvalidTag:
+    print("altération détectée")
+```
+
+Le déchiffrement **refuse** de rendre un contenu : l'exception `InvalidTag` signale que
+le tag d'authentification ne correspond plus au message.
+
+**Ce qu'il faut retenir :** c'est précisément l'avantage recherché. Un chiffrement qui
+restituerait un fichier corrompu laisserait croire à une donnée valide ; GCM préfère
+échouer bruyamment. L'intégrité et la confidentialité sont vérifiées en une passe.
+
+**Erreurs fréquentes :**
+
+- Altérer le nonce plutôt que le corps : le résultat est le même (refus), mais on teste
+  alors un autre scénario — les deux sont utiles, à mener séparément.
+- Interpréter l'exception comme un bug de la bibliothèque et « corriger » en
+  ignorant l'erreur : c'est exactement le réflexe qui transforme une protection en
+  fausse sécurité.
+
+#### Partie 5 — Poser la question de la clé
+
+**Éléments attendus :**
+
+Envoyer la clé au laboratoire par le même canal que le fichier reviendrait à laisser la
+clé voyager en clair : quiconque intercepte les deux obtient tout. La solution est de
+chiffrer **la clé** avec la clé publique du laboratoire, et d'envoyer cette clé de
+session chiffrée à côté du fichier. Seul le laboratoire, avec sa clé privée, retrouve la
+clé de session — c'est le principe hybride décrit dans le chapitre sur le chiffrement
+asymétrique.
+
+**Sur la formulation :** la question n'est jamais « comment cacher la clé dans le
+fichier ? » mais « qui détient la clé privée qui la déverrouille ? ». Tant que cette
+question n'a pas de réponse, le chiffrement des données ne protège rien.
+
+#### Points à retenir
+
+- Une bibliothèque standard (`cryptography`) fait le travail difficile : on gère la
+  **clé**, le **nonce** et les **fichiers**, pas les mathématiques.
+- La clé se tire avec `secrets` ; le nonce est aléatoire, unique, et **préfixé** au
+  message chiffré.
+- GCM chiffre **et** authentifie : toute altération fait échouer le déchiffrement au
+  lieu de produire un fichier corrompu.
+- On travaille en **octets** de bout en bout, et on vérifie par comparaison binaire.
+- La clé de session se transmet elle-même **chiffrée** avec la clé publique du
+  destinataire : c'est le principe hybride.
+
+</details>
+
+---
+
 ## IV. Aller plus loin
 
 *Ces approfondissements sont facultatifs : ils ne sont jamais exigés pour terminer la
@@ -180,7 +432,7 @@ journée.*
 
 ## 🧠 Vérifiez vos acquis
 
-*Formatif, jamais noté. Répondez sans relire le chapitre, puis cochez. Les réponses sont juste après le séparateur : ce qui compte est de repérer où vous vacillez, pas de faire 5 sur 5.*
+*Formatif, jamais noté. Répondez sans relire le chapitre, puis dépliez « Vérifier ses réponses ». Ce qui compte est de repérer où vous vacillez, pas de faire 5 sur 5.*
 
 **1.** Cent personnes doivent communiquer deux à deux en chiffrement symétrique. Combien de clés distinctes faut-il créer, transmettre, stocker et révoquer ?
 
@@ -189,8 +441,6 @@ journée.*
 - C. 4 950
 - D. Autant que nécessaire, mais une seule suffit si elles sont longues
 
-- [ ] ✓ je savais
-
 **2.** Alice veut envoyer un document que Bob est le seul à pouvoir lire, en asymétrique. Quelle clé utilise-t-elle pour chiffrer ?
 
 - A. Sa propre clé publique
@@ -198,16 +448,12 @@ journée.*
 - C. La clé privée de Bob
 - D. La clé privée d'Alice
 
-- [ ] ✓ je savais
-
 **3.** Pourquoi ne chiffre-t-on jamais les données directement avec RSA ?
 
 - A. Parce que RSA est lent et que la taille du message est bornée par celle de la clé
-- B. Parce que RSA n'est pas un algorithme public
-- C. Parce que RSA ne chiffre que des nombres premiers
-- D. Parce que RSA ne chiffre que des clés de 128 bits
-
-- [ ] ✓ je savais
+- B. Parce que RSA n'est pas un algorithme public : on ne peut pas l'auditer, donc on ne s'y fie pas
+- C. Parce que RSA ne chiffre que des nombres premiers : il faudrait convertir les données au préalable
+- D. Parce que RSA ne chiffre que des clés de 128 bits, ce qui est aujourd'hui insuffisant
 
 **4.** Que faut-il retenir des courbes elliptiques (ECC) par rapport à RSA ?
 
@@ -216,13 +462,12 @@ journée.*
 - C. Elles suppriment le besoin de clé privée
 - D. Elles remplacent l'échange de clés par la signature
 
-- [ ] ✓ je savais
-
 **5.** *Question ouverte (2-3 lignes).* Deux machines qui ne se sont jamais parlé conviennent d'une clé de session sur un canal public, que l'observateur ne peut pas reconstituer. Nommez ce mécanisme, puis replacez-le dans les trois temps du cours : que fait chacun des trois ?
 
-- [ ] ✓ je savais
-
 ---
+
+<details>
+<summary>Vérifier ses réponses</summary>
 
 ### Réponses
 
@@ -240,6 +485,8 @@ journée.*
 
 **5.** Attendu : l'échange de clés de **Diffie-Hellman** — chacune combine sa valeur secrète avec la valeur publique de l'autre et les deux calculs aboutissent au même résultat. Les trois temps : **authentifier** l'interlocuteur (certificat, signature), **convenir** d'une clé de session (échange de clés), puis **chiffrer** les données en symétrique.
 **Pourquoi :** l'asymétrique sert à se rencontrer, le symétrique à discuter — chaque temps répond à une question différente.
+
+</details>
 
 ---
 

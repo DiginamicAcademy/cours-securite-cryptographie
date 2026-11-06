@@ -201,6 +201,227 @@ discuter — le catalogue des familles cassées est en fin de chapitre.
 
 ---
 
+### Exercice 1 — Diagnostiquer une configuration TLS (30 min)
+
+#### Contexte
+
+**Maison Berthier**, un négociant en vins, héberge sa boutique en ligne sur un serveur
+Nginx. Le site est « en HTTPS », ce qui rassure tout le monde — jusqu'au jour où un
+client signale un avertissement de sécurité dans son navigateur. L'administrateur
+système vous transmet la configuration en production et la politique de sécurité
+interne de l'entreprise.
+
+**Politique de sécurité interne (extrait) :**
+
+- versions TLS acceptées : **1.2 et 1.3 uniquement** ;
+- suites de chiffrement : **AEAD uniquement** (AES-GCM ou ChaCha20-Poly1305) ;
+- en-tête HSTS : `max-age=63072000` avec `includeSubDomains` ;
+- toute requête `http://` est redirigée vers `https://` ;
+- certificat Let's Encrypt, renouvellement automatisé.
+
+**Configuration en production :**
+
+```nginx
+server {
+    listen 80;
+    server_name www.maison-berthier.fr;
+    root /var/www/boutique;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+
+server {
+    listen 443 ssl;
+    server_name www.maison-berthier.fr;
+
+    ssl_certificate     /etc/ssl/certs/boutique-selfsigned.crt;
+    ssl_certificate_key /etc/ssl/private/boutique.key;
+
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_ciphers RC4:DES:3DES:MD5:EXPORT;
+    ssl_prefer_server_ciphers off;
+
+    root /var/www/boutique;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+```
+
+#### Consignes
+
+##### Partie 1 — Repérer les faiblesses et les classer
+
+Listez les écarts entre cette configuration et la politique de sécurité interne.
+Visez au moins **six** constats : deux concernent les certificats ou les versions,
+deux les algorithmes, deux le comportement du serveur (ce qu'il accepte, ce qu'il
+renvoie).
+
+Donnez directement à chaque constat sa ligne de configuration et sa gravité, justifiée
+en une phrase :
+
+| Catégorie | Signification |
+| --- | --- |
+| **Bloquant** | La garantie de TLS est cassée : le site ne devrait pas être ouvert en l'état. |
+| **Important** | La garantie tient, mais un scénario réaliste la contourne. |
+| **Confort** | Bonne pratique à mettre en place, sans urgence. |
+
+##### Partie 2 — Corriger la configuration
+
+Réécrivez les directives Nginx concernées pour respecter la politique interne. On
+attend un bloc de configuration complet et commenté, prêt à être déployé — pas une
+liste de conseils.
+
+##### Partie 3 — Vérifier le résultat
+
+Indiquez les commandes à exécuter sur le serveur pour confirmer que chaque correction
+est effective, et le résultat qui prouve la réussite. Prévoyez au moins une
+vérification côté serveur (`openssl`) et une côté client (`curl` ou le navigateur).
+
+#### ✅ Auto-évaluation
+
+Avant de passer au corrigé, vérifiez que :
+
+- [ ] J'ai listé au moins six constats, chacun relié à une ligne précise de la configuration et porteur d'une gravité justifiée en une phrase.
+- [ ] Ma configuration corrigée respecte **tous** les points de la politique interne (versions, suites, HSTS, redirection, certificat).
+- [ ] J'ai écrit une commande de vérification par correction, avec le résultat attendu.
+- [ ] Je peux expliquer pourquoi un site « en HTTPS » peut malgré tout être faible.
+
+#### Pour aller plus loin (exercice)
+
+*Facultatif.* La politique interne ne dit rien du renouvellement du certificat.
+Proposez la chaîne complète : qui demande le certificat, quand il est renouvelé, qui
+recharge Nginx, et comment être prévenu si le renouvellement échoue. Ajoutez
+l'activation de l'*OCSP stapling* et expliquez en deux phrases ce qu'elle apporte.
+
+<details>
+<summary>Voir la correction</summary>
+
+#### Partie 1 — Repérer les faiblesses et les classer
+
+**Éléments attendus :** sept constats, du plus grave au plus accessoire.
+
+| N° | Constat | Où dans la configuration | Gravité | Pourquoi ce degré |
+| --- | --- | --- | --- | --- |
+| 1 | Le certificat est **auto-signé** (`boutique-selfsigned.crt`) : il chiffre, mais n'authentifie personne. | `ssl_certificate` | **Bloquant** | Le navigateur ne peut pas authentifier le serveur : la garantie d'identité de TLS est absente. |
+| 2 | Le serveur `80` **sert le contenu en clair** au lieu de rediriger vers `https://`. | premier bloc `server` | **Bloquant** | Tant qu'une version en clair répond, un attaquant peut s'y tenir — le chiffrement devient optionnel. |
+| 3 | Les protocoles **TLSv1** et **TLSv1.1** sont acceptés alors que la politique n'autorise que 1.2 et 1.3. | `ssl_protocols` | **Important** | Un client malveillant peut forcer ces versions, dont les attaques sont connues (BEAST) et le statut déprécié. |
+| 4 | Les suites **RC4, DES, 3DES, MD5, EXPORT** sont toutes faibles ou cassées ; aucune suite AEAD n'est proposée. | `ssl_ciphers` | **Important** | La confidentialité de la session dépend de la suite négociée ; avec RC4 ou 3DES, elle est théorique. |
+| 5 | Aucun en-tête **HSTS** n'est renvoyé : rien n'empêche un retour en clair. | bloc `443` (absent) | **Important** | Le site est protégé aujourd'hui, mais rien ne garantit la prochaine connexion contre un *downgrade*. |
+| 6 | Aucune **chaîne de certification** Let's Encrypt n'est utilisée, alors que la politique l'impose — et donc aucun renouvellement automatisé. | `ssl_certificate` | **Important** | C'est la cause la plus fréquente de panne réelle : le certificat finit par expirer. |
+| 7 | `ssl_prefer_server_ciphers off` laisse le client choisir la suite. | `ssl_prefer_server_ciphers` | **Confort** | Le réglage n'est pas une faille ; il complète une liste de suites déjà restreinte. |
+
+**Ce qu'il faut retenir :** le constat 2 est celui que l'on rate le plus souvent. On
+regarde le bloc `443` avec soin, et on oublie que le bloc `80` répond encore — le
+site est donc accessible en clair, tout simplement, pour qui tape l'adresse sans le
+`s`.
+
+**Erreurs fréquentes :** classer le HSTS en « confort ». L'en-tête est court, mais il
+ferme la dernière porte du *downgrade* : c'est lui qui transforme « le site sait
+faire du HTTPS » en « le site est en HTTPS, point ». Inversement, traiter
+`ssl_prefer_server_ciphers` comme une urgence dilue le diagnostic : les correctifs
+bloquants doivent être traités en premier.
+
+#### Partie 2 — Corriger la configuration
+
+**Éléments attendus :**
+
+```nginx
+# Redirection obligatoire : aucune ressource n'est servie en clair.
+server {
+    listen 80;
+    server_name www.maison-berthier.fr;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name www.maison-berthier.fr;
+
+    # Certificat Let's Encrypt : chaîne complète, renouvelée automatiquement.
+    ssl_certificate     /etc/letsencrypt/live/www.maison-berthier.fr/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/www.maison-berthier.fr/privkey.pem;
+
+    # Versions conformes à la politique interne.
+    ssl_protocols TLSv1.2 TLSv1.3;
+
+    # Uniquement des suites AEAD (AES-GCM ou ChaCha20-Poly1305).
+    ssl_ciphers ECDHE+AESGCM:ECDHE+CHACHA20;
+
+    # HSTS : deux ans, sous-domaines inclus.
+    add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
+
+    root /var/www/boutique;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+```
+
+**Points de méthode :**
+
+- La redirection se fait par `return 301` : le serveur `80` ne sert plus rien, il
+  renvoie vers `https://`. C'est la correction la plus importante du lot.
+- `ssl_protocols` liste explicitement les versions acceptées : ne jamais s'appuyer
+  sur les valeurs par défaut de la version de Nginx installée.
+- `ssl_ciphers` restreint la négociation aux suites AEAD. Les suites de TLS 1.3 ne
+  se configurent pas ici : le protocole les impose toutes fortes.
+- L'en-tête HSTS porte `always` pour être renvoyé aussi sur les réponses d'erreur.
+- `ssl_prefer_server_ciphers` peut être supprimé : avec une liste de suites déjà
+  réduite aux algorithmes forts, son réglage change peu de chose.
+
+#### Partie 3 — Vérifier le résultat
+
+**Éléments attendus :**
+
+| Vérification | Commande | Résultat qui prouve la réussite |
+| --- | --- | --- |
+| Les anciennes versions sont refusées | `openssl s_client -connect www.maison-berthier.fr:443 -tls1_1` | La connexion échoue (pas de version commune). |
+| La version forte fonctionne | `openssl s_client -connect www.maison-berthier.fr:443 -tls1_2` | La poignée de main aboutit et affiche la suite négociée. |
+| Le certificat est valide | `openssl s_client -connect www.maison-berthier.fr:443 -showcerts` | La chaîne remonte jusqu'à une autorité reconnue, sans erreur de nom de domaine. |
+| La redirection est active | `curl -I http://www.maison-berthier.fr/` | Le serveur répond par un `301` vers `https://`. |
+| HSTS est présent | `curl -I https://www.maison-berthier.fr/` | L'en-tête `Strict-Transport-Security` apparaît avec la valeur prévue. |
+
+**Ce qu'il faut retenir :** une configuration ne se juge pas à sa lecture, mais à ce
+que le serveur répond réellement. Chaque ligne corrigée a sa contrepartie observable
+— si la commande ne montre rien, la correction n'est pas en production.
+
+#### Pour aller plus loin (exercice)
+
+**Chaîne de renouvellement attendue :** un client ACME (par exemple *certbot*)
+déclenche le renouvellement avant expiration, place les fichiers dans
+`/etc/letsencrypt/live/`, puis recharge Nginx via un crochet post-renouvellement. La
+surveillance compte : une alerte est envoyée si un certificat expire dans moins de
+quinze jours ou si le dernier renouvellement a échoué — c'est exactement le défaut
+qui a causé les deux pannes racontées dans l'approfondissement du chapitre TLS
+(décembre 2018, février 2020).
+
+**OCSP stapling :** le serveur interroge lui-même l'autorité sur la validité du
+certificat et joint la réponse à la poignée de main (`ssl_stapling on;
+ssl_stapling_verify on;`). Le navigateur n'a plus à contacter l'autorité à chaque
+visite : la connexion démarre plus vite, et elle ne dépend plus de la disponibilité
+du service OCSP de l'autorité.
+
+#### Points à retenir
+
+- Un site « en HTTPS » peut être faible sur **six** points à la fois : le cadenas
+  n'est pas un audit.
+- Les deux constats bloquants — certificat non authentifiant, contenu encore servi en
+  clair — annulent la garantie de TLS ; ils se traitent avant tout le reste.
+- La politique de sécurité interne est le référentiel du diagnostic : comparer la
+  configuration à une règle écrite évite les jugements de goût.
+- Chaque correction se **vérifie par une commande**, côté serveur et côté client.
+- Le renouvellement automatisé n'est pas un détail de confort : c'est la première
+  cause réelle de rupture de HTTPS.
+
+</details>
+
+---
+
 ## IV. Aller plus loin
 
 🔁 **Pour aller plus loin (facultatif)** — à lire si le créneau le permet, rien
@@ -265,34 +486,28 @@ renvoyé un en-tête.
 
 ## 🧠 Vérifiez vos acquis
 
-*Formatif, jamais noté. Répondez sans relire le chapitre, puis cochez. Les réponses sont juste après le séparateur : ce qui compte est de repérer où vous vacillez, pas de faire 5 sur 5.*
+*Formatif, jamais noté. Répondez sans relire le chapitre, puis dépliez « Vérifier ses réponses ». Ce qui compte est de repérer où vous vacillez, pas de faire 5 sur 5.*
 
 **1.** Un site chiffre parfaitement le canal, mais son certificat n'est pas valide pour son domaine. Que dit le cours sur cette situation ?
 
-- A. Rien de grave : la confidentialité est assurée
+- A. Rien de grave : la confidentialité du canal est assurée, c'est la seule garantie que TLS doive donner
 - B. La première garantie sans la seconde ne vaut rien : on chiffre vers l'imposteur pendant qu'on vous vole le secret
-- C. Le navigateur bascule automatiquement en HTTP pour continuer
-- D. Le certificat n'intervient qu'au renouvellement, pas à la connexion
-
-- [ ] ✓ je savais
+- C. Le navigateur bascule automatiquement en HTTP pour continuer la connexion, sans avertir l'utilisateur
+- D. Le certificat n'intervient qu'au renouvellement : la connexion ne dépend que des suites choisies
 
 **2.** Au troisième temps de la poignée de main, que obtiennent le client et le serveur ?
 
-- A. La clé privée du serveur
+- A. La clé privée du serveur, qui sert ensuite à chiffrer toutes les données de la session
 - B. Une clé de session symétrique, calculée de part et d'autre, qui chiffre tout le reste de la conversation
-- C. La liste complète des suites de chiffrement acceptées
-- D. L'empreinte du certificat racine
-
-- [ ] ✓ je savais
+- C. La liste complète des suites de chiffrement acceptées, que le client choisit alors
+- D. L'empreinte du certificat racine, qui valide la chaîne de confiance pour toute la session
 
 **3.** À quoi sert l'en-tête `Strict-Transport-Security` (HSTS) ?
 
-- A. À interdire le retour en clair : pendant `max-age`, le navigateur réécrit `http://` en `https://` avant même d'envoyer la requête
-- B. À bloquer le chargement des scripts externes
-- C. À renouveler automatiquement le certificat avant son expiration
-- D. À forcer le passage à TLS 1.3 sur les clients anciens
-
-- [ ] ✓ je savais
+- A. À interdire le retour en clair : pendant `max-age`, le navigateur réécrit `http://` en `https://` avant d'envoyer la requête
+- B. À bloquer le chargement des scripts externes non signés, ce qui protège la page contre l'injection de code tiers
+- C. À renouveler automatiquement le certificat avant son expiration, sans intervention sur le serveur ni alerte
+- D. À forcer le passage à TLS 1.3 sur les clients anciens, en refusant toute version inférieure dès la poignée de main
 
 **4.** Que garantit exactement le cadenas affiché par le navigateur ?
 
@@ -301,13 +516,12 @@ renvoyé un en-tête.
 - C. Que l'éditeur du site est l'exploitant réel du serveur
 - D. Que les données stockées sur le serveur sont chiffrées
 
-- [ ] ✓ je savais
-
 **5.** *Question ouverte (3 lignes).* Un audit de la boutique en ligne relève trois lignes : « TLS 1.0 accepté pour compatibilité », « certificat auto-signé », « HSTS absent ». Pour chacune, dites ce qui casse et la correction.
 
-- [ ] ✓ je savais
-
 ---
+
+<details>
+<summary>Vérifier ses réponses</summary>
 
 ### Réponses
 
@@ -325,6 +539,8 @@ renvoyé un en-tête.
 
 **5.** Attendu : **TLS 1.0 accepté** → version dépréciée et attaquable, les attaquants choisissent toujours le chemin le plus faible ; on limite à TLS 1.2 et 1.3 avec des suites AEAD (AES-GCM, ChaCha20-Poly1305). **Certificat auto-signé** → il chiffre mais n'authentifie rien, n'importe qui peut en fabriquer un ; on passe par une autorité de certification (Let's Encrypt convient). **HSTS absent** → rien n'empêche le downgrade au premier aller-retour ; on ajoute l'en-tête une fois le HTTPS maîtrisé partout.
 **Pourquoi :** une configuration TLS se juge à ses maillons les plus faibles, et les erreurs les plus coûteuses sont opérationnelles, pas mathématiques.
+
+</details>
 
 ---
 

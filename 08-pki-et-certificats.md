@@ -225,16 +225,14 @@ CAA, juste en dessous) viennent de là.
 
 ## 🧠 Vérifiez vos acquis
 
-*Formatif, jamais noté. Répondez sans relire le chapitre, puis cochez. Les réponses sont juste après le séparateur : ce qui compte est de repérer où vous vacillez, pas de faire 5 sur 5.*
+*Formatif, jamais noté. Répondez sans relire le chapitre, puis dépliez « Vérifier ses réponses ». Ce qui compte est de repérer où vous vacillez, pas de faire 5 sur 5.*
 
 **1.** Pourquoi la chaîne compte-t-elle une autorité intermédiaire au lieu de signer les certificats de serveur directement depuis la racine ?
 
-- A. Parce que la racine ne sait signer que des noms de domaine, pas des clés
+- A. Parce que la racine ne sait signer que des noms de domaine, pas des clés : il lui faut un maillon intermédiaire
 - B. Parce qu'une intermédiaire compromise se remplace sans toucher à la racine, qu'on ne sort du coffre que pour signer une intermédiaire
-- C. Parce que le navigateur refuse tout certificat signé directement par une racine
-- D. Parce que cela raccourcit la poignée de main TLS
-
-- [ ] ✓ je savais
+- C. Parce que le navigateur refuse tout certificat de serveur signé directement par une racine
+- D. Parce que cela raccourcit la poignée de main TLS : un maillon de moins à transmettre au client
 
 **2.** Le navigateur vérifie quatre choses à la réception d'un certificat. Laquelle ne fait **pas** partie de ces contrôles ?
 
@@ -243,8 +241,6 @@ CAA, juste en dessous) viennent de là.
 - C. Le coût du certificat pour l'exploitant du site
 - D. La révocation : le certificat n'a pas été annulé avant son terme
 
-- [ ] ✓ je savais
-
 **3.** Quelle distinction le cours pose-t-il entre renouveler un certificat et tourner la clé ?
 
 - A. C'est la même opération, deux noms selon l'outil
@@ -252,22 +248,19 @@ CAA, juste en dessous) viennent de là.
 - C. La rotation se fait par ACME, le renouvellement manuellement
 - D. Le renouvellement change le nom de domaine, la rotation change l'autorité
 
-- [ ] ✓ je savais
-
 **4.** Un certificat dont la clé privée a été volée est révoqué, mais des clients continuent de lui faire confiance. Pourquoi ?
 
 - A. Parce que CRL et OCSP sont contournés par les clients en cas de doute ou d'indisponibilité (*soft-fail*)
-- B. Parce que la révocation ne s'applique qu'aux certificats expirés
-- C. Parce que seule l'autorité racine peut révoquer
-- D. Parce que le navigateur ne vérifie la révocation qu'une fois par an
-
-- [ ] ✓ je savais
+- B. Parce que la révocation ne s'applique qu'aux certificats déjà expirés, les autres restant jugés valides
+- C. Parce que seule l'autorité racine peut révoquer, et qu'elle ne le fait jamais pour une intermédiaire
+- D. Parce que le navigateur ne vérifie la révocation qu'au renouvellement, jamais à chaque connexion
 
 **5.** *Question ouverte (2-3 lignes).* Le script de renouvellement automatique d'un certificat échoue un mardi, personne ne le voit, et le site tombe en avertissement plein écran trois mois plus tard. Quels sont les trois réflexes opérationnels du chapitre, et ce que chacun apporte ?
 
-- [ ] ✓ je savais
-
 ---
+
+<details>
+<summary>Vérifier ses réponses</summary>
 
 ### Réponses
 
@@ -285,6 +278,8 @@ CAA, juste en dessous) viennent de là.
 
 **5.** Attendu : **automatiser** (un minuteur système, pas un rappel dans un agenda) ; **surveiller** (alerter si un certificat expire dans moins de quinze jours ou si le dernier renouvellement a échoué) ; **tester la reprise** après déploiement (vérifier que la chaîne complète est servie, certificat + intermédiaire).
 **Pourquoi :** un certificat renouvelé automatiquement n'est pas un certificat surveillé automatiquement — l'automatisation sans surveillance échoue en silence, et un certificat valide servi sans son intermédiaire casse la chaîne pour une partie des clients.
+
+</details>
 
 ---
 

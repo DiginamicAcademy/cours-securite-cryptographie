@@ -115,6 +115,180 @@ scelle le contenu.
 
 ---
 
+### Exercice 1 — Classer les primitives (20 min)
+
+#### Contexte
+
+La fromagerie **DIGICHEESE** (la fromagerie du fil rouge) finalise sa boutique en
+ligne. L'équipe a noté ses besoins
+de sécurité au tableau blanc, mais personne n'est d'accord sur la technique à
+employer : « on chiffre tout », « on hache tout », « une signature, c'est pareil
+qu'un chiffrement »…
+
+Vous êtes appelé à trancher. Aucun code n'est nécessaire : il s'agit de **choisir la
+bonne primitive pour le bon problème**.
+
+#### Consignes
+
+##### Partie 1 — Reformuler le besoin
+
+Pour chaque situation ci-dessous, dites en une phrase ce qu'il faut garantir :
+**cacher** l'information, **vérifier** qu'elle n'a pas changé, ou **prouver** son
+origine.
+
+1. Les prix négociés avec les fournisseurs de la fromagerie ne doivent pas être connus
+   des concurrents.
+2. Un client qui télécharge la fiche technique d'un fromage doit pouvoir vérifier
+   qu'elle n'a pas été modifiée en route.
+3. La comptable envoie un bon de commande au fournisseur ; celui-ci doit pouvoir
+   prouver, plus tard, que c'est bien elle qui l'a envoyé.
+4. Les mots de passe des comptes clients sont conservés dans une base de données.
+5. Un partenaire extérieur veut transmettre un document confidentiel à la fromagerie,
+   sans que les deux parties aient pu se rencontrer pour se mettre d'accord au
+   préalable sur un secret commun.
+6. Le navigateur du client affiche un cadenas : le client veut s'assurer qu'il parle
+   bien au serveur de la boutique, et pas à un site qui se fait passer pour elle.
+
+##### Partie 2 — Associer usage et primitive
+
+Complétez le tableau suivant. Pour chaque situation, retenez **une** primitive
+principale parmi : **hachage**, **chiffrement symétrique**, **chiffrement
+asymétrique**, **signature**.
+
+| Situation | Besoin (cacher / vérifier / prouver) | Primitive principale |
+| --- | --- | --- |
+| 1 | | |
+| 2 | | |
+| 3 | | |
+| 4 | | |
+| 5 | | |
+| 6 | | |
+
+##### Partie 3 — Justifier un choix
+
+Pour les situations 2 et 4, expliquez en deux phrases pourquoi la primitive retenue
+convient — et pourquoi une autre ne conviendrait pas.
+
+##### Partie 4 — Détecter le contresens
+
+Un développeur de l'équipe déclare :
+
+> « J'ai haché le fichier des prix pour que personne ne puisse le lire. »
+
+Expliquez en deux ou trois phrases pourquoi cette affirmation est fausse, et ce
+qu'il aurait fallu faire à la place.
+
+#### ✅ Auto-évaluation
+
+Avant de passer au corrigé, vérifiez que :
+
+- [ ] J'ai reformulé les six besoins avec mes propres mots (cacher / vérifier / prouver).
+- [ ] Mon tableau attribue **une** primitive principale à chaque situation.
+- [ ] J'ai justifié les situations 2 et 4, y compris en écartant une autre primitive.
+- [ ] Ma réponse à la partie 4 distingue clairement **hachage** et **chiffrement**.
+- [ ] Je peux expliquer à voix haute pourquoi « chiffrer » et « hacher » ne sont pas interchangeables.
+
+#### Pour aller plus loin (exercice)
+
+*Facultatif.* Parmi les six situations, lesquelles gagneraient à combiner **deux**
+primitives ? Proposez la combinaison et dites ce qu'elle apporte.
+
+<details>
+<summary>Voir la correction</summary>
+
+#### Partie 1 — Reformuler le besoin
+
+**Éléments attendus :**
+
+| Situation | Ce qu'il faut garantir |
+| --- | --- |
+| 1 | **Cacher** — les prix doivent rester secrets. |
+| 2 | **Vérifier** — la fiche doit être intacte à l'arrivée. |
+| 3 | **Prouver** — l'origine du bon de commande doit être incontestable. |
+| 4 | **Vérifier** — et surtout pas cacher : on doit pouvoir *reconnaître* le mot de passe, pas le relire. |
+| 5 | **Cacher** — le document doit être illisible pour quiconque l'intercepte. |
+| 6 | **Prouver** — l'identité du serveur doit être établie. |
+
+**Ce qu'il faut retenir :** la situation 4 est le piège classique. On ne « lit » pas
+un mot de passe stocké : on le **compare**. C'est un besoin de vérification, pas de
+confidentialité — même si ce qui est rangé en base ressemble à du texte chiffré.
+
+#### Partie 2 — Associer usage et primitive
+
+**Éléments attendus :**
+
+| Situation | Besoin | Primitive principale | Pourquoi celle-ci |
+| --- | --- | --- | --- |
+| 1 | Cacher | **Chiffrement symétrique** | Une seule équipe manipule ces prix : une clé partagée entre eux suffit, c'est le plus simple et le plus rapide. |
+| 2 | Vérifier | **Hachage** | Il faut détecter toute modification, sans secret à distribuer ni à protéger. |
+| 3 | Prouver | **Signature** | Seule la comptable peut produire cette signature ; le fournisseur la vérifie sans détenir son secret. |
+| 4 | Vérifier | **Hachage salé** | On range une empreinte, jamais le mot de passe lui-même. |
+| 5 | Cacher | **Chiffrement asymétrique** | Les deux parties ne se sont pas rencontrées : la clé publique du destinataire permet de chiffrer sans avoir échangé de secret au préalable. |
+| 6 | Prouver | **Signature** | Le serveur prouve son identité en signant ; le navigateur vérifie avec la clé publique correspondante. |
+
+**Erreurs fréquentes :** attribuer le **chiffrement symétrique** à la situation 5,
+parce que « chiffrer, c'est chiffrer ». Le critère qui tranche n'est pas le résultat
+(lu ou non lu) mais la **manière dont la clé circule** : si les parties ne peuvent
+pas se rencontrer pour se mettre d'accord, seul le chiffrement asymétrique
+fonctionne. Inversement, choisir le chiffrement asymétrique partout « parce que c'est
+plus sûr » est un contresens : c'est plus lourd, et inutile quand une clé partagée
+existe déjà.
+
+#### Partie 3 — Justifier un choix
+
+**Situation 2 — Hachage :**
+
+La fiche technique est un document public : il n'y a rien à cacher, seulement à
+vérifier. Une fonction de hachage produit une empreinte qui change au moindre
+changement du document, et cette empreinte se publie sans risque. Le chiffrement
+conviendrait mal : il exigerait de distribuer une clé à chaque client, pour un
+secret qui n'existe pas.
+
+**Situation 4 — Hachage salé :**
+
+Le serveur doit reconnaître un mot de passe, pas le restituer. On range donc une
+empreinte, que l'on compare à celle calculée lors de la connexion. Le chiffrement
+serait dangereux : il rendrait le mot de passe lisible par quiconque détient la clé,
+y compris en cas de fuite de la base. Le **sel** — une valeur aléatoire ajoutée avant
+le hachage — évite que deux mots de passe identiques donnent la même empreinte.
+
+**Ce qu'il faut retenir :** le hachage **vérifie**, il ne **cache** pas. C'est
+exactement la confusion de la partie suivante.
+
+#### Partie 4 — Détecter le contresens
+
+**Éléments attendus :**
+
+L'affirmation est fausse parce qu'elle confond deux opérations. Un hachage est
+**à sens unique** : il produit une empreinte dont on ne revient pas au fichier
+d'origine, mais il ne masque rien du tout — et surtout, il n'est pas conçu pour
+rendre un contenu illisible. Pire : si l'on peut « hacher » un fichier, on peut aussi
+le hacher soi-même pour vérifier une hypothèse ; l'opération ne demande aucune clé.
+
+Ce qu'il fallait faire : **chiffrer** le fichier des prix, avec une clé tenue secrète
+et distribuée uniquement aux personnes autorisées à connaître ces prix.
+
+**Sur la formulation :** l'erreur vient souvent du vocabulaire. « Hacher » sonne
+comme « mettre sous scellé », alors que c'est « réduire à une empreinte ». Quand un
+besoin se formule par « personne ne doit pouvoir **lire** », la réponse est un
+chiffrement ; quand il se formule par « personne ne doit pouvoir **modifier sans que
+je le voie** », la réponse est un hachage.
+
+#### Points à retenir
+
+- Un besoin se formule avant de choisir un outil : **cacher**, **vérifier** ou
+  **prouver** — la primitive découle de la question, jamais l'inverse.
+- Le hachage **vérifie** l'intégrité, il ne cache rien ; le chiffrement **cache**, il
+  ne vérifie rien.
+- Le choix entre chiffrement symétrique et asymétrique se joue sur **la circulation de
+  la clé**, pas sur le niveau de sécurité ressenti.
+- La signature répond à deux questions à la fois : **qui a envoyé**, et **peut-il le
+  nier**.
+
+</details>
+
+---
+
 ## IV. Aller plus loin
 
 *Ces approfondissements sont facultatifs : ils ne sont jamais exigés pour terminer
@@ -149,7 +323,7 @@ la journée.*
 
 ## 🧠 Vérifiez vos acquis
 
-*Formatif, jamais noté. Répondez sans relire le chapitre, puis cochez. Les réponses sont juste après le séparateur : ce qui compte est de repérer où vous vacillez, pas de faire 5 sur 5.*
+*Formatif, jamais noté. Répondez sans relire le chapitre, puis dépliez « Vérifier ses réponses ». Ce qui compte est de repérer où vous vacillez, pas de faire 5 sur 5.*
 
 **1.** Les prix négociés par DIGICHEESE avec ses fournisseurs ne doivent pas tomber chez un concurrent. Quel service de la cryptographie répond à cette exigence ?
 
@@ -158,16 +332,12 @@ la journée.*
 - C. L'authentification
 - D. La non-répudiation
 
-- [ ] ✓ je savais
-
 **2.** Le cours distingue les quatre services de la cryptographie des piliers CID. Lequel de ces éléments n'est **pas** un service rendu par la cryptographie ?
 
 - A. La confidentialité
 - B. L'intégrité
 - C. La disponibilité
 - D. La non-répudiation
-
-- [ ] ✓ je savais
 
 **3.** Le jour où l'ennemi devine le diamètre du bâton, que devient la scytale ?
 
@@ -176,8 +346,6 @@ la journée.*
 - C. Elle ne protège plus la confidentialité, mais garde l'intégrité
 - D. Elle devient plus lente à casser, ce qui suffit
 
-- [ ] ✓ je savais
-
 **4.** Une commande est correctement signée, mais la comptable s'est trompée de quantité. Que garantit la signature ?
 
 - A. Que la commande vient bien d'elle et n'a pas été modifiée, pas que son contenu est juste
@@ -185,13 +353,12 @@ la journée.*
 - C. Que personne ne pourra lire la commande
 - D. Rien : une commande erronée n'est pas signable
 
-- [ ] ✓ je savais
-
 **5.** *Question ouverte (2-3 lignes).* Dans l'histoire de la boîte à deux cadenas, à aucun moment un cadenas ne circule ouvert. Quel principe du cours cette scène illustre-t-elle, et pourquoi est-ce important pour la suite du cours ?
 
-- [ ] ✓ je savais
-
 ---
+
+<details>
+<summary>Vérifier ses réponses</summary>
 
 ### Réponses
 
@@ -209,6 +376,8 @@ la journée.*
 
 **5.** Attendu : chacun garde sa clé pour soi et personne d'autre ne la possède — le secret partagé, sans jamais transmettre le secret lui-même. C'est important parce que c'est le principe retrouvé au chapitre sur le chiffrement asymétrique.
 **Pourquoi :** la difficulté n'est pas de chiffrer, elle est de partager le secret sans l'exposer ; c'est tout l'enjeu de la journée.
+
+</details>
 
 ---
 

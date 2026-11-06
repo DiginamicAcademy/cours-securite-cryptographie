@@ -206,7 +206,7 @@ Dans `07-flux/` : le trajet complet d'un résultat d'analyse (base → environn
 
 *Chapitres 06 et 12.*
 
-**Aucun prérequis** : le plan de rotation attendu ici se construit dans cette étape. L'exercice [Défi : planifier une rotation de clés](12-defi-rotation.md) est **facultatif** et peut inspirer ; il n'est pas demandé.
+**Aucun prérequis** : le plan de rotation attendu ici se construit dans cette étape. L'exercice [Défi : planifier une rotation de clés](../12-compromis.md) est **facultatif** et peut inspirer ; il n'est pas demandé.
 
 **Scénario final** : la clé de l'export nocturne vient d'être retrouvée dans un dépôt public. Dans `08-incident/`, produisez le plan qui suit la crise de bout en bout :
 

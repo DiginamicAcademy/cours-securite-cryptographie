@@ -1,9 +1,15 @@
 # Travaux pratiques — mode d'emploi
 
-Chaque énoncé se fait **juste après le chapitre** qu'il pratique. Le corrigé est
-un **corrigé formatif** : il reste dans ce dépôt public et sert à s'auto-corriger.
-Le TP intégrateur du cours est **facultatif** ; s'il est rendu, il est noté :
-son corrigé est réservé à l'évaluation et n'est pas publié.
+Les exercices courts ne sont plus des fichiers de ce dossier : chacun a été
+**intégré au chapitre qui enseigne la notion** qu'il pratique, juste après la
+section concernée. L'énoncé se fait donc **à la fin de la lecture du chapitre**, et
+la correction se déplie sous « Voir la correction », dans le chapitre lui-même.
+
+Ce dossier ne conserve que le **TP intégrateur**, qui se fait **en fin de journée**,
+une fois tout le cours parcouru.
+
+Le corrigé du TP intégrateur est réservé à l'évaluation et n'est pas publié : le TP
+est **facultatif** ; s'il est rendu, il est noté.
 
 > ⚖️ **Cadre légal.** Toutes les manipulations de ce cours se pratiquent sur
 > **vos propres machines** et sur des données fictives. La cryptographie est
@@ -12,18 +18,18 @@ son corrigé est réservé à l'évaluation et n'est pas publié.
 
 ## Table des exercices
 
-| Niveau | Énoncé | Chapitre lié | Corrigé |
+| Niveau | Exercice | Durée | Dans le chapitre |
 | --- | --- | --- | --- |
-| 🟢 | [Classer les primitives](01-classer-primitives.md) | 01-04 — Services et primitives | [corrigé](corrige/01-classer-primitives.md) |
-| 🟢 | [Casser le chiffre de César](02-crypter-cesar.md) | 02 — Du chiffre de César à AES | [corrigé](corrige/02-crypter-cesar.md) |
-| 🟡 | [Chiffrer un fichier avec AES-GCM](03-chiffrer-python.md) | 02-03 — Symétrique et asymétrique | [corrigé](corrige/03-chiffrer-python.md) |
-| 🟡 | [Auditer un code qui utilise mal la crypto](05-auditer-crypto.md) | 05 — Erreurs classiques | [corrigé](corrige/05-auditer-crypto.md) |
-| 🔴 | [Concevoir un plan de gestion des clés](06-defi-projet-cles.md) | 06 — Aléa et gestion des clés | [corrigé](corrige/06-defi-projet-cles.md) |
-| 🟢 | [Diagnostiquer une configuration TLS](07-diagnostiquer-tls.md) | 07-08 — TLS et PKI | [corrigé](corrige/07-diagnostiquer-tls.md) |
-| 🟡 | [Chiffrer une colonne sensible](09-chiffrer-bdd.md) | 09 — Données au repos | [corrigé](corrige/09-chiffrer-bdd.md) |
-| 🔵 | [Auditer la gestion des secrets](10-audit-secrets.md) | 10 — Gestion des secrets | [corrigé](corrige/10-audit-secrets.md) |
-| 🔴 | [Planifier une rotation de clés](12-defi-rotation.md) — **facultatif, jamais noté** | 12 — Compromis et réponse | [corrigé](corrige/12-defi-rotation.md) |
-| 🛠️ | [TP intégrateur — Sécuriser un système de bout en bout](TP-INTEGRATEUR.md) | Le cours entier (J5-J6) | **facultatif, noté s'il est rendu** — corrigé non publié |
+| 🟢 | Classer les primitives | 20 min | 01 — Histoire et services de la cryptographie |
+| 🟢 | Casser le chiffre de César | 30 min | 02 — Du chiffre de César à AES |
+| 🟡 | Chiffrer un fichier avec AES-GCM | 45 min | 03 — Le chiffrement asymétrique |
+| 🟡 | Auditer un code qui utilise mal la crypto | 50 min | 05 — Les erreurs classiques du chiffrement |
+| 🔴 | Concevoir un plan de gestion des clés (bonus) | 1 h 30 | 06 — Aléa et gestion des clés |
+| 🟢 | Diagnostiquer une configuration TLS | 30 min | 07 — TLS en pratique |
+| 🟡 | Chiffrer une colonne sensible | 1 h | 09 — Données au repos |
+| 🔵 | Auditer la gestion des secrets | 55 min | 10 — Gestion des secrets |
+| 🔴 | Planifier une rotation de clés (bonus, jamais noté) | 1 h 15 | 12 — Compromis, performance, sobriété et fuite de clé |
+| 🛠️ | [TP intégrateur — Sécuriser un système de bout en bout](TP-INTEGRATEUR.md) | 3 h 30 | **seul document de ce dossier** — le cours entier (J5-J6) |
 
 Les niveaux suivent la progression 🟢 découverte · 🟡 application · 🔵 intégration ·
 🔴 défi facultatif. Un 🔴 ne bloque jamais la progression.

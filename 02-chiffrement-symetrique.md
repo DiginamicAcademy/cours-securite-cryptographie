@@ -88,7 +88,7 @@ def casser_cesar(texte_chiffre):
 
 > 🔁 **Pour aller plus loin (facultatif)** — à lire si le créneau le permet, rien
 > d'obligatoire n'en dépend : la manipulation est faite en grand, et de bout en bout,
-> dans l'exercice [Casser le chiffre de César](tp/02-crypter-cesar.md) qui suit ce
+> dans l'exercice 1 « Casser le chiffre de César », un peu plus bas dans ce
 > chapitre.
 >
 > **Atelier César (10 min)**
@@ -101,6 +101,227 @@ def casser_cesar(texte_chiffre):
 La leçon est brutale : **la robustesse se mesure au nombre de clés possibles**. Avec 25
 clés, l'attaquant les essaie toutes ; il faudra un espace de clés rendant l'énumération
 impossible.
+
+---
+
+### Exercice 1 — Casser le chiffre de César (30 min)
+
+#### Contexte
+
+**Transports Delmas**, une PME (petite et moyenne entreprise) de transport routier, organise ses tournées par de
+courts messages entre la réception et les chauffeurs : « le camion passe à midi »,
+« quai nord », etc. Pour qu'un message lu par-dessus l'épaule ne livre rien, les
+équipes utilisent un chiffrement par décalage — le chiffre de César — avec une clé
+changée chaque semaine.
+
+Cette semaine, la clé est **7**. Un message a été intercepté sur un parking :
+
+```text
+sl jhtpvu whzzl h tpkp
+```
+
+Vous disposez du code de départ ci-dessous, qui ne fait encore rien d'utile.
+
+```python
+def chiffrer(texte, cle):
+    """Chiffre un message par décalage (lettres minuscules, reste inchangé)."""
+    return texte  # à compléter
+```
+
+Quelques repères pour ne pas partir dans le décor : l'alphabet en compte **26**
+lettres, et le décalage **26** ramène au texte clair — il n'y a donc que **25**
+décalages utiles à essayer pour casser un message.
+
+#### Consignes
+
+##### Partie 1 — Chiffrer et déchiffrer
+
+1. Complétez `chiffrer(texte, cle)` : chaque lettre minuscule est décalée de `cle`
+   rangs dans l'alphabet, en bouclant en fin d'alphabet (x devient a, y devient b, z
+   devient c). Les espaces et la ponctuation sont conservés tels quels.
+2. Écrivez `dechiffrer(texte, cle)`, qui retrouve le texte clair. Faites en sorte de
+   **réutiliser** `chiffrer` plutôt que de recopier la logique.
+3. Chiffrez le message `le camion passe a midi` avec la clé 7, puis vérifiez que
+   `dechiffrer` le restitue exactement.
+
+##### Partie 2 — Casser par force brute
+
+1. Écrivez `casser(texte_chiffre)` : la fonction affiche les **25** décalages
+   possibles (clés de **1** à **25**), chacun précédé de la clé testée.
+2. Lancez-la sur le message intercepté `sl jhtpvu whzzl h tpkp`.
+3. Identifiez la clé qui donne un français lisible, et notez le message retrouvé.
+
+##### Partie 3 — Expliquer la limite de César
+
+En trois phrases au maximum, expliquez pourquoi ce chiffrement ne protège rien dès
+que l'adversaire a le message chiffré. Votre réponse doit mentionner **la taille de
+l'espace des clés** et **ce que le texte chiffré laisse encore deviner**.
+
+##### Partie 4 — Relier à la cryptographie moderne
+
+Un collègue affirme : « il suffit d'augmenter le décalage pour rendre le chiffre
+solide ». Répondez-lui en deux phrases, puis nommez les deux propriétés d'un
+chiffrement moderne comme AES (Advanced Encryption Standard) qui répondent
+précisément à ce que César ne protège pas.
+
+#### Attendu
+
+- Un script Python contenant `chiffrer`, `dechiffrer` et `casser`, exécutable de bout
+  en bout.
+- Le message clair retrouvé pour le message intercepté.
+- Deux réponses courtes écrites (parties 3 et 4).
+
+#### Vérification
+
+Vous avez réussi quand :
+
+- `dechiffrer(chiffrer(texte, 7), 7)` renvoie `texte` pour n'importe quelle phrase en
+  minuscules ;
+- `casser` affiche bien 25 lignes, dont une seule est lisible ;
+- votre explication de la partie 3 cite le nombre de clés possibles ;
+- votre réponse de la partie 4 nomme une propriété liée à la **clé** et une liée au
+  **texte chiffré**.
+
+#### ✅ Auto-évaluation
+
+Avant de passer au corrigé, vérifiez que :
+
+- [ ] J'ai implémenté `chiffrer` et `dechiffrer` sans recopier deux fois la même logique.
+- [ ] Mon aller-retour chiffrement / déchiffrement restitue le texte d'origine.
+- [ ] J'ai affiché les 25 décalages et repéré la bonne clé à l'œil.
+- [ ] J'ai expliqué pourquoi la force brute suffit à casser César.
+- [ ] J'ai relié cette faiblesse à une propriété d'un chiffrement moderne.
+
+#### Pour aller plus loin (exercice)
+
+*Facultatif.* Modifiez `chiffrer` pour qu'elle conserve aussi les majuscules, puis
+pour qu'elle accepte un décalage négatif sans changer de signature. Vérifiez que
+`dechiffrer` fonctionne toujours.
+
+<details>
+<summary>Voir la correction</summary>
+
+#### Partie 1 — Chiffrer et déchiffrer
+
+**Éléments attendus :**
+
+```python
+def chiffrer(texte, cle):
+    """Chiffre un message par décalage (lettres minuscules, reste inchangé)."""
+    resultat = ""
+    for lettre in texte:
+        if "a" <= lettre <= "z":
+            base = ord("a")
+            # % 26 : on boucle en fin d'alphabet (x -> a, y -> b, z -> c)
+            resultat += chr(base + (ord(lettre) - base + cle) % 26)
+        else:
+            resultat += lettre  # espaces et ponctuation sont conservés
+    return resultat
+
+def dechiffrer(texte, cle):
+    """Retrouve le texte clair : déchiffrer, c'est chiffrer en sens inverse."""
+    return chiffrer(texte, -cle)
+```
+
+Vérification demandée :
+
+```python
+clair = "le camion passe a midi"
+chiffre = chiffrer(clair, 7)
+print(chiffre)                  # sl jhtpvu whzzl h tpkp
+print(dechiffrer(chiffre, 7))   # le camion passe a midi
+```
+
+**Ce qu'il faut retenir :** `dechiffrer` ne contient aucune logique propre. Un
+décalage de `-cle` dans un alphabet de 26 lettres est exactement l'opération inverse —
+c'est la définition même d'un chiffrement réversible. Recopier la boucle une deuxième
+fois, c'est doubler le risque d'erreur.
+
+**Erreurs fréquentes :**
+
+- Oublier le modulo `% 26` : les lettres de fin d'alphabet sortent de l'alphabet et
+  donnent des caractères bizarres.
+- Écrire `ord(lettre) + cle` sans retirer `base` puis le remettre : le calcul décale
+  alors le code du caractère, pas la lettre dans l'alphabet.
+- Traiter les espaces comme des lettres : le message se déforme et ne se relit plus.
+
+#### Partie 2 — Casser par force brute
+
+**Éléments attendus :**
+
+```python
+def casser(texte_chiffre):
+    """Affiche les 25 décalages possibles : la bonne clé se repère à l'œil."""
+    for cle in range(1, 26):
+        print(cle, chiffrer(texte_chiffre, -cle))
+```
+
+Exécution sur le message intercepté (extrait) :
+
+```text
+1  rk igsout vgyyk g sojo
+...
+7  le camion passe a midi
+...
+25 tm kiuqwv xiaam i uqlq
+```
+
+La clé est **7**, et le message est **le camion passe a midi**.
+
+**Ce qu'il faut retenir :** l'attaque ne demande aucune clé, aucun secret, aucune
+hypothèse sur le contenu — seulement la patience d'essayer les 25 possibilités et un
+œil pour reconnaître le français. C'est la définition d'une attaque par force brute.
+
+**Erreurs fréquentes :**
+
+- Boucler de 0 à 25 inclus : la clé 26 redonne le texte chiffré lui-même, ce qui fait
+  26 lignes au lieu de 25 et noie la bonne réponse.
+- Afficher les résultats sans la clé testée : impossible de la rapporter ensuite.
+- Chercher la réponse « au hasard » plutôt que de parcourir systématiquement les
+  clés — la force brute est justement une énumération complète.
+
+#### Partie 3 — Expliquer la limite de César
+
+**Éléments attendus :**
+
+Le chiffre de César ne protège pas deux choses. D'abord la clé : il n'existe que 25
+décalages utiles, donc un adversaire qui a le message chiffré les essaie tous en une
+fraction de seconde. Ensuite le texte lui-même : les mots restent séparés par les
+mêmes espaces, les mots de même longueur gardent la même forme, et la fréquence des
+lettres du chiffré reproduit celle du français — simplement décalée.
+
+**Ce qu'il faut retenir :** la question n'est pas « le texte est-il transformé ? »
+mais « combien de clés faut-il essayer, et qu'est-ce que le chiffré laisse encore
+voir ? ». César échoue sur les deux tableaux.
+
+#### Partie 4 — Relier à la cryptographie moderne
+
+**Éléments attendus :**
+
+Augmenter le décalage ne change rien : il y a toujours 25 décalages à essayer, et
+l'analyse de fréquence fonctionne quelle que soit la valeur choisie. Un chiffrement
+comme AES (Advanced Encryption Standard) répond aux deux faiblesses : sa clé est
+tirée dans un espace si vaste que la force brute ne le parcourt pas, et sa
+transformation ne laisse filtrer ni les fréquences, ni les répétitions, ni la longueur
+des mots.
+
+**Sur la formulation :** « plus c'est compliqué, plus c'est sûr » est un réflexe
+naturel et faux. La sécurité se mesure : taille de l'espace des clés, et quantité
+d'information que le chiffré divulgue. Un chiffrement simple et bien conçu bat un
+chiffrement compliqué et mal conçu.
+
+#### Points à retenir
+
+- Un chiffrement symétrique repose sur **une clé partagée** et une transformation
+  réversible — déchiffrer, c'est chiffrer en sens inverse.
+- La robustesse se juge d'abord à la **taille de l'espace des clés** : 25 clés
+  possibles, c'est zéro secret.
+- Un chiffré divulgue encore des **structures** (espaces, longueurs, fréquences) :
+  les casser ne demande pas de clé.
+- AES corrige les deux points : espace des clés immense, et aucune structure du texte
+  clair visible dans le texte chiffré.
+
+</details>
 
 ---
 
@@ -268,7 +489,7 @@ journée.*
 
 ## 🧠 Vérifiez vos acquis
 
-*Formatif, jamais noté. Répondez sans relire le chapitre, puis cochez. Les réponses sont juste après le séparateur : ce qui compte est de repérer où vous vacillez, pas de faire 5 sur 5.*
+*Formatif, jamais noté. Répondez sans relire le chapitre, puis dépliez « Vérifier ses réponses ». Ce qui compte est de repérer où vous vacillez, pas de faire 5 sur 5.*
 
 **1.** Pourquoi le chiffre de César cède-t-il en une fraction de seconde ?
 
@@ -277,16 +498,12 @@ journée.*
 - C. Parce que les lettres françaises ont une fréquence caractéristique
 - D. Parce que le décalage est inscrit dans le message chiffré
 
-- [ ] ✓ je savais
-
 **2.** La substitution mono-alphabétique offre environ 4 × 10^26 clés possibles et tombe pourtant. Comment ?
 
-- A. Par force brute, comme César
+- A. Par force brute, comme César : 4 × 10^26 clés, cela reste énumérable avec des machines modernes
 - B. Par analyse de fréquence : le chiffrement laisse passer la structure de la langue
-- C. Parce que la table de correspondance voyage avec le message
-- D. Parce qu'elle ne réutilise jamais la même image deux fois
-
-- [ ] ✓ je savais
+- C. Parce que la table de correspondance voyage avec le message et se lit donc dans le clair
+- D. Parce qu'elle ne réutilise jamais la même image deux fois, ce qui rend le chiffré prévisible
 
 **3.** Dans un fichier chiffré, deux portions identiques du clair produisent exactement le même texte chiffré : les motifs du document réapparaissent. Quel mode est en cause ?
 
@@ -295,8 +512,6 @@ journée.*
 - C. GCM, parce qu'il travaille en flot
 - D. Le padding, parce qu'il complète le dernier bloc
 
-- [ ] ✓ je savais
-
 **4.** Pour gagner de la place, un module qui chiffre en AES-CBC réutilise le même vecteur d'initialisation (IV) sur tous les messages. Que faut-il en dire ?
 
 - A. Aucun problème : l'IV n'a pas besoin d'être secret
@@ -304,13 +519,12 @@ journée.*
 - C. C'est souhaitable : un IV fixe rend le chiffrement déterministe, donc vérifiable
 - D. Cela n'a d'effet que si la clé est trop courte
 
-- [ ] ✓ je savais
-
 **5.** *Question ouverte (2-3 lignes).* Un module de l'application génère ses secrets de connexion avec `random`. Expliquez pourquoi c'est un défaut, ce qu'on met à la place, et ce que la graine (*seed*) a à voir là-dedans.
 
-- [ ] ✓ je savais
-
 ---
+
+<details>
+<summary>Vérifier ses réponses</summary>
 
 ### Réponses
 
@@ -328,6 +542,8 @@ journée.*
 
 **5.** Attendu : `random` est un PRNG, un générateur pseudo-aléatoire dont la sortie se reconstitue dès qu'on connaît la graine ; on le remplace par `secrets` (ou `os.urandom`), un CSPRNG conçu pour la cryptographie. Une graine prévisible donne une suite prévisible, donc une clé devinable.
 **Pourquoi :** un ordinateur est déterministe — à mêmes entrées, mêmes sorties ; même graine, même suite. C'est pratique pour les tests, fatal pour les clés.
+
+</details>
 
 ---
 
