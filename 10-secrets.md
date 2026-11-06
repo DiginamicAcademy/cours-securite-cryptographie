@@ -323,7 +323,7 @@ Avant de passer au corrigé, vérifiez que :
 - [ ] Mes garde-fous couvrent le commit, l'intégration continue et le stockage des secrets.
 - [ ] Je peux expliquer pourquoi effacer le fichier de l'historique ne suffit pas.
 
-#### Pour aller plus loin (exercice)
+#### Prolongement de l'exercice
 
 *Facultatif.* Le dépôt contient l'historique complet, avec le `.env` depuis huit mois.
 Étudiez la réécriture de l'historique (outils dédiés, migration des clones) : quels
@@ -422,7 +422,7 @@ nettoie ensuite.
 un crochet local arrête le développeur pendant qu'il tape encore. Les deux se
 complètent — le premier couvre l'oubli, le second couvre le contournement.
 
-#### Pour aller plus loin (exercice)
+#### Prolongement de l'exercice
 
 **Réécriture de l'historique.** Des outils dédiés (par exemple *git filter-repo*, ou
 les utilitaires de nettoyage d'historique) permettent de retirer un fichier de toutes

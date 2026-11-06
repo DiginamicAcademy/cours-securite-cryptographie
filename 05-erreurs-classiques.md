@@ -242,7 +242,7 @@ Avant de passer au corrigé, vérifiez que :
 - [ ] J'ai justifié mon premier choix de correction par un risque, pas par une préférence.
 - [ ] Je peux expliquer pourquoi « ça marche » ne veut pas dire « c'est sûr ».
 
-#### Pour aller plus loin (exercice)
+#### Prolongement de l'exercice
 
 *Facultatif.* Ajoutez au module une fonction `verifier_signature` qui compare un code
 d'authentification reçu à celui calculé, **sans fuite de chronométrage**, puis mesurez

@@ -188,7 +188,7 @@ Avant de passer au corrigé, vérifiez que :
 - [ ] Ma réponse à la partie 4 distingue clairement **hachage** et **chiffrement**.
 - [ ] Je peux expliquer à voix haute pourquoi « chiffrer » et « hacher » ne sont pas interchangeables.
 
-#### Pour aller plus loin (exercice)
+#### Prolongement de l'exercice
 
 *Facultatif.* Parmi les six situations, lesquelles gagneraient à combiner **deux**
 primitives ? Proposez la combinaison et dites ce qu'elle apporte.

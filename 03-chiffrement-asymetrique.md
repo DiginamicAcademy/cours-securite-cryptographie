@@ -239,7 +239,7 @@ Avant de passer au corrigé, vérifiez que :
 - [ ] J'ai observé le refus de déchiffrer un contenu altéré et je sais l'expliquer.
 - [ ] J'ai décrit une transmission de clé qui ne passe pas par un canal en clair.
 
-#### Pour aller plus loin (exercice)
+#### Prolongement de l'exercice
 
 *Facultatif.* Plutôt que de tirer la clé au hasard, dérivez-la d'une phrase secrète
 avec PBKDF2, puis vérifiez que deux phrases secrètes différentes produisent deux clés

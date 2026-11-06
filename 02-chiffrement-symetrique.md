@@ -192,7 +192,7 @@ Avant de passer au corrigé, vérifiez que :
 - [ ] J'ai expliqué pourquoi la force brute suffit à casser César.
 - [ ] J'ai relié cette faiblesse à une propriété d'un chiffrement moderne.
 
-#### Pour aller plus loin (exercice)
+#### Prolongement de l'exercice
 
 *Facultatif.* Modifiez `chiffrer` pour qu'elle conserve aussi les majuscules, puis
 pour qu'elle accepte un décalage négatif sans changer de signature. Vérifiez que

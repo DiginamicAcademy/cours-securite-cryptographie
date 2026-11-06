@@ -186,7 +186,7 @@ vous-même :
 - [ ] Le repli est possible **pendant** toute la rotation, y compris pour les écritures déjà migrées.
 - [ ] La communication est prévue avant le début de l'opération, pas après l'incident.
 
-#### Pour aller plus loin (exercice)
+#### Prolongement de l'exercice
 
 *Facultatif.* Reprenez votre plan pour le cas d'une rotation **d'urgence**, déclenchée
 par la suspicion d'une fuite : quelles phases raccourcit-on, lesquelles ne sautent-on

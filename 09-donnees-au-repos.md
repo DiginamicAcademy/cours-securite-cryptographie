@@ -245,7 +245,7 @@ Avant de passer au corrigé, vérifiez que :
 - [ ] Ma fonction de recherche trouve la bonne fiche à partir d'un IBAN complet.
 - [ ] J'ai écrit ce que révèle la colonne `iban_index`, et pourquoi c'est un compromis assumé.
 
-#### Pour aller plus loin (exercice)
+#### Prolongement de l'exercice
 
 *Facultatif.* Mesurez le coût de votre solution : chronométrez la lecture de dix
 mille fiches avec et sans chiffrement, puis la recherche par index. À partir de quel

@@ -196,7 +196,7 @@ Avant de confronter votre travail à la grille de vérification, vérifiez que 
 - [ ] Mon plan distingue les environnements de test et de production.
 - [ ] Je peux défendre chaque choix devant une équipe qui ne fait pas de sécurité.
 
-#### Pour aller plus loin (exercice)
+#### Prolongement de l'exercice
 
 *Facultatif.* Ajoutez une section sur la **preuve** : comment démontrer à un auditeur
 que la rotation a bien eu lieu, et que les anciennes clés ont été détruites.

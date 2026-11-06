@@ -290,7 +290,7 @@ Avant de passer au corrigé, vérifiez que :
 - [ ] J'ai écrit une commande de vérification par correction, avec le résultat attendu.
 - [ ] Je peux expliquer pourquoi un site « en HTTPS » peut malgré tout être faible.
 
-#### Pour aller plus loin (exercice)
+#### Prolongement de l'exercice
 
 *Facultatif.* La politique interne ne dit rien du renouvellement du certificat.
 Proposez la chaîne complète : qui demande le certificat, quand il est renouvelé, qui
@@ -390,7 +390,7 @@ server {
 que le serveur répond réellement. Chaque ligne corrigée a sa contrepartie observable
 — si la commande ne montre rien, la correction n'est pas en production.
 
-#### Pour aller plus loin (exercice)
+#### Prolongement de l'exercice
 
 **Chaîne de renouvellement attendue :** un client ACME (par exemple *certbot*)
 déclenche le renouvellement avant expiration, place les fichiers dans
