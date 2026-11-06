@@ -1,9 +1,8 @@
 # Déclaration du cours, en deux sections. Vérifiée à chaque push qui la modifie
 # (workflow « Vérifier »).
 #
-# - course : ce que vise le cours. Recopiée à chaque version dans sa partie
-#   pédagogique, le dépôt privé <ce-dépôt>-Peda, où elle sert à produire
-#   RNCP.yaml et le syllabus.
+# - course : ce que vise le cours. Reprise dans la partie pédagogique, où
+#   elle sert à produire RNCP.yaml et le syllabus.
 # - credits : qui signe le cours, et avec quels comptes GitHub. Reprise
 #   par le support de cours, elle reste dans ce dépôt.
 course:
