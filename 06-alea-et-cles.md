@@ -25,8 +25,8 @@
 
 ## I. L'aléa, matière première de toute clé
 
-Une clé n'est sûre que si elle est **imprévisible**. Le chapitre [Du chiffre de César à
-AES](02-chiffrement-symetrique.md) a posé le mécanisme : le hasard d'un ordinateur est
+Une clé n'est sûre que si elle est **imprévisible**. Le chapitre
+[Du chiffre de César à AES](02-chiffrement-symetrique.md) a posé le mécanisme : le hasard d'un ordinateur est
 simulé à partir d'une **graine** (*seed*), et `random` (PRNG) se reconstitue dès qu'on
 connaît cette graine — parfait pour un jeu, impropre à la cryptographie. Le générateur
 adapté est donc un CSPRNG : `secrets` en Python, `os.urandom`, ou les appels système
