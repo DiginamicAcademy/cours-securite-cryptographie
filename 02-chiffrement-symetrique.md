@@ -2,13 +2,12 @@
 
 # Du chiffre de César à AES
 
-> En 58 av. J.-C., César envoie ses ordres à ses légions par des messagers qu'il ne
-> choisit pas toujours. Pour qu'un message intercepté ne livre rien, il décale chaque
-> lettre de son texte d'un nombre fixe de rangs. Le procédé tient tant que l'ennemi
-> ignore le décalage — et il ne tient pas longtemps. De cette idée simple est né tout
-> le chiffrement symétrique, jusqu'à AES.
+> César envoie ses ordres par des messagers qu'il ne choisit pas toujours. Pour qu'un
+> message intercepté ne livre rien, il décale chaque lettre d'un nombre fixe de rangs.
+> Le procédé tient tant que l'ennemi ignore le décalage — et il ne tient pas longtemps.
+> De cette idée est né tout le chiffrement symétrique, jusqu'à AES.
 
-**Durée de lecture :** 75 min · **Prérequis :** [Histoire et services de la cryptographie](01-histoire-et-services.md)
+**Durée de lecture :** 50 min hors approfondissements facultatifs · **Prérequis :** [Histoire et services de la cryptographie](01-histoire-et-services.md)
 
 ---
 
@@ -26,14 +25,11 @@
 
 ## I. Le chiffre de César
 
-César (100-44 av. J.-C.) protège ses dépêches militaires par un procédé d'une
-simplicité désarmante : **décaler chaque lettre** d'un nombre fixe de rangs dans
-l'alphabet. Avec un décalage de 3, A devient D, B devient E, et ainsi de suite ; en
-fin d'alphabet, on boucle — X devient A.
-
-L'usage est militaire : si un messager est capturé, l'ennemi ne lit rien. Le contexte
-explique aussi la limite du procédé : la clé est un simple nombre, et il n'y en a pas
-beaucoup.
+César (100-44 av. J.-C.) protège ses dépêches par un procédé d'une simplicité
+désarmante : **décaler chaque lettre** d'un nombre fixe de rangs dans l'alphabet. Avec
+un décalage de 3, A devient D, B devient E ; en fin d'alphabet on boucle — X devient A.
+Si un messager est capturé, l'ennemi ne lit rien. La limite est déjà là : la clé est un
+simple nombre, et il n'y en a pas beaucoup.
 
 Le vocabulaire de cette époque est déjà celui d'aujourd'hui :
 
@@ -70,8 +66,7 @@ Décalage (clé): 3
 Texte chiffré : YHQL YLGL YLFL
 ```
 
-Le texte chiffré est parfaitement inintelligible — pour peu que le destinataire
-connaisse la clé, ici le nombre 3.
+Le texte chiffré est inintelligible — pour peu que le destinataire connaisse la clé.
 
 > [!TIP]
 > Un chiffrement ne cache rien tant que la clé est connue de l'adversaire. La
@@ -80,10 +75,9 @@ connaisse la clé, ici le nombre 3.
 
 ### Casser César
 
-Une clé qui ne peut prendre que 25 valeurs ne résiste pas à l'énumération : on essaie
-les 25 décalages, on lit les 25 résultats, on garde celui qui est compréhensible. C'est
-une attaque par **force brute** — tester toutes les clés possibles — et elle prend une
-fraction de seconde sur n'importe quel ordinateur.
+Une clé qui ne prend que 25 valeurs ne résiste pas à l'énumération : on essaie les 25
+décalages et on garde le résultat compréhensible. C'est l'attaque par **force brute** —
+tester toutes les clés possibles — et elle prend une fraction de seconde.
 
 ```python
 def casser_cesar(texte_chiffre):
@@ -92,35 +86,42 @@ def casser_cesar(texte_chiffre):
         print(cle, cesar(texte_chiffre, -cle))
 ```
 
-> 🧪 **Atelier rapide (10 min)**
+> 🔁 **Pour aller plus loin (facultatif)** — à lire si le créneau le permet, rien
+> d'obligatoire n'en dépend : la manipulation est faite en grand, et de bout en bout,
+> dans l'exercice [Casser le chiffre de César](tp/02-crypter-cesar.md) qui suit ce
+> chapitre.
+>
+> **Atelier César (10 min)**
 >
 > 1. Reprenez la fonction `cesar` et chiffrez une phrase de votre choix avec le
 > décalage 3.
 > 2. Lancez `casser_cesar` sur votre message chiffré.
 > 3. Repérez la bonne clé à l'œil, puis notez le nombre d'essais nécessaires.
 
-La leçon est brutale : **la robustesse se mesure au nombre de clés possibles**. Avec
-25 clés, l'attaquant les essaie toutes. Il faudra donc des algorithmes dont l'espace
-des clés est tellement grand que l'énumération devient impossible.
+La leçon est brutale : **la robustesse se mesure au nombre de clés possibles**. Avec 25
+clés, l'attaquant les essaie toutes ; il faudra un espace de clés rendant l'énumération
+impossible.
 
 ---
 
 ## II. La substitution mono-alphabétique
 
-L'étape suivante, dès l'Antiquité, consiste à donner **à chaque lettre sa propre
-image** : A devient M, B devient T, C devient R… C'est une substitution
-mono-alphabétique — une seule table de correspondance pour tout le message. L'espace
-des clés explose : il y a environ 4 × 10^26 façons d'associer 26 lettres entre elles,
-bien au-delà de ce qu'on peut énumérer.
+L'étape suivante, dès l'Antiquité, donne **à chaque lettre sa propre image** : A
+devient M, B devient T, C devient R… C'est la substitution mono-alphabétique — une
+seule table de correspondance pour tout le message. L'espace des clés explose : environ
+4 × 10^26 façons d'associer 26 lettres entre elles, bien au-delà de l'énumérable.
 
-Et pourtant, ce chiffrement tombe aussi. L'attaque ne s'intéresse plus aux clés mais
-au **langage** : dans un texte français, les lettres n'apparaissent pas au hasard. Le
-« E » est de loin la plus fréquente, suivi du « A », du « S », du « I »… En comptant
-les lettres du texte chiffré et en comparant la distribution à celle du français, on
-retrouve la table de correspondance sans jamais l'avoir connue. C'est l'**analyse de
-fréquence**, décrite dès le IXe siècle par le mathématicien Al-Kindi.
+Et pourtant ce chiffrement tombe aussi, par une attaque qui ne s'intéresse plus aux
+clés mais au **langage** : dans un texte français, le « E » est de loin la lettre la
+plus fréquente, suivi du « A », du « S », du « I »… En comparant la distribution des
+lettres du chiffré à celle du français, on retrouve la table sans jamais l'avoir
+connue. C'est l'**analyse de fréquence**, décrite dès le IXe siècle par Al-Kindi.
 
-> 🧪 **Atelier rapide (8 min)**
+> 🔁 **Pour aller plus loin (facultatif)** — à lire si le créneau le permet, rien
+> d'obligatoire n'en dépend. Le comptage confirme d'un coup d'œil ce que l'explication
+> ci-dessus énonce : la substitution conserve les fréquences.
+>
+> **Atelier comptage de fréquences (8 min)**
 >
 > 1. Prenez un paragraphe d'une trentaine de lignes (un article, un courriel, un
 > chapitre de ce cours).
@@ -131,9 +132,9 @@ fréquence**, décrite dès le IXe siècle par le mathématicien Al-Kindi.
 > distribution est la même, seuls les noms des lettres ont changé.
 
 Ce qui a tué la substitution n'est pas un calcul plus rapide, c'est une **propriété du
-texte** que le chiffrement laisse passer. Toute la cryptographie moderne est une
-réponse à cette leçon : un bon chiffrement ne doit laisser filtrer **aucune** structure
-du texte clair — ni les fréquences, ni la longueur, ni les répétitions.
+texte** que le chiffrement laisse passer. D'où le principe directeur de toute la
+cryptographie moderne : un bon chiffrement ne doit laisser filtrer **aucune** structure
+du clair — ni fréquences, ni longueur, ni répétitions.
 
 > [!WARNING]
 > Chiffrer ne rend pas un message indétectable : sa longueur, son destinataire et son
@@ -144,20 +145,19 @@ du texte clair — ni les fréquences, ni la longueur, ni les répétitions.
 
 ## III. La cryptographie moderne : AES
 
-Les méthodes précédentes sont des jeux d'enfant comparées aux besoins d'aujourd'hui :
-protéger des millions de transactions, des sauvegardes, des flux entre serveurs. Deux
-idées ont fait basculer la cryptographie dans l'ère moderne.
+Ces méthodes sont dérisoires face aux besoins d'aujourd'hui. Deux idées ont fait
+basculer la cryptographie dans l'ère moderne.
 
 **Première idée : des clés qu'on ne peut pas énumérer.** AES (Advanced Encryption
 Standard), adopté en 2001, travaille sur des blocs de 128 bits avec des clés de 128,
-192 ou 256 bits. Avec une clé de 128 bits, il existe 2^128 clés possibles — un nombre
-suivi de 38 zéro. Même en essayant un milliard de clés par seconde, l'énumération
-prendrait plus de temps que l'âge de l'univers. La force brute n'est plus une option :
-la sécurité repose sur le secret de la clé, pas sur l'ignorance de l'algorithme.
+192 ou 256 bits. Une clé de 128 bits, c'est 2^128 clés possibles — un nombre suivi de
+38 zéros : à un milliard de clés par seconde, l'énumération prendrait plus de temps que
+l'âge de l'univers. La force brute n'est plus une option ; la sécurité repose sur le
+secret de la clé, pas sur l'ignorance de l'algorithme.
 
 **Deuxième idée : chiffrer par blocs, et donc choisir un mode.** AES transforme des
-blocs de 16 octets. Un fichier plus long doit être découpé, et la manière d'assembler
-les blocs s'appelle le **mode de chiffrement** :
+blocs de 16 octets ; un fichier plus long est découpé, et la façon d'assembler les blocs
+s'appelle le **mode de chiffrement** :
 
 | Mode | Principe | À retenir |
 | --- | --- | --- |
@@ -165,22 +165,19 @@ les blocs s'appelle le **mode de chiffrement** :
 | CBC (Cipher Block Chaining) | Chaque bloc est mélangé avec le chiffré du bloc précédent | Les motifs disparaissent ; exige un vecteur d'initialisation et un padding. |
 | GCM (Galois/Counter Mode) | Chiffrement par compteur, plus une vérification d'intégrité | Chiffre **et** authentifie en une passe. Le mode à préférer aujourd'hui. |
 
-Le mode CBC a besoin que tous les blocs soient de même taille : on complète le dernier
-bloc avec du **padding** (des octets de remplissage dont la valeur encode la longueur
-ajoutée). GCM, lui, travaille en flot : il produit une suite de bits qu'on combine avec
-le message, bloc par bloc, sans complétion.
+CBC exige des blocs de même taille : on complète le dernier avec du **padding** (des
+octets de remplissage dont la valeur encode la longueur ajoutée). GCM travaille en
+flot : il combine une suite de bits avec le message, sans complétion.
 
 ### La clé, le vecteur d'initialisation et le hasard
 
 Deux valeurs entrent en jeu, et on les confond souvent :
 
-- **La clé** est le secret. Elle doit être tirée au hasard, gardée secrète, et changée
-  quand elle ne l'est plus. Une clé devinable ou réutilisée partout annule tout le
-  reste.
-- **Le vecteur d'initialisation** (IV, *initialization vector*) est une valeur de
-  départ qui fait diverger deux chiffrements faits avec la même clé. Il doit être
-  **aléatoire et jamais réutilisé** — mais il n'a pas besoin d'être secret : il voyage
-  avec le message, en clair.
+- **La clé** est le secret : tirée au hasard, gardée secrète, changée quand elle ne
+  l'est plus. Une clé devinable ou réutilisée partout annule tout le reste.
+- **Le vecteur d'initialisation** (IV, *initialization vector*) est la valeur de départ
+  qui fait diverger deux chiffrements faits avec la même clé. Il doit être **aléatoire
+  et jamais réutilisé**, mais pas secret : il voyage avec le message, en clair.
 
 > [!DANGER]
 > Réutiliser le même IV avec la même clé est une erreur classique et grave : en GCM,
@@ -191,10 +188,9 @@ Deux valeurs entrent en jeu, et on les confond souvent :
 
 ### D'où vient le hasard ?
 
-Un ordinateur est une machine **déterministe** : un programme, avec les mêmes entrées,
-produit toujours les mêmes sorties. Alors comment obtenir du hasard ? En simulant le
-hasard avec une **graine** (*seed*) de départ, qui détermine toute la suite. Même
-graine, même suite — c'est pratique pour les tests, c'est fatal pour la cryptographie.
+Un ordinateur est **déterministe** : à mêmes entrées, mêmes sorties. Le hasard y est
+donc simulé à partir d'une **graine** (*seed*) qui détermine toute la suite. Même
+graine, même suite — pratique pour les tests, fatal pour la cryptographie.
 
 > 🧪 **Atelier aléatoire et graine (10 min)**
 >
@@ -207,8 +203,8 @@ graine, même suite — c'est pratique pour les tests, c'est fatal pour la crypt
 > print([random.randint(0, 99) for _ in range(5)])
 > ```
 >
-> 2. Constatez que la suite est **toujours la même**.
-> 3. Remplacez par le module `secrets`, conçu pour la cryptographie :
+> 2. Constatez que la suite est **toujours la même**, puis remplacez par le module
+> `secrets`, conçu pour la cryptographie :
 >
 > ```python
 > import secrets
@@ -216,15 +212,13 @@ graine, même suite — c'est pratique pour les tests, c'est fatal pour la crypt
 > print(secrets.token_bytes(16)) # 16 octets imprévisibles
 > ```
 >
-> 4. Relancez : cette fois, chaque exécution produit une valeur différente.
+> 3. Relancez : chaque exécution produit une valeur différente.
 
 Le module `random` de Python est un générateur pseudo-aléatoire, ou PRNG (
-*Pseudo-Random Number Generator*) : sa sortie est reproductible à partir de la graine,
-et quelqu'un qui devine la graine reconstitue toute la suite. Pour la cryptographie, on
-utilise un générateur pseudo-aléatoire cryptographiquement sûr, ou CSPRNG (
-*Cryptographically Secure Pseudo-Random Number Generator*), comme `secrets` en Python ou
-`os.urandom`. Une graine faible ou prévisible, c'est une clé devinable — et un
-chiffrement qui ne protège rien.
+*Pseudo-Random Number Generator*) : sa sortie se reconstitue dès qu'on connaît la
+graine. La cryptographie exige un PRNG **cryptographiquement sûr**, ou CSPRNG
+(*Cryptographically Secure Pseudo-Random Number Generator*) — `secrets`, `os.urandom`.
+Une graine prévisible, c'est une clé devinable.
 
 > [!TIP]
 > En révision de code, le réflexe est simple : toute apparition de `random` dans un
@@ -260,17 +254,15 @@ journée.*
 
 ## Points clés
 
-- Le chiffre de César illustre le principe de tout chiffrement symétrique : **une
-  transformation réversible, gouvernée par une clé partagée**.
-- Un chiffrement dont l'espace des clés est petit tombe à la **force brute** ; un
-  chiffrement qui laisse filtrer les fréquences tombe à l'**analyse statistique**.
-- AES chiffre des blocs de 128 bits avec des clés de 128 bits et plus : l'énumération
-  des clés n'est plus une option, la sécurité repose sur le **secret de la clé**.
-- Le **mode** (ECB, CBC, GCM) décide comment les blocs sont assemblés ; ECB est à
-  proscrire, GCM chiffre et authentifie en une passe.
-- La **clé** doit être aléatoire et secrète ; le **vecteur d'initialisation** doit être
-  aléatoire et jamais réutilisé, sans être secret.
-- Le hasard se génère avec un **CSPRNG** (`secrets`, `os.urandom`) — jamais avec `random`.
+- César donne le principe de tout chiffrement symétrique : **transformation
+  réversible, gouvernée par une clé partagée**.
+- Espace des clés trop petit, le chiffrement tombe à la **force brute** ; structures
+  visibles, il tombe à l'**analyse statistique**.
+- AES, 128 bits et plus : énumérer les clés n'est plus une option, la sécurité repose
+  sur le **secret de la clé**.
+- Le **mode** assemble les blocs : ECB est à proscrire, GCM chiffre **et** authentifie.
+- **Clé** aléatoire et secrète ; **vecteur d'initialisation** aléatoire, jamais
+  réutilisé, non secret. Hasard : **CSPRNG** (`secrets`), jamais `random`.
 
 ---
 

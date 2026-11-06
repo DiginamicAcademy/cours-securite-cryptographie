@@ -8,7 +8,7 @@
 > réglage que l'on pousse à fond : c'est un arbitrage permanent entre protection,
 > performance et sobriété.
 
-**Durée de lecture :** 45 min · **Prérequis :** les chapitres précédents de la journée
+**Durée de lecture :** 40 min hors approfondissements facultatifs · **Prérequis :** les chapitres précédents de la journée
 
 ---
 
@@ -22,8 +22,6 @@
   choix devant un interlocuteur non technique.
 - **Conduire** la réponse à une fuite de clé : révoquer, évaluer, ré-chiffrer,
   notifier.
-- **Situer** l'enjeu de la cryptographie post-quantique et ce qu'il change dès
-  aujourd'hui.
 
 ---
 
@@ -62,10 +60,9 @@ chiffrer = lambda: f.encrypt(donnee)
 print("chiffrement :", timeit.timeit(chiffrer, number=1000), "s pour 1000 appels")
 ```
 
-Ce genre de mesure répond à une question précise — « le chiffrement de cette colonne
-ralentit-il mon traitement ? » — et presque jamais à la question qu'on lui pose
-d'habitude : « la sécurité, est-ce que ça coûte cher ? ». La bonne question est
-toujours : **protège-t-on proportionnellement à la valeur des données ?**
+La mesure répond à « ce chiffrement ralentit-il mon traitement ? », jamais à « la
+sécurité, ça coûte cher ? ». La bonne question reste : **protège-t-on proportionnellement
+à la valeur des données ?**
 
 > [!TIP]
 > Avant de chiffrer une colonne, demandez quelle décision métier s'appuie dessus. Une
@@ -74,33 +71,20 @@ toujours : **protège-t-on proportionnellement à la valeur des données ?**
 
 ---
 
-## II. Éco-conception
+## II. Sobriété
 
-### Les calculs consomment
-
-Chiffrer, c'est calculer ; calculer, c'est consommer de l'énergie. À l'échelle d'une
-machine, c'est négligeable ; à l'échelle d'une plateforme qui établit des millions de
-connexions par jour, ou d'un cluster dont chaque disque est chiffré, cela compte. La
-**sobriété numérique** et la sécurité ne s'opposent pas — elles se rejoignent sur un
-principe : ne faire que les calculs utiles.
-
-Quatre leviers, du plus simple au plus structurant :
-
-- **réutiliser** : maintenir les connexions ouvertes, activer la reprise de session
-  TLS, plutôt que renégocier à chaque requête ;
-- **choisir l'algorithme adapté au matériel** : AES tirant parti de l'accélération
-  matérielle là où elle existe, ChaCha20 sur les appareils qui en sont dépourvus —
-  même résultat de protection, moins de cycles perdus ;
-- **éviter le rechiffrement inutile** : le chiffrement par enveloppe permet de tourner
-  une clé maître sans rechiffrer des téraoctets de données ;
-- **ne pas stocker** ce qui ne sert pas — la minimisation du chapitre précédent est
-  aussi une mesure d'éco-conception.
+Chiffrer, c'est calculer, et calculer se paie. Deux leviers intéressent directement
+l'arbitrage sécurité / performance : **réutiliser** — maintenir les connexions ouvertes
+et la reprise de session TLS plutôt que renégocier à chaque requête — et **ne pas
+stocker** ce qui ne sert pas, la minimisation du chapitre précédent étant aussi un gain
+de calcul. Les leviers plus techniques (choix de l'algorithme selon le matériel,
+rechiffrement évité par enveloppe) sont en fin de chapitre.
 
 > [!WARNING]
 > Une protection que les utilisateurs contournent ne protège rien. Un chiffrement qui
-  rend un service inutilisable finit désactivé, avec l'approbation de tout le monde.
-  La sobriété, ici, est un garde-fou : elle force à chiffrer **là où cela compte**, et
-  à l'expliquer.
+> rend un service inutilisable finit désactivé, avec l'approbation de tout le monde.
+> La sobriété, ici, est un garde-fou : elle force à chiffrer **là où cela compte**, et
+> à l'expliquer.
 
 ---
 
@@ -126,7 +110,7 @@ fuité, et fermer la voie — sinon la clé suivante suivra le même chemin.
 > 🧪 **Atelier rapide (8 min)**
 >
 > Scénario : la clé de chiffrement de la base de réservations d'une plateforme de
-> location de véles est retrouvée dans l'historique d'un dépôt public, où elle traîne
+> location de vélos est retrouvée dans l'historique d'un dépôt public, où elle traîne
 > depuis plusieurs semaines. En huit minutes, écrivez vos **quatre actions
 > prioritaires**, dans l'ordre, avec pour chacune : qui la conduit, et ce qui se passe
 > si elle est faite dans le mauvais ordre. Comparez votre ordre au tableau ci-dessus.
@@ -144,8 +128,27 @@ l'importance de l'étape 1 : l'isoler, même si on ne peut pas encore s'en pass
 
 ## IV. Aller plus loin
 
-*Ces approfondissements sont facultatifs : ils ne sont jamais exigés pour terminer la
-journée.*
+🔁 **Pour aller plus loin (facultatif)** — à lire si le créneau le permet, rien
+d'obligatoire n'en dépend.
+
+### Les quatre leviers d'éco-conception
+
+À l'échelle d'une machine, chiffrer ne consomme rien ; à celle d'une plateforme qui
+établit des millions de connexions par jour, ou d'un cluster dont chaque disque est
+chiffré, cela compte. Sobriété et sécurité se rejoignent sur un principe : ne faire que
+les calculs utiles. Du plus simple au plus structurant :
+
+- **réutiliser** : maintenir les connexions ouvertes, activer la reprise de session
+  TLS, plutôt que renégocier à chaque requête ;
+- **choisir l'algorithme adapté au matériel** : AES tirant parti de l'accélération
+  matérielle là où elle existe, ChaCha20 sur les appareils qui en sont dépourvus —
+  même résultat de protection, moins de cycles perdus ;
+- **éviter le rechiffrement inutile** : le chiffrement par enveloppe permet de tourner
+  une clé maître sans rechiffrer des téraoctets de données ;
+- **ne pas stocker** ce qui ne sert pas — la minimisation est aussi une mesure
+  d'éco-conception.
+
+### Et le quantique, dans tout ça ?
 
 - **La cryptographie post-quantique** : les algorithmes d'échange de clés et de
   signature actuels (RSA, courbes elliptiques) reposent sur des problèmes qu'un
@@ -174,8 +177,8 @@ journée.*
   adapté au matériel, éviter le rechiffrement inutile, ne pas stocker le superflu.
 - Face à une fuite de clé : **révoquer, évaluer, ré-chiffrer, notifier** — dans cet
   ordre, puis fermer la voie par laquelle elle est partie.
-- La menace post-quantique agit déjà sur les données à longue durée de vie : les
-  standards sont publiés, l'inventaire est le premier chantier.
+- Un chiffrement se décide **au moment du choix**, pas après : la durée de vie attendue
+  de la donnée fait partie du cahier des charges, au même titre que sa sensibilité.
 
 ---
 

@@ -2,13 +2,12 @@
 
 # Le chiffrement asymétrique
 
-> Au XVe siècle, deux rois qui veulent s'entendre échangent leurs codes par des
-> messagers — et chaque messager capturé compromet tout l'édifice : la sécurité repose
-> sur une clé qui a voyagé. En 1977, trois chercheurs inventent un procédé qui
-> supprime ce voyage : une clé que l'on **publie** sans compromettre le secret. C'est
-> la naissance du chiffrement asymétrique.
+> Deux rois veulent s'entendre et échangent leurs codes par messagers ; chaque
+> messager capturé compromet tout l'édifice : la sécurité repose sur une clé qui a
+> voyagé. En 1977, un procédé supprime ce voyage — une clé que l'on **publie** sans
+> compromettre le secret.
 
-**Durée de lecture :** 70 min · **Prérequis :** [Du chiffre de César à AES](02-chiffrement-symetrique.md)
+**Durée de lecture :** 45 min hors approfondissements facultatifs · **Prérequis :** [Du chiffre de César à AES](02-chiffrement-symetrique.md)
 
 ---
 
@@ -26,44 +25,40 @@
 
 ## I. Le problème de l'échange de clés
 
-Le chiffrement symétrique est rapide, simple, et parfaitement sûr — à une condition :
-que l'émetteur et le destinataire possèdent **déjà** la même clé. Or cette clé, il
-faut bien la faire parvenir. Par un messager, un courriel, une clé de stockage : autant
-d'occasions de la perdre.
+Le chiffrement symétrique est rapide, simple, parfaitement sûr — à une condition : que
+l'émetteur et le destinataire possèdent **déjà** la même clé. Or il faut bien la faire
+parvenir, et un messager, un courriel ou une clé de stockage sont autant d'occasions de
+la perdre.
 
-Le calcul est sans pitié. Dans une équipe de 10 personnes qui doivent toutes
-communiquer deux à deux, il faut distribuer 45 clés distinctes ; à 100 personnes, ce
-sont 4 950 clés à créer, transmettre, stocker et révoquer. Et chaque nouvelle personne
-rejointe oblige à renouveler une partie du stock.
+Le calcul est sans pitié : dix personnes qui communiquent deux à deux doivent distribuer
+45 clés distinctes ; à cent, ce sont 4 950 clés à créer, transmettre, stocker et
+révoquer — et chaque arrivée renouvelle une partie du stock.
 
 > [!WARNING]
 > La distribution de clés est le talon d'Achille du chiffrement symétrique. Un
 > algorithme inviolable ne protège rien si la clé a transité par un canal qu'on ne
 > maîtrise pas.
 
-L'image de la **boîte à deux cadenas**, déjà rencontrée plus tôt, donne la sortie :
-pour échanger un objet sans qu'un cadenas ouvert ne circule, chacun pose le sien. Il
-manque encore une pièce — un cadenas dont la **clé d'ouverture ne quitte jamais son
-propriétaire**, alors que le cadenas, lui, circule librement.
+La **boîte à deux cadenas** du chapitre précédent donne la sortie : chacun pose le
+sien, aucun cadenas ne circule ouvert. Il manque une pièce — un cadenas dont la **clé
+d'ouverture ne quitte jamais son propriétaire**, alors que le cadenas circule librement.
 
 ---
 
 ## II. La paire de clés : publique et privée
 
-C'est l'invention de Whitfield Diffie et Martin Hellman en 1976, concrétisée en 1977
-par Ronald Rivest, Adi Shamir et Leonard Adleman au MIT (Massachusetts Institute of
-Technology) : **RSA (Rivest-Shamir-Adleman)**. Chaque utilisateur génère une **paire de
-clés** :
+C'est l'invention de Whitfield Diffie et Martin Hellman (1976), concrétisée en 1977 par
+Ronald Rivest, Adi Shamir et Leonard Adleman — **RSA (Rivest-Shamir-Adleman)**. Chaque
+utilisateur génère une **paire de clés** :
 
-- la **clé publique** est diffusée sans risque — c'est le cadenas ouvert que tout le
-  monde peut poser ;
-- la **clé privée** reste secrète — c'est la seule clé qui ouvre le cadenas.
+- la **clé publique** se diffuse sans risque — c'est le cadenas ouvert que tout le monde
+  peut poser ;
+- la **clé privée** reste secrète — c'est la seule qui l'ouvre.
 
-Les deux sont mathématiquement liées, mais on ne déduit pas l'une de l'autre : la
-sécurité de RSA repose sur la difficulté de décomposer un très grand nombre en produit
-de deux nombres premiers. Un ordinateur peut multiplier deux grands nombres premiers en
-un instant ; revenir en arrière prendrait, avec les moyens actuels, des milliards
-d'années.
+Liées mathématiquement, mais l'une ne se déduit pas de l'autre : la sécurité de RSA
+repose sur la difficulté de décomposer un très grand nombre en produit de deux nombres
+premiers. Multiplier deux grands premiers prend un instant ; revenir en arrière prendrait
+des milliards d'années.
 
 ### Ce que chaque clé autorise
 
@@ -74,9 +69,8 @@ d'années.
 | Signer | Clé privée de l'émetteur | L'émetteur seul | Authentification, non-répudiation |
 | Vérifier une signature | Clé publique de l'émetteur | N'importe qui | Intégrité, preuve d'origine |
 
-Le point décisif : **chiffrer avec la clé publique ne permet pas de revenir au clair
-sans la clé privée**. On peut donc publier la clé publique sur un site, dans un
-annuaire, au dos d'une carte de visite — sans rien compromettre.
+Le point décisif : **sans la clé privée, on ne revient pas au clair**. On peut donc
+publier la clé publique sur un site ou dans un annuaire sans rien compromettre.
 
 > 🧪 **Atelier rapide (10 min)**
 >
@@ -86,20 +80,17 @@ annuaire, au dos d'une carte de visite — sans rien compromettre.
 > ssh-keygen -t ed25519 -f /tmp/cle-demo -N ""
 > ```
 >
-> 2. Affichez la clé publique avec `cat /tmp/cle-demo.pub`, puis la clé privée avec
-> `cat /tmp/cle-demo`. **SSH (Secure Shell)**, le protocole d'administration à
+> 2. Affichez la clé publique (`cat /tmp/cle-demo.pub`) puis la clé privée
+> (`cat /tmp/cle-demo`). **SSH (Secure Shell)**, le protocole d'administration à
 > distance, utilise exactement ce mécanisme.
-> 3. Comparez : la clé publique tient sur une ligne et se partage sans risque ; la
-> clé privée s'ouvre sur un en-tête qui annonce une clé privée, et ne doit jamais
-> quitter la machine.
-> 4. Notez la longueur de chaque fichier. Demandez-vous ce qu'un attaquant pourrait
-> faire s'il obtenait l'un ou l'autre.
+> 3. Comparez : la publique tient sur une ligne et se partage sans risque ; la privée
+> s'annonce comme telle et ne doit jamais quitter la machine.
+> 4. Demandez-vous ce qu'un attaquant pourrait faire de l'une ou de l'autre.
 
 ### La lenteur, contrepartie du confort
 
-RSA est **lent** : chiffrer un fichier de plusieurs mégaoctets prendrait un temps
-prohibitif, et la taille du message est bornée par celle de la clé. On ne chiffre donc
-jamais les données directement avec RSA. On chiffre **une clé** :
+RSA est **lent**, et la taille du message est bornée par celle de la clé : on ne
+chiffre donc jamais les données directement avec RSA. On chiffre **une clé** :
 
 1. l'émetteur tire au hasard une clé de session symétrique ;
 2. il chiffre les données avec cette clé, en AES (Advanced Encryption Standard) mode
@@ -107,33 +98,30 @@ jamais les données directement avec RSA. On chiffre **une clé** :
 3. il chiffre la seule clé de session avec la clé publique du destinataire ;
 4. il envoie le tout : données chiffrées + clé de session chiffrée.
 
-C'est le principe **hybride** : l'asymétrique résout la distribution de la clé, le
-symétrique assure le volume. La quasi-totalité des échanges protégés d'aujourd'hui —
-TLS (Transport Layer Security), messageries chiffrées, sauvegardes — fonctionne ainsi.
+C'est le principe **hybride** : l'asymétrique résout la distribution, le symétrique
+assure le volume. TLS (Transport Layer Security), les messageries chiffrées et les
+sauvegardes fonctionnent ainsi.
 
 ---
 
 ## III. Les courbes elliptiques et l'échange de clés
 
 RSA n'est pas la seule famille asymétrique. Depuis les années 2000, les **courbes
-elliptiques**, ou ECC (*Elliptic Curve Cryptography*) offrent la même sécurité avec des
-clés bien plus courtes : une clé de 256 bits en courbes elliptiques équivaut à une clé
-RSA de plusieurs milliers de bits. Conséquences concrètes : calculs plus rapides,
-certificats plus légers, échanges plus courts — d'où leur adoption massive dans les
-protocoles récents.
+elliptiques**, ou ECC (*Elliptic Curve Cryptography*), offrent la même sécurité avec des
+clés bien plus courtes : 256 bits en ECC valent plusieurs milliers de bits RSA. D'où,
+dans les protocoles récents, des calculs plus rapides et des certificats plus légers.
 
 ### Se mettre d'accord sans se parler
 
-Reste une question : deux machines qui ne se connaissent pas doivent-elles pour autant
-échanger une clé publique ? Non. L'**échange de clés de Diffie-Hellman** permet à deux
-parties de calculer un secret commun sur un canal public, sans que l'observateur qui
-écoute la conversation ne puisse le reconstituer. Chaque partie combine sa propre valeur
-secrète avec la valeur publique de l'autre ; les deux calculs aboutissent au même
-résultat, que seul un participant peut obtenir.
+Deux machines qui ne se connaissent doivent-elles au moins échanger une clé publique ?
+Non. L'**échange de clés de Diffie-Hellman** fait calculer à deux parties un secret
+commun sur un canal public, sans que l'observateur qui écoute puisse le reconstituer :
+chacune combine sa valeur secrète avec la valeur publique de l'autre, et les deux
+calculs aboutissent au même résultat.
 
-C'est le cœur de la poignée de main TLS : deux serveurs qui ne se sont jamais vus
-conviennent d'une clé de session en quelques messages, puis basculent en chiffrement
-symétrique. L'asymétrique sert à **se rencontrer**, le symétrique à **discuter**.
+C'est le cœur de la poignée de main TLS : on convient d'une clé de session en quelques
+messages, puis on bascule en symétrique. L'asymétrique sert à **se rencontrer**, le
+symétrique à **discuter**.
 
 > [!TIP]
 > En pratique, on retient trois temps : **authentifier** l'interlocuteur (certificat,
@@ -176,19 +164,17 @@ journée.*
 
 ## Points clés
 
-- Le chiffrement symétrique exige une clé partagée : **la distribuer est son point
-  faible**, surtout quand le nombre d'interlocuteurs augmente.
-- Le chiffrement asymétrique sépare une **clé publique** (que l'on diffuse) d'une
-  **clé privée** (que l'on ne quitte jamais) : la distribution de clés devient un
-  non-problème.
-- Chiffrer avec la clé publique du destinataire garantit que **lui seul** déchiffre ;
-  signer avec sa clé privée prouve **qu'il est bien l'auteur**.
-- RSA repose sur la difficulté de factoriser ; les **courbes elliptiques** offrent la
-  même sécurité avec des clés plus courtes et des calculs plus rapides.
-- En pratique, on chiffre **une clé de session** avec l'asymétrique, et les **données**
-  avec le symétrique : c'est le principe hybride de TLS et des messageries chiffrées.
-- La clé privée est le seul secret du système : sa protection et sa rotation priment
-  sur le choix de l'algorithme.
+- Le symétrique exige une clé partagée : **la distribuer est son point faible**,
+  surtout quand les interlocuteurs se multiplient.
+- L'asymétrique sépare **clé publique** (diffusée) et **clé privée** (jamais quittée) :
+  la distribution devient un non-problème.
+- Chiffrer avec la publique du destinataire garantit que **lui seul** déchiffre ; signer
+  avec sa privée prouve **qu'il est l'auteur**.
+- RSA repose sur la factorisation ; les **courbes elliptiques** donnent la même sécurité
+  avec des clés plus courtes.
+- On chiffre **une clé de session** en asymétrique et les **données** en symétrique :
+  c'est le principe hybride de TLS.
+- La clé privée est le seul secret : sa protection prime sur le choix de l'algorithme.
 
 ---
 

@@ -8,7 +8,7 @@
 > authentifie le site avec qui vous parlez. Sans lui, le cadenas affiché par le
 > navigateur n'est qu'un dessin.
 
-**Durée de lecture :** 75 min · **Prérequis :** les notions de cryptographie de la
+**Durée de lecture :** 55 min hors approfondissements facultatifs · **Prérequis :** les notions de cryptographie de la
 journée précédente (chiffrement symétrique et asymétrique, signature numérique)
 
 ---
@@ -70,24 +70,18 @@ Navigateur                                     Serveur
    |     tout le reste circule chiffré            |
 ```
 
-1. **Se présenter.** Le client envoie ses préférences : les versions de TLS qu'il
-   accepte, les algorithmes qu'il sait utiliser, et un nombre aléatoire. Le serveur
-   répond par son choix et son propre nombre aléatoire. Ces deux nombres aléatoires
-   serviront à fabriquer la clé de session — personne d'autre ne peut la calculer.
-2. **Vérifier les certificats.** Le serveur présente son certificat, un document qui
-   lie son nom de domaine à une clé publique, signé par une autorité de certification
-   (AC). Le navigateur remonte la chaîne des signatures jusqu'à une autorité racine
-   qu'il fait confiance par défaut. Si la chaîne est rompue, le nom de domaine ne
-   correspond pas ou le certificat est expiré, il affiche un avertissement.
-3. **Échanger une clé.** Grâce aux informations précédentes, client et serveur
-   calculent la même **clé de session**. Cette clé est symétrique : elle servira à
-   chiffrer tout le reste de la conversation, bien plus rapide qu'un chiffrement
-   asymétrique.
-
-> [!TIP]
-> Retenez l'image du sceau de cire : le certificat **prouve à qui vous parlez**, la
-> clé de session **scelle le contenu**. Un HTTPS sans certificat valide, c'est une
-> lettre scellée adressée à n'importe qui.
+1. **Se présenter.** Le client envoie ses préférences — versions de TLS acceptées,
+   algorithmes qu'il connaît, un nombre aléatoire — et le serveur répond par son choix
+   et son propre nombre aléatoire. Ces deux nombres serviront à fabriquer la clé de
+   session : personne d'autre ne peut la calculer.
+2. **Vérifier les certificats.** Le serveur présente son certificat, qui lie son nom de
+   domaine à une clé publique sous la signature d'une **autorité de certification**
+   (AC), et le navigateur remonte la chaîne jusqu'à une racine qu'il fait confiance par
+   défaut. Chaîne rompue, nom de domaine qui ne correspond pas, certificat expiré : il
+   affiche un avertissement. Détail en partie II.
+3. **Échanger une clé.** Client et serveur calculent alors la même **clé de session**,
+   symétrique : elle chiffre tout le reste de la conversation, bien plus vite qu'un
+   chiffrement asymétrique.
 
 > 🧪 **Atelier rapide (8 min)**
 >
@@ -118,26 +112,19 @@ Navigateur                                     Serveur
 
 ### La chaîne de confiance, en bref
 
-Un certificat X.509 — le format standard des certificats TLS — est un document qui
-contient notamment le nom de domaine couvert, la clé publique du serveur, une date
-d'expiration, et la signature d'une **autorité de certification** (AC, *certificate
-authority*). Votre navigateur détient une liste d'autorités racines de confiance ;
-chaque certificat se valide en remontant de signature en signature jusqu'à l'une
-d'entre elles. Le chapitre suivant détaille cette chaîne et ses fragilités.
+Un certificat X.509 — le format standard des certificats TLS — lie un nom de domaine
+à une clé publique : il porte une date d'expiration et la signature d'une **autorité
+de certification** (AC, *certificate authority*). Le navigateur détient une liste
+d'autorités racines de confiance et valide chaque certificat en remontant de signature
+en signature jusqu'à l'une d'entre elles.
 
-### Let's Encrypt : des certificats gratuits et renouvelés tout seuls
-
-Jusqu'en 2015, un certificat se demandait à une autorité commerciale, se payait, et
-se renouvelait à la main tous les un à deux ans — d'où les certificats expirés que
-tout le monde a déjà croisés. **Let's Encrypt**, autorité lancée en 2015 par l'ISRG
-(*Internet Security Research Group*), délivre gratuitement des certificats valables
-90 jours, via le protocole **ACME** (*Automated Certificate Management Environment*).
-
-La durée courte est volontaire : elle **force l'automatisation**. Un certificat
-renouvelé par un script ne devient jamais obsolète sans que personne ne s'en aperçoive.
-Des outils comme *certbot* ou le module ACME de votre serveur web gèrent la demande,
-le renouvellement et le rechargement du service. En pratique, un site moderne ne
-devrait plus jamais afficher « certificat expiré ».
+Le chapitre [PKI et certificats](08-pki-et-certificats.md) détaille cette chaîne, ses
+fragilités et le renouvellement automatisé — **Let's Encrypt** (2015), dont les
+certificats gratuits valent 90 jours et se renouvellent par script via le protocole
+**ACME** (*Automated Certificate Management Environment*). Retenez dès ici la seule
+conséquence pratique : la durée courte est volontaire, elle **force
+l'automatisation**, et un site moderne ne devrait plus jamais afficher « certificat
+expiré ».
 
 ### HSTS : interdire le retour en clair
 
@@ -152,9 +139,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
 ```
 
 Dès lors, pendant `max-age` secondes (ici un an), le navigateur refuse d'ouvrir ce
-domaine en clair — il réécrit `http://` en `https://` avant même d'envoyer la
-requête. Le domaine peut même être inscrit sur une liste de préchargement
-(*preload*) intégrée aux navigateurs, pour être protégé dès la toute première visite.
+domaine en clair : il réécrit `http://` en `https://` avant même d'envoyer la requête.
 
 > [!WARNING]
 > HSTS se déclare **après** avoir vérifié que tout fonctionne en HTTPS, y compris
@@ -172,13 +157,9 @@ l'on rencontre le plus souvent, du plus grave au plus anecdotique.
 ### Le certificat expiré
 
 Un certificat a une date de fin. Passée celle-ci, chaque visiteur reçoit un
-avertissement plein écran — et la plupart font demi-tour. L'incident n'a rien de
-théorique : en décembre 2018, un certificat logiciel expiré chez l'équipementier
-Ericsson a privé de réseau des millions d'abonnés du britannique O2 pendant une
-journée ; en février 2020, un certificat authentification expiré a rendu Microsoft
-Teams indisponible pendant plusieurs heures. Dans les deux cas, la cause est
-bureaucratique plus que cryptographique : **personne n'avait automatisé le
-renouvellement**.
+avertissement plein écran — et la plupart font demi-tour. La cause est rarement
+cryptographique, presque toujours opérationnelle : **personne n'a automatisé le
+renouvellement**. Deux pannes massives et documentées, en fin de chapitre.
 
 ### Les versions obsolètes
 
@@ -195,16 +176,11 @@ ouverte : les attaquants choisissent toujours le chemin le plus faible.
 ### Les suites de chiffrement faibles
 
 Une **suite de chiffrement** (*cipher suite*) est l'ensemble des algorithmes utilisés
-pour la session : chiffrement de masse, échange de clé, signature, hachage. Quelques
-familles à écarter sans hésiter :
-
-- **RC4** et **DES/3DES** : cassés ou trop courts (l'attaque SWEET32, 2016, exploite
-  la taille de bloc de 3DES) ;
-- les suites d'**export** et à clés faibles, vestiges des années 1990 ;
-- les modes **CBC** mal implémentés, source de fuites par padding (Lucky Thirteen).
-
-En 2024, une configuration raisonnable se limite à TLS 1.2 et 1.3, avec des suites
-AEAD (AES-GCM, ChaCha20-Poly1305) et des clés d'au moins 128 bits de sécurité.
+pour la session : chiffrement de masse, échange de clé, signature, hachage. Le réflexe
+tient en une ligne : en 2024, une configuration raisonnable se limite à TLS 1.2 et 1.3
+avec des suites **AEAD** (AES-GCM, ChaCha20-Poly1305) et des clés d'au moins 128 bits
+de sécurité. Tout ce qui n'est pas AEAD, ou qui traîne d'un autre âge, se refuse sans
+discuter — le catalogue des familles cassées est en fin de chapitre.
 
 ### Les autres pièges fréquents
 
@@ -227,8 +203,36 @@ AEAD (AES-GCM, ChaCha20-Poly1305) et des clés d'au moins 128 bits de sécurité
 
 ## IV. Aller plus loin
 
-*Ces approfondissements sont facultatifs : ils ne sont jamais exigés pour terminer la
-journée.*
+🔁 **Pour aller plus loin (facultatif)** — à lire si le créneau le permet, rien
+d'obligatoire n'en dépend.
+
+### Deux pannes de certificats (historique)
+
+L'incident du certificat expiré n'a rien de théorique. En décembre 2018, un certificat
+logiciel expiré chez l'équipementier Ericsson a privé de réseau des millions d'abonnés
+du britannique O2 pendant une journée ; en février 2020, un certificat
+d'authentification expiré a rendu Microsoft Teams indisponible pendant plusieurs
+heures. Dans les deux cas, la cause est bureaucratique plus que cryptographique :
+personne n'avait automatisé le renouvellement.
+
+### Les familles de suites à écarter (historique des attaques)
+
+- **RC4** et **DES/3DES** : cassés ou trop courts — l'attaque SWEET32 (2016) exploite
+  la taille de bloc de 3DES ;
+- les suites d'**export** et à clés faibles, vestiges des années 1990 ;
+- les modes **CBC** mal implémentés, source de fuites par padding (Lucky Thirteen).
+
+Ces noms reviennent dans les rapports d'audit : les connaître aide à lire une
+configuration, mais le réflexe à appliquer ne demande pas de les retenir — une suite
+qui n'est pas AEAD se refuse.
+
+### Le préchargement HSTS
+
+Un domaine peut être inscrit sur une liste de préchargement (*preload*) intégrée aux
+navigateurs : il est alors protégé dès la toute première visite, avant même d'avoir
+renvoyé un en-tête.
+
+### Trois prolongements techniques
 
 - **TLS 1.3** (RFC 8446, août 2018) : la poignée de main passe à un aller-retour
   (*1-RTT*), les algorithmes obsolètes disparaissent, et la reprise de session en

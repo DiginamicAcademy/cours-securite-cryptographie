@@ -9,7 +9,7 @@
 > confiance par défaut, et une chaîne de signatures qui relie votre site à l'une
 > d'entre elles.
 
-**Durée de lecture :** 60 min · **Prérequis :** le chapitre [TLS en pratique](07-tls-en-pratique.md)
+**Durée de lecture :** 50 min hors approfondissements facultatifs · **Prérequis :** le chapitre [TLS en pratique](07-tls-en-pratique.md)
 
 ---
 
@@ -19,8 +19,8 @@
 
 - **Décrire** la chaîne de confiance d'un certificat, de la feuille serveur jusqu'à la
   racine de confiance.
-- **Distinguer** les rôles d'une autorité de certification, d'un mécanisme de
-  révocation et d'un journal de transparence.
+- **Distinguer** les rôles d'une autorité de certification et d'un mécanisme de
+  révocation (CRL, OCSP).
 - **Vérifier** la chaîne de certificats d'un site avec `openssl`.
 - **Planifier** le renouvellement et la rotation d'un certificat sans interruption de
   service.
@@ -61,11 +61,10 @@ Certificat feuille (serveur)    — celui que présente votre site,
                                   à son nom de domaine
 ```
 
-Cette organisation répond à une contrainte concrète : la racine est la clé de voûte,
-on ne la sort du coffre que pour signer une intermédiaire. Si une intermédiaire est
-compromise, on la révoque et on en émet une autre — la racine, elle, survit. C'est
-pourquoi votre site présente souvent **deux** certificats : le sien et celui de
-l'autorité intermédiaire.
+La contrainte est concrète : on ne sort la racine du coffre que pour signer une
+intermédiaire, et une intermédiaire compromise se remplace sans toucher à la racine.
+C'est pourquoi votre site présente souvent **deux** certificats : le sien et celui de
+l'intermédiaire.
 
 ### Ce que le client vérifie
 
@@ -82,25 +81,19 @@ l'autorité intermédiaire.
 
 Un seul contrôle qui échoue, et le navigateur affiche un avertissement plein écran.
 
-> [!TIP]
-> Pour voir la chaîne telle que la reçoit un client, une commande suffit :
-> `openssl s_client -connect www.exemple.fr:443 -showcerts`. La section
-> `Certificate chain` liste les certificats du plus proche (votre serveur) au plus
-> lointain (l'autorité intermédiaire) — la racine elle-même n'est presque jamais
-> envoyée : le client la possède déjà.
-
 > 🧪 **Atelier rapide (5 min)**
 >
-> Affichez la chaîne de certificats d'un service réel, en une seule connexion :
+> Affichez la chaîne telle que la reçoit un client, en une seule connexion :
 >
 > ```bash
 > openssl s_client -connect tutor.diginamic.fr:443 -showcerts
 > ```
 >
-> Dans la sortie, repérez la section `Certificate chain` : combien de certificats
-> sont envoyés ? Recherchez ensuite `CN =` (le nom commun) et `depth` pour identifier
-> le rôle de chacun. Notez le nombre de maillons — c'est la longueur réelle de la
-> chaîne de confiance de ce site.
+> Repérez la section `Certificate chain` : elle liste les certificats du plus proche
+> (votre serveur) au plus lointain (l'autorité intermédiaire). La racine, elle, n'est
+> presque jamais envoyée — le client la possède déjà. Recherchez ensuite `CN =` (le nom
+> commun) et `depth` pour identifier le rôle de chacun, puis notez le nombre de
+> maillons : c'est la longueur réelle de la chaîne de confiance de ce site.
 
 ---
 
@@ -169,17 +162,13 @@ l'autorité des magasins de confiance.
 
 ### Le cas DigiNotar (2011)
 
-En 2011, l'autorité néerlandaise **DigiNotar** est compromise : un attaquant émet des
-certificats valides pour des domaines qu'il ne contrôle pas, dont `*.google.com`, et
-les utilise pour intercepter des connexions. L'affaire est découverte en août ; en
-quelques semaines, les navigateurs retirent la racine DigiNotar de leurs magasins de
-confiance, et l'entreprise est mise en faillite.
-
-La leçon structure le paysage actuel : **une autorité corrompue casse la chaîne
-entière**, pour tous ses clients, d'un seul coup. D'où les garde-fous apparus depuis —
-la transparence des certificats (partie IV), les contraintes DNS sur les autorités
-habilitées, et la séparation stricte entre racines hors ligne et autorités
-intermédiaires.
+L'autorité néerlandaise **DigiNotar** est compromise en 2011 : un attaquant y émet des
+certificats valides pour des domaines qu'il ne contrôle pas. En quelques semaines les
+navigateurs retirent sa racine des magasins de confiance, et l'entreprise fait
+faillite. La leçon structure tout le paysage actuel : **une autorité corrompue casse la
+chaîne entière**, pour tous ses clients, d'un seul coup — d'où la transparence des
+certificats (partie IV) et la séparation stricte entre racines hors ligne et autorités
+intermédiaires. Le détail de l'affaire est en fin de chapitre.
 
 > [!DANGER]
 > « Faire confiance à une autorité » n'est pas un sentiment, c'est une décision
@@ -191,15 +180,24 @@ intermédiaires.
 
 ## IV. Aller plus loin
 
-*Ces approfondissements sont facultatifs : ils ne sont jamais exigés pour terminer la
-journée.*
+🔁 **Pour aller plus loin (facultatif)** — à lire si le créneau le permet, rien
+d'obligatoire n'en dépend.
 
-- **Certificate Transparency (CT)** : depuis 2018, les navigateurs exigent que les
-  certificats émis pour les domaines publics soient inscrits dans des **journaux
-  publics** et infalsifiables. Chaque certificat s'accompagne de preuves d'inscription
-  (*SCT*, *Signed Certificate Timestamp*). Résultat : une émission abusive devient
-  visible par tout le monde en quelques heures — exactement ce qui aurait immédiatement
-  trahi DigiNotar.
+### DigiNotar en détail (2011)
+
+L'attaquant qui prend l'autorité néerlandaise **DigiNotar** émet des certificats
+valides pour des domaines qu'il ne contrôle pas, dont `*.google.com`, et s'en sert pour
+intercepter des connexions ; l'affaire n'est découverte qu'en août. Les navigateurs
+retirent la racine de leurs magasins de confiance en quelques semaines, l'entreprise
+est mise en faillite. Les contraintes DNS sur les autorités habilitées (enregistrements
+CAA, juste en dessous) viennent de là.
+
+- **Certificate Transparency (CT)** : depuis 2018, les certificats émis pour les
+  domaines publics sont inscrits dans des **journaux publics** infalsifiables, et le
+  serveur remet les preuves d'inscription (*SCT*, *Signed Certificate Timestamp*) avec
+  le certificat. On peut surveiller ces journaux pour son propre domaine et lever une
+  alerte dès qu'une émission inconnue y apparaît — c'est le garde-fou qui aurait trahi
+  DigiNotar en quelques heures.
 - **Les enregistrements CAA** (*Certification Authority Authorization*) : une entrée
   DNS qui déclare quelles autorités sont habilitées à émettre pour votre domaine. Une
   autorité conforme refuse d'émettre si elle n'est pas listée — une barrière de plus
@@ -220,8 +218,8 @@ journée.*
   remplace en plus la paire de clés, ce qui borne la durée d'exposition.
 - Révoquer (CRL, OCSP) est fragile : les clients contournent souvent la vérification.
   Dans les cas graves, on **remplace** plutôt qu'on ne révoque.
-- La confiance est transitive et se rompt d'un coup — l'affaire DigiNotar (2011) a
-  conduit à la **transparence des certificats**, qui rend chaque émission visible.
+- La confiance est transitive et se rompt d'un coup : une autorité compromise se
+  **retire**, et tout ce qu'elle a signé est remplacé.
 
 ---
 

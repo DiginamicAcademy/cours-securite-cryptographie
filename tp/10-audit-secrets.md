@@ -1,6 +1,6 @@
 # Exercice — Auditer la gestion des secrets
 
-> **Nature :** exercice d'audit · **Durée :** 1 h · **Notion :** gestion des secrets — inventorier, évaluer les risques, remédier
+> **Nature :** exercice d'audit · **Durée :** 55 min · **Notion :** gestion des secrets — inventorier, évaluer les risques, remédier
 > **Lien :** chapitre [Gestion des secrets](../10-secrets.md)
 > **Objectif :** auditer la gestion des secrets d'un projet réel, hiérarchiser les
 > risques et produire un plan de remédiation exécutable.
@@ -138,10 +138,8 @@ place dans le flux de travail quotidien.
 
 ## Attendu
 
-- un tableau d'inventaire complet (partie 1) ;
-- une évaluation graduée avec justification (partie 2) ;
-- un plan de remédiation ordonné (partie 3) ;
-- une liste de garde-fous situés dans le flux de travail (partie 4).
+Un dossier d'audit en quatre parties : l'inventaire, l'évaluation graduée, le plan
+ordonné et les garde-fous — une production par consigne, dans l'ordre.
 
 ---
 

@@ -8,7 +8,7 @@
 > bâton, retrouve le texte en réenroulant. Toute la cryptographie est née de cette
 > scène : **un secret partagé**, et l'art de le garder.
 
-**Durée de lecture :** 45 min · **Prérequis :** aucun
+**Durée de lecture :** 35 min hors approfondissements facultatifs · **Prérequis :** aucun
 
 ---
 
@@ -26,16 +26,13 @@
 ## I. Pourquoi chiffrer ?
 
 La **scytale** (du grec *skutálē*, le bâton) est l'un des plus anciens outils de
-chiffrement connus. L'émetteur enroule une bande de parchemin autour d'un bâton de
-diamètre donné, écrit son message le long de la bande, puis la déroule : les lettres
-sont désormais dispersées. Seul qui possède un bâton du même diamètre reconstitue le
-message en réenroulant la bande.
+chiffrement connus : déroulé, le parchemin ne livre qu'un gribouillis ; il n'est
+lisible qu'enroulé autour d'un bâton du même diamètre. Le dispositif est rudimentaire,
+mais il contient déjà tout ce qui nous occupera :
 
-Le dispositif est rudimentaire, mais il contient déjà tout ce qui nous occupera :
-
-- il y a un **secret** — la taille du bâton, connue de l'émetteur et du destinataire ;
-- il y a un **texte clair** (le message lisible) et un **texte chiffré** (le gribouillis) ;
-- il y a une **opération réversible** : enrouler pour cacher, dérouler pour retrouver.
+- un **secret** — la taille du bâton, connue de l'émetteur et du destinataire ;
+- un **texte clair** (le message lisible) et un **texte chiffré** (le gribouillis) ;
+- une **opération réversible** : enrouler pour cacher, dérouler pour retrouver.
 
 C'est le principe même de la **cryptographie** (du grec *kruptós*, caché, et
 *gráphein*, écrire) : rendre un message inintelligible à quiconque ne possède pas le
@@ -43,23 +40,21 @@ secret.
 
 ### Le secret partagé
 
-Toute la cryptographie repose sur une idée simple : **sans secret, pas de
-confidentialité**. La scytale ne protège que si la taille du bâton reste inconnue de
-l'ennemi. Le jour où l'adversaire la devine, le chiffrement ne vaut plus rien —
-même si les mathématiques derrière sont parfaites.
+**Sans secret, pas de confidentialité** : la scytale ne protège que si la taille du
+bâton reste inconnue ; le jour où l'ennemi la devine, le chiffrement ne vaut plus rien —
+même avec des mathématiques parfaites.
 
-L'image classique est celle de la **boîte à deux cadenas**. Alice veut envoyer un
-objet à Bob sans que le transporteur y touche :
+L'image classique est celle de la **boîte à deux cadenas**. Alice veut envoyer un objet
+à Bob sans que le transporteur y touche :
 
 1. Alice pose son cadenas sur la boîte fermée et l'envoie.
 2. Bob ajoute son propre cadenas, puis renvoie la boîte.
 3. Alice retire son cadenas : il ne reste que celui de Bob.
 4. Bob ouvre son cadenas et récupère l'objet.
 
-À aucun moment un cadenas n'a circulé ouvert, et pourtant l'échange a eu lieu. Le
-point décisif : **chacun garde sa clé pour lui**, et personne d'autre ne la possède.
-Vous retrouverez ce principe plus loin dans la journée, avec la cryptographie
-asymétrique.
+À aucun moment un cadenas n'a circulé ouvert : **chacun garde sa clé pour lui**, et
+personne d'autre ne la possède. Vous retrouverez ce principe au chapitre sur le
+chiffrement asymétrique.
 
 > 🧪 **Atelier rapide (5 min)**
 >
@@ -74,15 +69,14 @@ asymétrique.
 
 ## II. Ce que la cryptographie ne fait pas
 
-La cryptographie protège **l'information**. Elle ne protège ni les personnes, ni les
-locaux, ni les usages. Trois limites à garder en tête :
+La cryptographie protège **l'information** : ni les personnes, ni les locaux, ni les
+usages. Trois limites :
 
 - **Elle ne remplace pas un contrôle d'accès.** Un serveur dont le disque est chiffré
-  reste ouvert à quiconque connaît le mot de passe de la session ouverte. Chiffrer ne
-  dispense pas de verrouiller.
+  reste ouvert à quiconque connaît le mot de passe de la session ouverte.
 - **Elle ne protège pas contre l'utilisateur négligent.** Une clé écrite sur un
-  post-it collé sur l'écran, un mot de passe transmis par courriel : la meilleure
-  algorithmique du monde ne résiste pas à une clé qu'on donne.
+  post-it, un mot de passe transmis par courriel : la meilleure algorithmique du monde
+  ne résiste pas à une clé qu'on donne.
 - **Elle ne garantit pas qu'un message est *vrai*.** Elle peut prouver qu'un message
   n'a pas été modifié et d'où il vient ; elle ne dit pas que son contenu est juste.
   Une commande signée reste une commande erronée si elle a été signée par erreur.
@@ -95,9 +89,8 @@ entre dans une chaîne — contrôle d'accès, sauvegardes, procédures, formati
 
 ## III. Les quatre services
 
-La cryptographie rend quatre services distincts. On les confond souvent ; savoir les
-distinguer est le premier réflexe à prendre, car chacun répond à une question
-différente.
+La cryptographie rend quatre services distincts, souvent confondus. Les distinguer est
+le premier réflexe à prendre : chacun répond à une question différente.
 
 | Service | La question qu'il résout | Exemple chez DIGICHEESE |
 | --- | --- | --- |
@@ -114,12 +107,11 @@ différente.
 
 ### La signature, en une phrase
 
-Le service de non-répudiation repose sur la **signature numérique**. Quand la
-comptable de DIGICHEESE signe un bon de commande, elle produit une valeur que seul
-son secret permet de créer — mais que tout le monde peut vérifier. Résultat : le
-fournisseur est sûr que la commande vient d'elle, et elle ne peut plus prétendre le
-contraire. C'est l'équivalent moderne du sceau de cire apposé sur une lettre : il
-prouve l'origine et scelle le contenu.
+Le service de non-répudiation repose sur la **signature numérique** : en signant un bon
+de commande, la comptable de DIGICHEESE produit une valeur que seul son secret permet de
+créer, mais que tout le monde peut vérifier. Le fournisseur est sûr que la commande
+vient d'elle et elle ne peut plus le nier — comme un sceau de cire prouve l'origine et
+scelle le contenu.
 
 ---
 

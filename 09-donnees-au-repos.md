@@ -9,7 +9,7 @@
 > de ce cours ; la réponse **logicielle**, elle, tient en un mot : chiffrer ce qui
 > repose.
 
-**Durée de lecture :** 65 min · **Prérequis :** le chiffrement symétrique et la
+**Durée de lecture :** 50 min hors approfondissements facultatifs · **Prérequis :** le chiffrement symétrique et la
 gestion des clés (journée précédente)
 
 ---
@@ -49,16 +49,15 @@ d'un serveur mis au rebut. C'est un rempart efficace, et souvent gratuit à acti
 
 ### Ce qu'il ne protège pas
 
-Le volume est déchiffré **tant que la machine tourne**. Un attaquant qui arrive sur
-une session ouverte, un malware exécuté avec les droits de l'utilisateur, ou un
-administrateur légitime lit exactement la même chose qu'avant. De même, une copie
-exportée — un dump SQL, un fichier CSV envoyé par courriel — quitte le volume et n'est
-plus protégée par lui.
+Le volume est déchiffré **tant que la machine tourne** : un attaquant qui arrive sur
+une session ouverte, un malware exécuté avec les droits de l'utilisateur ou un
+administrateur légitime lisent exactement la même chose qu'avant.
 
 > [!WARNING]
-> Le chiffrement de disque protège le **support**, pas la **donnée**. Dès qu'une
-> copie en sort, elle repart sans protection. C'est pour cette raison que les
-> chapitres suivants traitent la donnée elle-même.
+> Le chiffrement de disque protège le **support**, pas la **donnée**. Toute copie qui
+> en sort — dump SQL, CSV envoyé par courriel, sauvegarde, réplication — repart sans
+> protection. C'est pour cette raison que la suite du chapitre traite la donnée
+> elle-même.
 
 Un point pratique qui décide de tout : **la clé de récupération**. Une phrase de passe
 perdue ou une clé de récupération rangée dans le même tiroir que le portable, et le
@@ -74,9 +73,7 @@ secrets, enveloppe scellée chez un responsable.
 
 Une base de données contient des informations dont la sensibilité dépasse celle du
 serveur qui les héberge : coordonnées bancaires (IBAN, *International Bank Account
-Number*), numéros d'identification, données de santé, historiques d'achats. Ces
-données fuient par des chemins que le chiffrement de disque ne voit pas : une
-sauvegarde, une réplication, un export de support, un accès administrateur.
+Number*), numéros d'identification, données de santé, historiques d'achats.
 
 Le **chiffrement de colonne** déplace la protection au plus près de la donnée :
 l'application chiffre la valeur avant de l'écrire, et la déchiffre à la lecture. La
@@ -199,8 +196,8 @@ pas celle de production.
 
 ## IV. Aller plus loin
 
-*Ces approfondissements sont facultatifs : ils ne sont jamais exigés pour terminer la
-journée.*
+🔁 **Pour aller plus loin (facultatif)** — à lire si le créneau le permet, rien
+d'obligatoire n'en dépend.
 
 - **Confidentialité permanente** (*forward secrecy*) : dans les protocoles modernes
   comme TLS 1.3, la clé de session est **éphémère** — elle est calculée pour la

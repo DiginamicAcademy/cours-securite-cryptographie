@@ -2,13 +2,12 @@
 
 # L'aléa et la gestion des clés
 
-> Les armées changent de code après chaque bataille. Non pas parce que l'ancien
-> chiffrement était mauvais, mais parce qu'une clé qui a servi trop longtemps finit par
-> fuiter — par capture, par indiscrétion, par simple usure des habitudes. La
-> cryptographie moderne a gardé cette leçon : la qualité d'un système se juge autant à
-> la façon dont il **génère** ses clés qu'à la façon dont il les **remplace**.
+> Les armées changent de code après chaque bataille : non que l'ancien chiffrement fût
+> mauvais, mais une clé qui a trop servi finit par fuiter — capture, indiscrétion,
+> usure des habitudes. La qualité d'un système se juge donc autant à la façon dont il
+> **génère** ses clés qu'à celle dont il les **remplace**.
 
-**Durée de lecture :** 45 min · **Prérequis :** [Du chiffre de César à AES](02-chiffrement-symetrique.md)
+**Durée de lecture :** 35 min hors approfondissements facultatifs · **Prérequis :** [Du chiffre de César à AES](02-chiffrement-symetrique.md)
 
 ---
 
@@ -26,42 +25,16 @@
 
 ## I. L'aléa, matière première de toute clé
 
-Une clé n'est sûre que si elle est **imprévisible**. Or un ordinateur est une machine
-déterministe : un programme, avec les mêmes entrées, produit toujours les mêmes
-sorties. Le hasard y est donc simulé, à partir d'une **graine** (*seed*) de départ qui
-détermine toute la suite.
+Une clé n'est sûre que si elle est **imprévisible**. Le chapitre [Du chiffre de César à
+AES](02-chiffrement-symetrique.md) a posé le mécanisme : le hasard d'un ordinateur est
+simulé à partir d'une **graine** (*seed*), et `random` (PRNG) se reconstitue dès qu'on
+connaît cette graine — parfait pour un jeu, impropre à la cryptographie. Le générateur
+adapté est donc un CSPRNG : `secrets` en Python, `os.urandom`, ou les appels système
+dédiés.
 
-> 🧪 **Atelier rapide (5 min) — rappel**
->
-> Relancez deux fois de suite ce fragment, puis comparez avec la version `secrets` :
->
-> ```python
-> import random
->
-> random.seed(42) # graine fixée : la suite est reproductible
-> print([random.randint(0, 99) for _ in range(5)])
-> ```
->
-> ```python
-> import secrets
->
-> print(secrets.token_bytes(16)) # 16 octets imprévisibles
-> ```
->
-> La première suite est **toujours la même** ; la seconde change à chaque exécution.
-> Notez laquelle vous confieriez une clé de chiffrement.
-
-Le module `random` est un générateur pseudo-aléatoire, ou PRNG (*Pseudo-Random Number
-Generator*) : rapide, commode, reproductible — parfait pour un jeu, **impropre à la
-cryptographie**. Quelqu'un qui devine la graine reconstitue toute la suite, donc toutes
-les clés qui en sont issues.
-
-Pour la cryptographie, on utilise un générateur pseudo-aléatoire cryptographiquement
-sûr, ou CSPRNG (*Cryptographically Secure Pseudo-Random Number Generator*) : `secrets` en
-Python, `os.urandom`, ou les appels système dédiés. Ces générateurs puisent leur
-entropie dans l'activité imprévisible de la machine — horloge à haute résolution,
-bruit matériel, interruptions — et sont conçus pour qu'une partie de leur sortie ne
-permette pas de prédire la suite.
+Ce que ces appels ajoutent, c'est l'**entropie** : ils puisent dans l'activité
+imprévisible de la machine — horloge à haute résolution, bruit matériel, interruptions —
+et sont conçus pour qu'une partie de leur sortie ne permette pas de prédire la suite.
 
 > [!DANGER]
 > Une graine faible ou prévisible, c'est une clé devinable — et un chiffrement qui ne
@@ -86,11 +59,10 @@ Le cycle de vie d'une clé compte plusieurs étapes, et chacune a ses exigences.
 
 ### La clé n'a pas sa place dans le code
 
-Un secret écrit dans le code source se retrouve dans l'historique du dépôt, dans les
-copies locales, dans les sauvegardes du serveur de code. Même après suppression, il
-reste dans l'historique. La règle est simple : **le code se partage, les clés non**. On
-les injecte à l'exécution — variable d'environnement, fichier de configuration hors
-dépôt, ou service de gestion de secrets.
+Un secret écrit dans le code source se retrouve dans l'historique du dépôt, les copies
+locales et les sauvegardes du serveur de code — et il y reste même après suppression. La
+règle est simple : **le code se partage, les clés non**. On les injecte à l'exécution :
+variable d'environnement, configuration hors dépôt, ou service de gestion de secrets.
 
 > [!TIP]
 > Le bon réflexe en cas de doute : demandez-vous « si ce dépôt devenait public
@@ -99,14 +71,14 @@ dépôt, ou service de gestion de secrets.
 
 ### Une clé, un usage
 
-Mélanger les usages multiplie les dégâts en cas de fuite. La clé qui chiffre les
-exports de données ne doit pas servir à signer des jetons ; celle qui authentifie un
-service ne doit pas chiffrer les sauvegardes. Quand une clé tombe, on sait alors
-exactement ce qui est touché — et ce qui ne l'est pas.
+Mélanger les usages multiplie les dégâts en cas de fuite : la clé qui chiffre les
+exports ne doit pas signer des jetons, ni celle qui authentifie un service chiffrer les
+sauvegardes. Quand une clé tombe, on sait exactement ce qui est touché — et ce qui ne
+l'est pas.
 
-Pour les données au repos, on peut aussi **dériver** des clés spécifiques à partir d'une
-clé maîtresse, avec une fonction de dérivation de clé, ou KDF (*Key Derivation Function*) :
-chaque usage reçoit sa propre clé, sans qu'il faille en gérer des dizaines à la main.
+Pour les données au repos, on peut **dériver** des clés spécifiques d'une clé maîtresse
+avec une fonction de dérivation de clé, ou KDF (*Key Derivation Function*) : chaque usage
+reçoit sa propre clé, sans en gérer des dizaines à la main.
 
 ---
 
@@ -129,9 +101,8 @@ obtenir en volant une clé.
 ### Comment tourner sans casser le service ?
 
 La rotation se prépare : les messages déjà chiffrés avec l'ancienne clé doivent rester
-lisibles. On versionne donc les clés — chaque message porte la référence de la clé qui
-l'a produit — et on conserve l'ancienne clé en lecture seule le temps de la migration,
-avant de la détruire.
+lisibles. On versionne donc les clés — chaque message porte la référence de celle qui
+l'a produit — et on conserve l'ancienne en lecture seule le temps de la migration :
 
 1. générer la nouvelle clé ;
 2. chiffrer les **nouveaux** messages avec elle ;
@@ -141,10 +112,10 @@ avant de la détruire.
 
 ### Révoquer, c'est décider vite
 
-Une clé compromise se révoque **immédiatement** — avant même de comprendre comment la
+Une clé compromise se révoque **immédiatement**, avant même de comprendre comment la
 fuite s'est produite. La révocation rend la clé inutilisable pour les opérations
-futures ; elle ne protège pas ce qui a déjà été chiffré avec, d'où l'intérêt de la
-rotation régulière : elle borne la fenêtre d'exposition.
+futures mais ne protège pas ce qui a déjà été chiffré avec — c'est là que la rotation
+régulière prend son sens : elle borne la fenêtre d'exposition.
 
 > [!WARNING]
 > Une clé dont on a perdu la trace est une clé compromise. L'inventaire — où sont mes
@@ -176,16 +147,14 @@ journée.*
 
 ## Points clés
 
-- Le hasard se **génère** : `random` est prévisible, `secrets` (CSPRNG) est adapté à la
-  cryptographie. Une graine faible = une clé devinable.
-- Une clé se **tire** au hasard, se **stocke** hors du code, se **distribue** par un
-  canal chiffré, et se **détruit** quand son usage s'arrête.
-- **Une clé, un usage** : mélanger chiffrement, signature et authentification multiplie
-  les dégâts d'une fuite.
-- La **rotation** borne la fenêtre d'exposition ; la **révocation** est immédiate dès
-  qu'une clé est suspecte.
-- On **versionne** les clés pour que les anciens messages restent lisibles pendant la
-  migration, puis on détruit l'ancienne clé.
+- Le hasard se **génère** : `random` est prévisible, `secrets` (CSPRNG) convient. Une
+  graine faible, c'est une clé devinable.
+- Une clé se **tire** au hasard, se **stocke** hors du code, se **distribue** par canal
+  chiffré, se **détruit** quand son usage s'arrête.
+- **Une clé, un usage** : les mélanger multiplie les dégâts d'une fuite.
+- La **rotation** borne la fenêtre d'exposition ; la **révocation** est immédiate.
+- On **versionne** les clés pour que les anciens messages restent lisibles, puis on
+  détruit l'ancienne.
 - L'**inventaire** des clés précède tout choix d'algorithme : une clé perdue de vue est
   une clé compromise.
 

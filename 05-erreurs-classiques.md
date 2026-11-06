@@ -4,10 +4,10 @@
 
 > Bruce Schneier, qui a passé sa carrière à concevoir et à casser des algorithmes,
 > résume une expérience commune : « toute personne peut créer un algorithme qu'elle ne
-> peut pas casser elle-même ». Le corollaire est brutal — ce n'est pas parce qu'un
-> chiffrement résiste à son auteur qu'il résiste à quiconque d'autre.
+> peut pas casser elle-même ». Un chiffrement qui résiste à son auteur ne résiste pas
+> pour autant à qui que ce soit d'autre.
 
-**Durée de lecture :** 45 min · **Prérequis :** [Du chiffre de César à AES](02-chiffrement-symetrique.md), [Le hachage et la signature numérique](04-hachage-et-signature.md)
+**Durée de lecture :** 40 min hors approfondissements facultatifs · **Prérequis :** [Du chiffre de César à AES](02-chiffrement-symetrique.md), [Le hachage et la signature numérique](04-hachage-et-signature.md)
 
 ---
 
@@ -24,15 +24,15 @@
 
 ## I. Inventer son propre chiffrement
 
-Le réflexe est universel : on a besoin de cacher une donnée, on écrit une petite
-fonction — un décalage, un mélange de caractères, une opération XOR (ou exclusif) maison — et cela
-« marche » : le résultat est illisible. Le problème n'apparaît jamais pendant le
-développement. Il apparaît quand quelqu'un d'autre s'y intéresse.
+Le réflexe est universel : il faut cacher une donnée, on écrit une petite fonction —
+décalage, mélange de caractères, XOR (ou exclusif) maison — et cela « marche » : le
+résultat est illisible. Le problème n'apparaît jamais pendant le développement, mais le
+jour où quelqu'un d'autre s'y intéresse.
 
 Trois raisons font échouer systématiquement les chiffrements inventés :
 
 - **On ne voit pas ses propres faiblesses.** L'auteur teste contre ses propres idées
-  d'attaque, qui sont par construction celles que son algorithme résiste déjà.
+  d'attaque — précisément celles que son algorithme résiste déjà.
 - **Les motifs survivent.** Un chiffrement maison laisse presque toujours filtrer la
   longueur, les répétitions ou les fréquences — exactement ce que l'analyse de fréquence
   exploite.
@@ -69,8 +69,8 @@ def generer_jeton():
 
 ## II. Les algorithmes et modes obsolètes
 
-Un code ancien n'est pas un code sûr. Les fonctions SHA (Secure Hash Algorithm) et les modes ci-dessous traînent
-encore dans des applications en production, et leur présence est un signal d'alarme.
+Un code ancien n'est pas un code sûr. Les fonctions et les modes ci-dessous traînent
+encore dans des applications en production : leur présence est un signal d'alarme.
 
 | Ce qu'on trouve | Pourquoi c'est un problème | Remplacement |
 | --- | --- | --- |
@@ -82,11 +82,11 @@ encore dans des applications en production, et leur présence est un signal d'al
 
 ### Le mode ECB, en une image
 
-Le mode ECB chiffre chaque bloc indépendamment, avec la même clé. Conséquence
-spectaculaire : si l'on chiffre une image dont de grandes zones sont de même couleur,
-les blocs identiques donnent des chiffrés identiques — et l'image reste **reconnaissable
-dans le chiffré**. Le contour du sujet apparaît, en pixels chiffrés. C'est l'exemple
-classique du pingouin : chiffré en ECB, il reste un pingouin.
+Le mode ECB chiffre chaque bloc indépendamment avec la même clé. Conséquence
+spectaculaire : sur une image comportant de grandes zones de même couleur, les blocs
+identiques donnent des chiffrés identiques, et l'image reste **reconnaissable dans le
+chiffré** — le contour du sujet apparaît en pixels chiffrés. Chiffré en ECB, le pingouin
+célèbre reste un pingouin.
 
 > [!WARNING]
 > ECB ne fuit pas « un peu » : il fuit la structure complète des données répétées. Sur
@@ -95,37 +95,36 @@ classique du pingouin : chiffré en ECB, il reste un pingouin.
 
 ### Les mots de passe ne se chiffrent pas
 
-Une confusion coûteuse consiste à **chiffrer** les mots de passe des utilisateurs pour
-les stocker. Cela revient à garder une clé qui rend tout lisible en cas de fuite de la
-base. On stocke une **empreinte salée**, calculée par une fonction lente dédiée — et on
-ne peut pas « retrouver » le mot de passe, seulement le vérifier.
+Une confusion coûteuse : **chiffrer** les mots de passe pour les stocker. C'est garder
+une clé qui rend tout lisible en cas de fuite de la base. On stocke une **empreinte
+salée** calculée par une fonction lente dédiée — on ne « retrouve » jamais le mot de
+passe, on le vérifie.
 
 ---
 
 ## III. Les fuites indirectes
 
-Le plus difficile à repérer n'est pas l'algorithme : c'est ce qui l'entoure. Un
+Le plus difficile à repérer n'est pas l'algorithme mais ce qui l'entoure : un
 chiffrement impeccable se casse par le comportement du programme qui l'utilise.
 
 ### La comparaison qui fuite par chronométrage
 
-Comparer deux empreintes avec `==` s'arrête au premier caractère différent. En
-mesurant le temps de réponse, un attaquant reconstruit la valeur attendue caractère par
+Comparer deux empreintes avec `==` s'arrête au premier caractère différent : en mesurant
+le temps de réponse, un attaquant reconstruit la valeur attendue caractère par
 caractère. La parade est `hmac.compare_digest`, qui met toujours le même temps.
 
 ### Le nonce réutilisé
 
-Un vecteur d'initialisation ou un nonce réutilisé avec la même clé ruine le
-chiffrement : en GCM, cela révèle la relation entre deux messages et invalide
-l'authentification. Le nonce se tire au hasard (ou se compte sans jamais se répéter),
-et on ne le réutilise jamais.
+Un IV ou un nonce réutilisé avec la même clé ruine le chiffrement : en GCM, cela révèle
+la relation entre deux messages et invalide l'authentification. Le nonce se tire au
+hasard, ou se compte sans jamais se répéter.
 
 ### Le sel absent
 
 Deux utilisateurs qui choisissent le même mot de passe produisent la même empreinte :
-en regardant la base, on repère les mots de passe fréquents et on attaque tout le monde
-en une passe. Le **sel** — une valeur aléatoire propre à chaque utilisateur, ajoutée
-avant le hachage — rend chaque empreinte unique.
+on repère les mots de passe fréquents dans la base et on attaque tout le monde en une
+passe. Le **sel** — valeur aléatoire propre à chaque utilisateur, ajoutée avant le
+hachage — rend chaque empreinte unique.
 
 ### Les messages d'erreur trop bavards
 

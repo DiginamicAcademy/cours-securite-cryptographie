@@ -7,7 +7,7 @@
 > analytique. Sur ce trajet, tout passe par le réseau. Si un seul tronçon n'est pas
 > chiffré, c'est du clair qui circule — et personne ne s'en aperçoit, car rien ne casse.
 
-**Durée de lecture :** 55 min · **Prérequis :** les chapitres [Données au repos](09-donnees-au-repos.md)
+**Durée de lecture :** 50 min hors approfondissements facultatifs · **Prérequis :** les chapitres [Données au repos](09-donnees-au-repos.md)
 et [Gestion des secrets](10-secrets.md)
 
 ---
@@ -45,8 +45,7 @@ Base de prod ──> Staging ──> Orchestrateur ──> Stockage objet ──
 L'objection classique est « tout cela reste dans notre réseau ». Elle ne tient plus :
 les clusters sont partagés, les services sont managés par des tiers, les accès de
 support traversent le périmètre, et une machine compromise dans le réseau lit tout ce
-qui passe en clair. Le chiffrement des flux ne coûte presque rien — son absence non
-plus, jusqu'au jour où elle coûte tout.
+qui passe en clair.
 
 ### Les mesures, par tronçon
 
@@ -86,10 +85,9 @@ au repos et le chiffrement de colonne prennent tout leur sens.
 
 ### Chiffrer par colonne, séparer par domaine
 
-Le principe est celui du chapitre « Données au repos » : les attributs sensibles —
-identifiants, coordonnées, données de santé, consommations rattachées à une personne —
-sont chiffrés par l'application avant l'écriture. Ce qui change en contexte data, c'est
-la **gestion des clés** :
+Le principe est celui du chapitre [Données au repos](09-donnees-au-repos.md) : les
+attributs sensibles sont chiffrés par l'application avant l'écriture. Ce qui change en
+contexte data, c'est la **gestion des clés** :
 
 - une clé par **domaine** de données (par table, par client, par filière) plutôt
   qu'une clé unique : la fuite d'une clé n'expose qu'un domaine ;
@@ -165,8 +163,8 @@ Concrètement, dans une chaîne data :
 
 ## IV. Aller plus loin
 
-*Ces approfondissements sont facultatifs : ils ne sont jamais exigés pour terminer la
-journée.*
+🔁 **Pour aller plus loin (facultatif)** — à lire si le créneau le permet, rien
+d'obligatoire n'en dépend.
 
 - **Chiffrement homomorphe** : il permet de calculer **sur** des données chiffrées —
   additionner, agréger, sans jamais déchiffrer. Le résultat, une fois déchiffré, est

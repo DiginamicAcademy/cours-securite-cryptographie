@@ -1,6 +1,6 @@
 # Exercice — Chiffrer une colonne sensible
 
-> **Nature :** exercice · **Durée :** 1 h 15 · **Notion :** données au repos — chiffrer une colonne, migrer les lignes, retrouver une fiche
+> **Nature :** exercice · **Durée :** 1 h · **Notion :** données au repos — chiffrer une colonne, migrer les lignes, retrouver une fiche
 > **Lien :** chapitre [Données au repos](../09-donnees-au-repos.md)
 > **Objectif :** rendre une colonne de coordonnées bancaires illisible dans la base,
 > tout en restant capable de payer les salariés et de retrouver une fiche.
@@ -79,10 +79,8 @@ tout à qui lit la base.
 
 ## Attendu
 
-- un module Python exécutable, avec les fonctions de chiffrement, de migration et de
-  recherche ;
-- un court rapport pour les parties 1 et 3 (une dizaine de lignes suffit) ;
-- les réponses de la partie 4, reliées à votre implémentation.
+Un module Python exécutable (chiffrement, migration, recherche) et un court rapport —
+une dizaine de lignes suffisent — pour les parties 1, 3 et 4, relié à l'implémentation.
 
 ---
 

@@ -1,6 +1,6 @@
 # Exercice — Diagnostiquer une configuration TLS
 
-> **Nature :** exercice · **Durée :** 45 min · **Notion :** TLS — diagnostiquer et corriger une configuration HTTPS
+> **Nature :** exercice · **Durée :** 30 min · **Notion :** TLS — diagnostiquer et corriger une configuration HTTPS
 > **Lien :** chapitre [TLS en pratique](../07-tls-en-pratique.md)
 > **Objectif :** lire une configuration HTTPS, repérer ses faiblesses et proposer la
 > correction qui va avec.
@@ -59,17 +59,15 @@ server {
 
 ## Consignes
 
-### Partie 1 — Repérer les faiblesses
+### Partie 1 — Repérer les faiblesses et les classer
 
 Listez les écarts entre cette configuration et la politique de sécurité interne.
 Visez au moins **six** constats : deux concernent les certificats ou les versions,
 deux les algorithmes, deux le comportement du serveur (ce qu'il accepte, ce qu'il
 renvoie).
 
-### Partie 2 — Classer par gravité
-
-Classez chaque constat dans l'une des trois catégories suivantes, et justifiez en
-une phrase :
+Donnez directement à chaque constat sa ligne de configuration et sa gravité, justifiée
+en une phrase :
 
 | Catégorie | Signification |
 | --- | --- |
@@ -77,13 +75,13 @@ une phrase :
 | **Important** | La garantie tient, mais un scénario réaliste la contourne. |
 | **Confort** | Bonne pratique à mettre en place, sans urgence. |
 
-### Partie 3 — Corriger la configuration
+### Partie 2 — Corriger la configuration
 
 Réécrivez les directives Nginx concernées pour respecter la politique interne. On
 attend un bloc de configuration complet et commenté, prêt à être déployé — pas une
 liste de conseils.
 
-### Partie 4 — Vérifier le résultat
+### Partie 3 — Vérifier le résultat
 
 Indiquez les commandes à exécuter sur le serveur pour confirmer que chaque correction
 est effective, et le résultat qui prouve la réussite. Prévoyez au moins une
@@ -95,8 +93,7 @@ vérification côté serveur (`openssl`) et une côté client (`curl` ou le navi
 
 Avant de passer au corrigé, vérifiez que :
 
-- [ ] J'ai listé au moins six constats, chacun relié à une ligne précise de la configuration.
-- [ ] Chaque constat porte une gravité justifiée en une phrase.
+- [ ] J'ai listé au moins six constats, chacun relié à une ligne précise de la configuration et porteur d'une gravité justifiée en une phrase.
 - [ ] Ma configuration corrigée respecte **tous** les points de la politique interne (versions, suites, HSTS, redirection, certificat).
 - [ ] J'ai écrit une commande de vérification par correction, avec le résultat attendu.
 - [ ] Je peux expliquer pourquoi un site « en HTTPS » peut malgré tout être faible.

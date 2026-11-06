@@ -10,7 +10,7 @@
 > trois ans. Un fichier `.env` commité par erreur, c'est exactement la même chose — à
 > l'échelle de votre projet.
 
-**Durée de lecture :** 55 min · **Prérequis :** les notions de clé et de secret (journée
+**Durée de lecture :** 50 min hors approfondissements facultatifs · **Prérequis :** les notions de clé et de secret (journée
 précédente)
 
 ---
@@ -45,17 +45,16 @@ classée. Or un dépôt Git n'est pas un tiroir :
   publics en continu, à la recherche exactement de ces motifs — une clé exposée est
   souvent exploitée en quelques minutes.
 
-C'est la leçon de l'incident de 2023 : la faille n'était ni un algorithme cassé ni une
-injection sophistiquée. C'était **une chaîne de caractères laissée au mauvais
-endroit**, et un jeton dont personne n'avait réduit la durée de vie ni la portée.
+C'est la leçon de l'incident de 2023 : ni algorithme cassé, ni injection sophistiquée —
+juste **une chaîne de caractères laissée au mauvais endroit**, et un jeton dont
+personne n'avait borné la durée de vie ni la portée.
 
 ### La clé à côté des données
 
-La journée tourne autour d'un constat plus ancien. En 2011, la PlayStation Network est
-compromise : 77 millions de comptes concernés. Les mots de passe étaient chiffrés —
-mais, selon les analyses publiées après l'incident, la clé de chiffrement était
-stockée sur le même périmètre que les données protégées. L'attaquant qui prend l'un
-prend l'autre.
+Le constat est plus ancien que l'incident ci-dessus, et il a un nom : la **PlayStation
+Network**, en 2011 — 77 millions de comptes, raconté la journée précédente. Les mots de
+passe y étaient chiffrés, mais la clé dormait sur le même périmètre que les données
+protégées. L'attaquant qui prend l'un prend l'autre.
 
 > [!DANGER]
 > Chiffrer avec une clé rangée à côté du chiffré, c'est enfermer la clé dans la
@@ -183,8 +182,8 @@ tête.
 
 ## IV. Aller plus loin
 
-*Ces approfondissements sont facultatifs : ils ne sont jamais exigés pour terminer la
-journée.*
+🔁 **Pour aller plus loin (facultatif)** — à lire si le créneau le permet, rien
+d'obligatoire n'en dépend.
 
 - **HashiCorp Vault** : le coffre de référence en environnement hétérogène. Il va
   au-delà du stockage : secrets dynamiques à durée de vie limitée, renouvellement

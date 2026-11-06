@@ -6,40 +6,24 @@
 
 ---
 
-## Partie 1 — Repérer les faiblesses
+## Partie 1 — Repérer les faiblesses et les classer
 
-**Éléments attendus :**
+**Éléments attendus :** sept constats, du plus grave au plus accessoire.
 
-| N° | Constat | Où dans la configuration |
-| --- | --- | --- |
-| 1 | Le certificat est **auto-signé** (`boutique-selfsigned.crt`) : il chiffre, mais n'authentifie personne. | `ssl_certificate` |
-| 2 | Les protocoles **TLSv1** et **TLSv1.1** sont acceptés alors que la politique n'autorise que 1.2 et 1.3. | `ssl_protocols` |
-| 3 | Les suites **RC4, DES, 3DES, MD5, EXPORT** sont toutes faibles ou cassées ; aucune suite AEAD n'est proposée. | `ssl_ciphers` |
-| 4 | Aucun en-tête **HSTS** n'est renvoyé : rien n'empêche un retour en clair. | bloc `443` (absent) |
-| 5 | Le serveur `80` **sert le contenu en clair** au lieu de rediriger vers `https://`. | premier bloc `server` |
-| 6 | Aucune **chaîne de certification** Let's Encrypt n'est utilisée, alors que la politique l'impose — et donc aucun renouvellement automatisé. | `ssl_certificate` |
-| 7 | `ssl_prefer_server_ciphers off` laisse le client choisir la suite : sans gravité en soi, mais à revoir quand la liste des suites est restreinte. | `ssl_prefer_server_ciphers` |
+| N° | Constat | Où dans la configuration | Gravité | Pourquoi ce degré |
+| --- | --- | --- | --- | --- |
+| 1 | Le certificat est **auto-signé** (`boutique-selfsigned.crt`) : il chiffre, mais n'authentifie personne. | `ssl_certificate` | **Bloquant** | Le navigateur ne peut pas authentifier le serveur : la garantie d'identité de TLS est absente. |
+| 2 | Le serveur `80` **sert le contenu en clair** au lieu de rediriger vers `https://`. | premier bloc `server` | **Bloquant** | Tant qu'une version en clair répond, un attaquant peut s'y tenir — le chiffrement devient optionnel. |
+| 3 | Les protocoles **TLSv1** et **TLSv1.1** sont acceptés alors que la politique n'autorise que 1.2 et 1.3. | `ssl_protocols` | **Important** | Un client malveillant peut forcer ces versions, dont les attaques sont connues (BEAST) et le statut déprécié. |
+| 4 | Les suites **RC4, DES, 3DES, MD5, EXPORT** sont toutes faibles ou cassées ; aucune suite AEAD n'est proposée. | `ssl_ciphers` | **Important** | La confidentialité de la session dépend de la suite négociée ; avec RC4 ou 3DES, elle est théorique. |
+| 5 | Aucun en-tête **HSTS** n'est renvoyé : rien n'empêche un retour en clair. | bloc `443` (absent) | **Important** | Le site est protégé aujourd'hui, mais rien ne garantit la prochaine connexion contre un *downgrade*. |
+| 6 | Aucune **chaîne de certification** Let's Encrypt n'est utilisée, alors que la politique l'impose — et donc aucun renouvellement automatisé. | `ssl_certificate` | **Important** | C'est la cause la plus fréquente de panne réelle : le certificat finit par expirer. |
+| 7 | `ssl_prefer_server_ciphers off` laisse le client choisir la suite. | `ssl_prefer_server_ciphers` | **Confort** | Le réglage n'est pas une faille ; il complète une liste de suites déjà restreinte. |
 
-**Ce qu'il faut retenir :** le constat 5 est celui que l'on rate le plus souvent. On
+**Ce qu'il faut retenir :** le constat 2 est celui que l'on rate le plus souvent. On
 regarde le bloc `443` avec soin, et on oublie que le bloc `80` répond encore — le
 site est donc accessible en clair, tout simplement, pour qui tape l'adresse sans le
 `s`.
-
----
-
-## Partie 2 — Classer par gravité
-
-**Éléments attendus :**
-
-| Constat | Gravité | Justification |
-| --- | --- | --- |
-| 1. Certificat auto-signé | **Bloquant** | Le navigateur ne peut pas authentifier le serveur : la garantie d'identité de TLS est absente. |
-| 5. Contenu servi en `http://` | **Bloquant** | Tant qu'une version en clair répond, un attaquant peut s'y tenir — le chiffrement devient optionnel. |
-| 2. TLSv1 / TLSv1.1 acceptés | **Important** | Un client malveillant peut forcer ces versions, dont les attaques sont connues (BEAST) et le statut déprécié. |
-| 3. Suites faibles | **Important** | La confidentialité de la session dépend de la suite négociée ; avec RC4 ou 3DES, elle est théorique. |
-| 4. HSTS absent | **Important** | Le site est protégé aujourd'hui, mais rien ne garantit la prochaine connexion contre un *downgrade*. |
-| 6. Renouvellement non automatisé | **Important** | C'est la cause la plus fréquente de panne réelle : le certificat finit par expirer. |
-| 7. `ssl_prefer_server_ciphers` | **Confort** | Le réglage n'est pas une faille ; il complète une liste de suites déjà restreinte. |
 
 **Erreurs fréquentes :** classer le HSTS en « confort ». L'en-tête est court, mais il
 ferme la dernière porte du *downgrade* : c'est lui qui transforme « le site sait
@@ -49,7 +33,7 @@ bloquants doivent être traités en premier.
 
 ---
 
-## Partie 3 — Corriger la configuration
+## Partie 2 — Corriger la configuration
 
 **Éléments attendus :**
 
@@ -100,7 +84,7 @@ server {
 
 ---
 
-## Partie 4 — Vérifier le résultat
+## Partie 3 — Vérifier le résultat
 
 **Éléments attendus :**
 
@@ -125,7 +109,8 @@ déclenche le renouvellement avant expiration, place les fichiers dans
 `/etc/letsencrypt/live/`, puis recharge Nginx via un crochet post-renouvellement. La
 surveillance compte : une alerte est envoyée si un certificat expire dans moins de
 quinze jours ou si le dernier renouvellement a échoué — c'est exactement le défaut
-qui a causé les pannes de décembre 2018 et de février 2020 citées dans le cours.
+qui a causé les deux pannes racontées dans l'approfondissement du chapitre TLS
+(décembre 2018, février 2020).
 
 **OCSP stapling :** le serveur interroge lui-même l'autorité sur la validité du
 certificat et joint la réponse à la poignée de main (`ssl_stapling on;
