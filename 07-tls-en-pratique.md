@@ -263,4 +263,69 @@ renvoyé un en-tête.
 
 ---
 
+## 🧠 Vérifiez vos acquis
+
+*Formatif, jamais noté. Répondez sans relire le chapitre, puis cochez. Les réponses sont juste après le séparateur : ce qui compte est de repérer où vous vacillez, pas de faire 5 sur 5.*
+
+**1.** Un site chiffre parfaitement le canal, mais son certificat n'est pas valide pour son domaine. Que dit le cours sur cette situation ?
+
+- A. Rien de grave : la confidentialité est assurée
+- B. La première garantie sans la seconde ne vaut rien : on chiffre vers l'imposteur pendant qu'on vous vole le secret
+- C. Le navigateur bascule automatiquement en HTTP pour continuer
+- D. Le certificat n'intervient qu'au renouvellement, pas à la connexion
+
+- [ ] ✓ je savais
+
+**2.** Au troisième temps de la poignée de main, que obtiennent le client et le serveur ?
+
+- A. La clé privée du serveur
+- B. Une clé de session symétrique, calculée de part et d'autre, qui chiffre tout le reste de la conversation
+- C. La liste complète des suites de chiffrement acceptées
+- D. L'empreinte du certificat racine
+
+- [ ] ✓ je savais
+
+**3.** À quoi sert l'en-tête `Strict-Transport-Security` (HSTS) ?
+
+- A. À interdire le retour en clair : pendant `max-age`, le navigateur réécrit `http://` en `https://` avant même d'envoyer la requête
+- B. À bloquer le chargement des scripts externes
+- C. À renouveler automatiquement le certificat avant son expiration
+- D. À forcer le passage à TLS 1.3 sur les clients anciens
+
+- [ ] ✓ je savais
+
+**4.** Que garantit exactement le cadenas affiché par le navigateur ?
+
+- A. Que le site est honnête et qu'on peut lui confier ses données
+- B. Que le canal est chiffré et que le certificat est valide pour ce domaine
+- C. Que l'éditeur du site est l'exploitant réel du serveur
+- D. Que les données stockées sur le serveur sont chiffrées
+
+- [ ] ✓ je savais
+
+**5.** *Question ouverte (3 lignes).* Un audit de la boutique en ligne relève trois lignes : « TLS 1.0 accepté pour compatibilité », « certificat auto-signé », « HSTS absent ». Pour chacune, dites ce qui casse et la correction.
+
+- [ ] ✓ je savais
+
+---
+
+### Réponses
+
+**1. B.** Les deux garanties de TLS sont indissociables : confidentialité du canal **et** authentification du serveur.
+**Pourquoi :** chiffrer un canal vers l'imposteur qui se fait passer pour votre banque, c'est protéger le secret pendant qu'on vous le vole.
+
+**2. B.** Client et serveur calculent la même clé de session, symétrique.
+**Pourquoi :** elle chiffre tout le reste de la conversation, bien plus vite qu'un chiffrement asymétrique — l'asymétrique sert à se rencontrer, le symétrique à discuter.
+
+**3. A.** C'est la réponse à l'attaque du *downgrade*, qui force la version en clair avant même que TLS ne démarre.
+**Pourquoi :** attention à l'ordre posé par le cours — HSTS se déclare **après** avoir vérifié que tout fonctionne en HTTPS, y compris les sous-domaines, sinon on verrouille les utilisateurs hors du site.
+
+**4. B.** Le cadenas dit « canal chiffré et certificat valide pour ce domaine », rien de plus.
+**Pourquoi :** un site d'hameçonnage peut obtenir un certificat valide pour son propre domaine — il chiffre très bien ce qu'il vous vole.
+
+**5.** Attendu : **TLS 1.0 accepté** → version dépréciée et attaquable, les attaquants choisissent toujours le chemin le plus faible ; on limite à TLS 1.2 et 1.3 avec des suites AEAD (AES-GCM, ChaCha20-Poly1305). **Certificat auto-signé** → il chiffre mais n'authentifie rien, n'importe qui peut en fabriquer un ; on passe par une autorité de certification (Let's Encrypt convient). **HSTS absent** → rien n'empêche le downgrade au premier aller-retour ; on ajoute l'en-tête une fois le HTTPS maîtrisé partout.
+**Pourquoi :** une configuration TLS se juge à ses maillons les plus faibles, et les erreurs les plus coûteuses sont opérationnelles, pas mathématiques.
+
+---
+
 [← Chapitre précédent](06-alea-et-cles.md) · [Sommaire](Readme.md) · [Chapitre suivant →](08-pki-et-certificats.md)

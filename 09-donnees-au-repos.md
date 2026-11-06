@@ -229,4 +229,69 @@ d'obligatoire n'en dépend.
 
 ---
 
+## 🧠 Vérifiez vos acquis
+
+*Formatif, jamais noté. Répondez sans relire le chapitre, puis cochez. Les réponses sont juste après le séparateur : ce qui compte est de repérer où vous vacillez, pas de faire 5 sur 5.*
+
+**1.** Le portable d'un salarié, dont le disque est chiffré, est compromis alors que sa session est ouverte et qu'un malware s'exécute avec ses droits. Que lit l'attaquant ?
+
+- A. Rien : le disque est chiffré
+- B. Exactement la même chose qu'avant : le volume est déchiffré tant que la machine tourne
+- C. Uniquement les fichiers ouverts au moment de l'intrusion
+- D. Les fichiers, mais sans les métadonnées
+
+- [ ] ✓ je savais
+
+**2.** Dans la base de DIGICHEESE, comment traiter respectivement l'IBAN d'un fournisseur et le mot de passe d'un client ?
+
+- A. Les deux chiffrés, pour pouvoir les relire en cas de besoin
+- B. Les deux hachés, pour ne jamais stocker la valeur
+- C. L'IBAN chiffré (il doit être relu), le mot de passe haché (il doit être reconnu, jamais relu)
+- D. L'IBAN haché, le mot de passe chiffré
+
+- [ ] ✓ je savais
+
+**3.** Une colonne « IBAN » passe en chiffrement applicatif. Que constate-t-on ensuite ?
+
+- A. Les requêtes fonctionnent comme avant, seules les écritures ralentissent
+- B. La colonne change de nature : plus de `LIKE`, plus de tri, plus de jointure dessus
+- C. Deux IBAN identiques donnent la même valeur stockée, ce qui facilite la recherche
+- D. La base peut indexer la colonne chiffrée comme n'importe quelle colonne
+
+- [ ] ✓ je savais
+
+**4.** Quelle affirmation sur les sauvegardes est correcte ?
+
+- A. Une sauvegarde chiffrée dont la clé est sur le même disque est chiffrée
+- B. Une sauvegarde non testée est une hypothèse : seule une restauration périodique, datée et documentée prouve qu'elle est utilisable
+- C. Le chiffrement de la sauvegarde dispense de la rendre immuable
+- D. C'est la vitesse de la sauvegarde qui décide du temps d'indisponibilité en cas d'incident
+
+- [ ] ✓ je savais
+
+**5.** *Question ouverte (2-3 lignes).* Il faut quand même pouvoir retrouver « la fiche du fournisseur dont l'IBAN est celui-ci ». Quel compromis le cours propose-t-il, comment fonctionne-t-il, et que révèle-t-il ?
+
+- [ ] ✓ je savais
+
+---
+
+### Réponses
+
+**1. B.** Le chiffrement de disque protège le **support**, pas la **donnée** : le système déchiffre à la volée à la lecture.
+**Pourquoi :** il répond au scénario « le support sort de son environnement » — vol, revente, réparation, mise au rebut. Toute copie qui sort du volume (dump SQL, CSV par courriel, sauvegarde, réplication) repart sans protection.
+
+**2. C.** Chiffrer quand la donnée doit être **relue**, hacher quand elle ne doit être que **reconnue** — jamais l'inverse.
+**Pourquoi :** chiffrer un mot de passe rend sa fuite exploitable par quiconque détient la clé ; hacher un IBAN le rend inutilisable.
+
+**3. B.** La colonne stocke désormais des octets chiffrés et ne se consulte plus. En revanche, chaque écriture produit un chiffré différent : les algorithmes modernes intègrent un *nonce* par message, donc deux IBAN identiques ne donnent pas deux fois la même valeur stockée.
+**Pourquoi :** c'est ce qui limite ce qu'un observateur de la base peut deviner — et la clé doit venir de l'environnement, jamais du code source.
+
+**4. B.** Une sauvegarde se chiffre, se **sépare** de sa clé (autre lieu, autre système, autre autorité — sinon elle est décorée, pas chiffrée), et se **teste**.
+**Pourquoi :** le chiffrement ajoute des modes de défaillance (clé perdue, format oublié) ; et c'est la **durée réelle de la restauration**, pas la vitesse de la sauvegarde, qui décide du temps d'indisponibilité.
+
+**5.** Attendu : l'**index aveugle** — on stocke à côté une empreinte de recherche, par exemple un HMAC de la valeur calculé avec une **autre clé** ; la recherche se fait sur l'empreinte, la lecture sur le chiffré (l'autre approche, déchiffrer et comparer, est linéaire car la base ne peut pas indexer).
+**Pourquoi :** l'index aveugle révèle les **égalités** — deux lignes qui partagent la même valeur. C'est un compromis assumé, à documenter.
+
+---
+
 [← Chapitre précédent](08-pki-et-certificats.md) · [Sommaire](Readme.md) · [Chapitre suivant →](10-secrets.md)

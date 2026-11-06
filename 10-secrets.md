@@ -215,4 +215,69 @@ d'obligatoire n'en dépend.
 
 ---
 
+## 🧠 Vérifiez vos acquis
+
+*Formatif, jamais noté. Répondez sans relire le chapitre, puis cochez. Les réponses sont juste après le séparateur : ce qui compte est de repérer où vous vacillez, pas de faire 5 sur 5.*
+
+**1.** Une clé a été commitée il y a huit mois ; elle a été supprimée au commit suivant. Où se trouve-t-elle encore ?
+
+- A. Nulle part : la suppression l'a effacée
+- B. Dans l'historique du dépôt, et dans les clones, forks, miroirs, caches de CI et sauvegardes du serveur Git
+- C. Dans l'historique uniquement, inaccessible sans droits d'administration
+- D. Dans l'historique, mais les robots des plateformes ne parcourent que la version la plus récente
+
+- [ ] ✓ je savais
+
+**2.** La clé d'API est écrite dans le `Dockerfile` de l'application. Quel est le problème, et quel est le remède ?
+
+- A. Aucun : l'image n'est pas publiée
+- B. La clé est cuite dans l'image et distribuée avec ; elle doit être injectée au démarrage, jamais à la construction
+- C. La clé est lisible dans les journaux ; il suffit de masquer les valeurs sensibles
+- D. La clé doit être remplacée par une variable de construction, ce qui la rend anonyme
+
+- [ ] ✓ je savais
+
+**3.** Le code lit `os.environ["CLE"]` et, si la variable manque, utilise une valeur de repli codée en dur pour ne pas bloquer le démarrage. Que dit le cours ?
+
+- A. C'est une bonne pratique : le service reste disponible
+- B. C'est une faille déguisée en confort : le code doit refuser de démarrer si la variable manque
+- C. C'est neutre, à condition de documenter la valeur de repli
+- D. C'est nécessaire pour les environnements de test
+
+- [ ] ✓ je savais
+
+**4.** Un secret vient d'être découvert dans un dépôt public. Quel est l'ordre des opérations ?
+
+- A. Nettoyer, remplacer, révoquer, prévenir
+- B. Révoquer, remplacer, nettoyer, prévenir
+- C. Prévenir, nettoyer, révoquer, remplacer
+- D. Remplacer, prévenir, nettoyer, révoquer
+
+- [ ] ✓ je savais
+
+**5.** *Question ouverte (2-3 lignes).* Le secret de connexion utilisé par un service en production doit tourner, sans interruption. Décrivez le schéma suivi, et expliquez à quoi sert l'avant-dernière étape.
+
+- [ ] ✓ je savais
+
+---
+
+### Réponses
+
+**1. B.** Un dépôt Git n'est pas un tiroir : l'historique garde tout, le dépôt se copie partout, et les outils indexent — une clé exposée est souvent exploitée en quelques minutes.
+**Pourquoi :** la leçon de l'incident de 2023 — ni algorithme cassé ni injection sophistiquée, juste une chaîne de caractères laissée au mauvais endroit, sans durée de vie ni portée bornées.
+
+**2. B.** La règle du chapitre : un secret ne vit **ni dans le code, ni dans l'image, ni dans les journaux**.
+**Pourquoi :** l'image se diffuse, et avec elle le secret. Même logique pour les fichiers de CI/CD : les jetons vont dans le coffre de secrets de la plateforme, avec la portée la plus petite possible.
+
+**3. B.** Le minimum viable est une variable d'environnement fournie par le déploiement, et un démarrage qui **refuse** si elle manque.
+**Pourquoi :** une variable d'environnement reste lisible par les processus enfants et visible dans certaines inspections — suffisant pour un petit projet, insuffisant quand les secrets sont nombreux, partagés ou soumis à audit : d'où le coffre de secrets, qui trace chaque accès.
+
+**4. B.** Révoquer (rendre inutilisable, immédiatement), remplacer, nettoyer, prévenir — le nettoyage vient **après** la révocation, jamais avant.
+**Pourquoi :** un secret retiré du code mais encore valide reste exploitable, quelque part dans un clone.
+
+**5.** Attendu : la **période de recouvrement** — émettre le nouveau secret et l'ajouter au coffre à côté de l'ancien ; faire accepter les deux valeurs par le service ; basculer progressivement les consommateurs ; vérifier que plus rien n'utilise l'ancien ; puis révoquer l'ancien.
+**Pourquoi :** l'étape de vérification (les journaux du coffre le disent) évite le scénario classique du secret révoqué trop tôt, utilisé par une tâche de nuit que personne n'avait en tête — la rotation sans traçage est un saut dans le noir, le registre des secrets précède la rotation.
+
+---
+
 [← Chapitre précédent](09-donnees-au-repos.md) · [Sommaire](Readme.md) · [Chapitre suivant →](11-chiffrement-data.md)

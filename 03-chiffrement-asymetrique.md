@@ -178,4 +178,69 @@ journée.*
 
 ---
 
+## 🧠 Vérifiez vos acquis
+
+*Formatif, jamais noté. Répondez sans relire le chapitre, puis cochez. Les réponses sont juste après le séparateur : ce qui compte est de repérer où vous vacillez, pas de faire 5 sur 5.*
+
+**1.** Cent personnes doivent communiquer deux à deux en chiffrement symétrique. Combien de clés distinctes faut-il créer, transmettre, stocker et révoquer ?
+
+- A. 100
+- B. 200
+- C. 4 950
+- D. Autant que nécessaire, mais une seule suffit si elles sont longues
+
+- [ ] ✓ je savais
+
+**2.** Alice veut envoyer un document que Bob est le seul à pouvoir lire, en asymétrique. Quelle clé utilise-t-elle pour chiffrer ?
+
+- A. Sa propre clé publique
+- B. La clé publique de Bob
+- C. La clé privée de Bob
+- D. La clé privée d'Alice
+
+- [ ] ✓ je savais
+
+**3.** Pourquoi ne chiffre-t-on jamais les données directement avec RSA ?
+
+- A. Parce que RSA est lent et que la taille du message est bornée par celle de la clé
+- B. Parce que RSA n'est pas un algorithme public
+- C. Parce que RSA ne chiffre que des nombres premiers
+- D. Parce que RSA ne chiffre que des clés de 128 bits
+
+- [ ] ✓ je savais
+
+**4.** Que faut-il retenir des courbes elliptiques (ECC) par rapport à RSA ?
+
+- A. Elles sont plus sûres à taille de clé égale, mais incompatibles avec TLS
+- B. Elles offrent la même sécurité avec des clés bien plus courtes
+- C. Elles suppriment le besoin de clé privée
+- D. Elles remplacent l'échange de clés par la signature
+
+- [ ] ✓ je savais
+
+**5.** *Question ouverte (2-3 lignes).* Deux machines qui ne se sont jamais parlé conviennent d'une clé de session sur un canal public, que l'observateur ne peut pas reconstituer. Nommez ce mécanisme, puis replacez-le dans les trois temps du cours : que fait chacun des trois ?
+
+- [ ] ✓ je savais
+
+---
+
+### Réponses
+
+**1. C.** 4 950 clés : le nombre de paires croît bien plus vite que le nombre d'interlocuteurs (dix personnes en demandent déjà 45).
+**Pourquoi :** c'est le talon d'Achille du symétrique — la distribution. Un algorithme inviolable ne protège rien si la clé a transité par un canal non maîtrisé.
+
+**2. B.** La clé publique du destinataire : n'importe qui peut chiffrer, mais **lui seul** déchiffre, avec sa clé privée.
+**Pourquoi :** sans la clé privée, on ne revient pas au clair — c'est ce qui permet de publier la clé publique sans rien compromettre.
+
+**3. A.** RSA est lent et borné en taille : on chiffre **une clé de session** avec la clé publique du destinataire, et les données avec cette clé en AES-GCM.
+**Pourquoi :** c'est le principe **hybride** — l'asymétrique résout la distribution, le symétrique assure le volume.
+
+**4. B.** 256 bits en ECC valent plusieurs milliers de bits RSA, d'où des calculs plus rapides et des certificats plus légers.
+**Pourquoi :** la différence est la taille de clé pour une sécurité équivalente, pas un changement de rôle — la clé privée reste le seul secret.
+
+**5.** Attendu : l'échange de clés de **Diffie-Hellman** — chacune combine sa valeur secrète avec la valeur publique de l'autre et les deux calculs aboutissent au même résultat. Les trois temps : **authentifier** l'interlocuteur (certificat, signature), **convenir** d'une clé de session (échange de clés), puis **chiffrer** les données en symétrique.
+**Pourquoi :** l'asymétrique sert à se rencontrer, le symétrique à discuter — chaque temps répond à une question différente.
+
+---
+
 [← Chapitre précédent](02-chiffrement-symetrique.md) · [Sommaire](Readme.md) · [Chapitre suivant →](04-hachage-et-signature.md)

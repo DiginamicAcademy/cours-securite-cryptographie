@@ -226,4 +226,69 @@ journée.*
 
 ---
 
+## 🧠 Vérifiez vos acquis
+
+*Formatif, jamais noté. Répondez sans relire le chapitre, puis cochez. Les réponses sont juste après le séparateur : ce qui compte est de repérer où vous vacillez, pas de faire 5 sur 5.*
+
+**1.** On modifie un seul caractère d'un fichier, puis on recalcule son empreinte. Que constate-t-on ?
+
+- A. L'empreinte change très peu : elle reflète la proximité des contenus
+- B. L'empreinte est complètement différente, alors que le même contenu redonne toujours la même
+- C. L'empreinte ne change pas : elle ne porte que sur la longueur
+- D. Impossible à prévoir : le hachage n'est pas déterministe
+
+- [ ] ✓ je savais
+
+**2.** Un collègue vérifie l'intégrité des installateurs téléchargés avec MD5, « parce que c'est plus court ». Que lui répondez-vous ?
+
+- A. C'est acceptable : MD5 suffit dès qu'il ne s'agit pas de secrets
+- B. MD5 est cassée : on fabrique des collisions volontairement, elle est à proscrire même pour vérifier un fichier
+- C. MD5 est seulement un peu faible : il faut la combiner avec SHA-1
+- D. Il faut utiliser SHA-1, qui est la recommandation actuelle
+
+- [ ] ✓ je savais
+
+**3.** DIGICHEESE reçoit des notifications de son transporteur et veut vérifier qu'elles viennent bien de lui ; une clé est partagée entre les deux partenaires. Quel outil choisir ?
+
+- A. Un hachage simple, l'empreinte étant publiée sur le site du transporteur
+- B. Un HMAC, calculé avec la clé partagée
+- C. Une signature avec la clé privée de DIGICHEESE
+- D. Une comparaison des longueurs de message
+
+- [ ] ✓ je savais
+
+**4.** Dans le code de vérification, le code reçu est comparé au code recalculé avec `==`. Quel est le problème ?
+
+- A. Aucun : c'est la comparaison attendue en Python
+- B. La comparaison s'arrête au premier caractère différent : en mesurant le temps de réponse, un attaquant reconstruit le code
+- C. `==` ne compare pas les chaînes de manière déterministe
+- D. La comparaison doit se faire sur un extrait du code, pas sur la totalité
+
+- [ ] ✓ je savais
+
+**5.** *Question ouverte (2-3 lignes).* Le HMAC authentifie l'émetteur, mais ne permet pas de trancher devant un tiers. Expliquez pourquoi, et ce que la signature numérique apporte de plus.
+
+- [ ] ✓ je savais
+
+---
+
+### Réponses
+
+**1. B.** Une empreinte de taille fixe, déterministe, qui bascule complètement au moindre bit modifié.
+**Pourquoi :** c'est ce qui rend la comparaison utile à distance — et encore faut-il comparer la **totalité** de la valeur : une empreinte tronquée perd sa résistance aux collisions.
+
+**2. B.** MD5 comme SHA-1 sont cassés au sens cryptographique : des collisions sont produites volontairement (collision SHA-1 publiée en 2017).
+**Pourquoi :** les employer pour authentifier un contenu, c'est accepter qu'un adversaire produise un autre contenu de même empreinte. Les choix recommandés sont SHA-2 (SHA-256, SHA-512) et SHA-3.
+
+**3. B.** Sans la clé, on ne peut pas produire un code valide pour un message donné : c'est exactement le besoin « un message vient d'un partenaire qui partage une clé ».
+**Pourquoi :** le hachage seul n'authentifie pas — qui remplace le fichier remplace l'empreinte affichée à côté, et la comparaison reste bonne.
+
+**4. B.** C'est une fuite par chronométrage (*timing attack*) : la comparaison doit se faire avec `hmac.compare_digest`.
+**Pourquoi :** une comparaison ordinaire s'arrête au premier caractère différent et livre donc, mesure après mesure, la position exacte de la divergence.
+
+**5.** Attendu : la clé HMAC est **partagée**, donc l'émetteur peut nier et le destinataire, qui la connaît aussi, pourrait fabriquer un message à sa place — devant un tiers, personne ne sait qui dit vrai. La signature se produit avec la **clé privée** de l'émetteur (lui seul) et se vérifie avec sa **clé publique** : authentification pour tous et **non-répudiation**.
+**Pourquoi :** une clé unique et non partagée rend le geste attribuable ; la signature ne prouve pour autant ni la vérité du contenu, ni la confidentialité.
+
+---
+
 [← Chapitre précédent](03-chiffrement-asymetrique.md) · [Sommaire](Readme.md) · [Chapitre suivant →](05-erreurs-classiques.md)

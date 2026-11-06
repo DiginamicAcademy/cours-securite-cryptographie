@@ -182,4 +182,69 @@ les calculs utiles. Du plus simple au plus structurant :
 
 ---
 
+## 🧠 Vérifiez vos acquis
+
+*Formatif, jamais noté. Répondez sans relire le chapitre, puis cochez. Les réponses sont juste après le séparateur : ce qui compte est de repérer où vous vacillez, pas de faire 5 sur 5.*
+
+**1.** Un traitement lit un million de lignes et déchiffre chacune après un appel au coffre de clés. Où est le coût, d'après le tableau du chapitre ?
+
+- A. Dans le calcul du chiffrement : les processeurs récents sont lents en la matière
+- B. Dans l'aller-retour réseau répété sur le coffre de clés : ce coût-là se met en cache
+- C. Dans le stockage : le chiffré est beaucoup plus volumineux
+- D. Dans la poignée TLS, refaite à chaque ligne
+
+- [ ] ✓ je savais
+
+**2.** Un chiffrement appliqué à un service interne le rend lent au point que les équipes demandent sa désactivation. Que pose le chapitre comme garde-fou ?
+
+- A. Il faut maintenir la contrainte : la sécurité ne se négocie pas
+- B. Une protection que les utilisateurs contournent ne protège rien : la sobriété force à chiffrer là où cela compte, et à l'expliquer
+- C. Il faut chiffrer uniquement les sauvegardes
+- D. Il faut remplacer le chiffrement par un contrôle d'accès
+
+- [ ] ✓ je savais
+
+**3.** Pendant le ré-chiffrement d'un gros volume après fuite de clé, l'ancienne clé (fuitée) reste nécessaire. Pourquoi, et qu'en déduit le cours ?
+
+- A. Rien : on supprime la clé fuitée dès la première minute
+- B. Elle sert encore à déchiffrer l'ancien pendant la période à deux clés : d'où l'importance de l'isoler, même si on ne peut pas encore s'en passer
+- C. Elle sert à chiffrer les nouvelles écritures pendant le chantier
+- D. Elle n'est plus nécessaire : le ré-chiffrement se fait en une passe
+
+- [ ] ✓ je savais
+
+**4.** Avant de chiffrer une colonne, quelle attitude le chapitre recommande-t-il ?
+
+- A. Chiffrer systématiquement : le coût est négligeable dans tous les cas
+- B. Mesurer sur le traitement réel, et demander quelle décision métier s'appuie sur la donnée : protège-t-on proportionnellement à sa valeur ?
+- C. Se fier à l'intuition sur ce que « la sécurité, ça coûte cher »
+- D. Comparer avec les autres applications du même éditeur
+
+- [ ] ✓ je savais
+
+**5.** *Question ouverte (3 lignes).* La clé de chiffrement de la base de réservations d'une plateforme de location de vélos est retrouvée dans l'historique d'un dépôt public, où elle traîne depuis plusieurs semaines. Donnez dans l'ordre les quatre actions prioritaires, et dites ce que chaque inversion d'ordre coûterait.
+
+- [ ] ✓ je savais
+
+---
+
+### Réponses
+
+**1. B.** Le calcul, lui, est **faible** : les processeurs récents chiffrent plusieurs gigaoctets par seconde grâce à l'accélération matérielle, et le surcroît de stockage est négligeable.
+**Pourquoi :** le chiffrement n'est presque jamais le goulot d'étranglement — ce qui coûte, c'est l'architecture qui l'entoure : un appel réseau par enregistrement, une clé relue à chaque requête, une poignée de main refaite pour chaque requête HTTP.
+
+**2. B.** Un chiffrement qui rend un service inutilisable finit désactivé, avec l'approbation de tout le monde.
+**Pourquoi :** la sobriété est un garde-fou, pas un renoncement — elle concentre le chiffrement là où il protège vraiment quelque chose.
+
+**3. B.** La méthode est celle des migrations de clés : période à deux clés, migration progressive, vérification de la relecture, puis retrait de l'ancienne.
+**Pourquoi :** tant que les données ne sont pas rechiffrées, elles restent lisibles pour l'attaquant — mais la clé fuitée sert encore à lire l'ancien, donc on l'**isole** à l'étape 1 même sans pouvoir s'en passer.
+
+**4. B.** Mesurer avant d'optimiser : un benchmark sur le traitement réel vaut mieux que dix intuitions.
+**Pourquoi :** la bonne question n'est pas « la sécurité, ça coûte cher ? » mais « protège-t-on proportionnellement à la valeur des données ? » — une donnée que personne ne lit ne mérite ni index ni déchiffrement systématique.
+
+**5.** Attendu, dans l'ordre : **révoquer** (rendre la clé inutilisable, isoler les systèmes qui l'emploient) ; **évaluer** l'exposition (quelles données, quels systèmes, sur quelle période, avec quels accès) ; **ré-chiffrer** avec une clé neuve et remplacer la clé partout où elle sert ; **notifier** (en interne, puis les personnes concernées si des données personnelles sont en jeu). Il faut ensuite comprendre **comment** la clé a fuité et fermer la voie.
+**Pourquoi :** chaque minute sans révocation est une minute d'exploitation possible ; ré-chiffrer avant d'évaluer, c'est réparer à l'aveugle ; notifier sans avoir révoqué, c'exposer pendant la communication ; et l'obligation légale de notification ne dépend pas de la gravité ressentie, mais de la donnée touchée.
+
+---
+
 [← Chapitre précédent](11-chiffrement-data.md) · [Sommaire](Readme.md) · [Chapitre suivant →](A-Glossaire-et-ressources.md)

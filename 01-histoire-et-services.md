@@ -147,4 +147,69 @@ la journée.*
 
 ---
 
+## 🧠 Vérifiez vos acquis
+
+*Formatif, jamais noté. Répondez sans relire le chapitre, puis cochez. Les réponses sont juste après le séparateur : ce qui compte est de repérer où vous vacillez, pas de faire 5 sur 5.*
+
+**1.** Les prix négociés par DIGICHEESE avec ses fournisseurs ne doivent pas tomber chez un concurrent. Quel service de la cryptographie répond à cette exigence ?
+
+- A. L'intégrité
+- B. La confidentialité
+- C. L'authentification
+- D. La non-répudiation
+
+- [ ] ✓ je savais
+
+**2.** Le cours distingue les quatre services de la cryptographie des piliers CID. Lequel de ces éléments n'est **pas** un service rendu par la cryptographie ?
+
+- A. La confidentialité
+- B. L'intégrité
+- C. La disponibilité
+- D. La non-répudiation
+
+- [ ] ✓ je savais
+
+**3.** Le jour où l'ennemi devine le diamètre du bâton, que devient la scytale ?
+
+- A. Elle reste solide : le parchemin reste illisible en l'état
+- B. Elle ne protège plus rien : sans secret partagé, le chiffrement ne vaut plus rien
+- C. Elle ne protège plus la confidentialité, mais garde l'intégrité
+- D. Elle devient plus lente à casser, ce qui suffit
+
+- [ ] ✓ je savais
+
+**4.** Une commande est correctement signée, mais la comptable s'est trompée de quantité. Que garantit la signature ?
+
+- A. Que la commande vient bien d'elle et n'a pas été modifiée, pas que son contenu est juste
+- B. Que la commande est exacte : une signature valide prouve un contenu correct
+- C. Que personne ne pourra lire la commande
+- D. Rien : une commande erronée n'est pas signable
+
+- [ ] ✓ je savais
+
+**5.** *Question ouverte (2-3 lignes).* Dans l'histoire de la boîte à deux cadenas, à aucun moment un cadenas ne circule ouvert. Quel principe du cours cette scène illustre-t-elle, et pourquoi est-ce important pour la suite du cours ?
+
+- [ ] ✓ je savais
+
+---
+
+### Réponses
+
+**1. B.** La confidentialité répond à « seul le destinataire peut lire » — c'est l'exemple même du tableau du chapitre.
+**Pourquoi :** les trois autres services portent sur une autre question : modification en route, identité de l'émetteur, impossibilité de nier.
+
+**2. C.** La disponibilité fait partie des piliers CID, mais pas des services de la cryptographie.
+**Pourquoi :** la cryptographie travaille sur le **contenu** des messages, pas sur leur **présence** : un serveur démonté reste indisponible, chiffré ou non.
+
+**3. B.** Tout repose sur le secret partagé — la taille du bâton, connue de l'émetteur et du destinataire seulement.
+**Pourquoi :** le cours est explicite : sans secret, pas de confidentialité, même avec des mathématiques parfaites.
+
+**4. A.** La cryptographie prouve qu'un message n'a pas été modifié et d'où il vient ; elle ne dit pas que son contenu est juste.
+**Pourquoi :** une commande signée reste une commande erronée si elle a été signée par erreur — la cryptographie est un outil, pas une politique de sécurité.
+
+**5.** Attendu : chacun garde sa clé pour soi et personne d'autre ne la possède — le secret partagé, sans jamais transmettre le secret lui-même. C'est important parce que c'est le principe retrouvé au chapitre sur le chiffrement asymétrique.
+**Pourquoi :** la difficulté n'est pas de chiffrer, elle est de partager le secret sans l'exposer ; c'est tout l'enjeu de la journée.
+
+---
+
 [Sommaire](Readme.md) · [Chapitre suivant →](02-chiffrement-symetrique.md)

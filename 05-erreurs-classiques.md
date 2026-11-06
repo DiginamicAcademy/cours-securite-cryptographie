@@ -177,4 +177,69 @@ journée.*
 
 ---
 
+## 🧠 Vérifiez vos acquis
+
+*Formatif, jamais noté. Répondez sans relire le chapitre, puis cochez. Les réponses sont juste après le séparateur : ce qui compte est de repérer où vous vacillez, pas de faire 5 sur 5.*
+
+**1.** Un développeur a écrit sa propre fonction de mélange pour rendre un champ « illisible », et l'illibilité semble fonctionner. Quelle est la bonne attitude ?
+
+- A. Accepter : si le résultat est illisible, le chiffrement tient
+- B. Écarter : on utilise une bibliothèque éprouvée, et l'effort se porte sur la gestion des clés
+- C. Accepter en attendant, puis faire relire l'algorithme par un collègue
+- D. Améliorer l'algorithme maison en ajoutant un XOR supplémentaire
+
+- [ ] ✓ je savais
+
+**2.** Un fichier image chiffré laisse encore reconnaître le contour du sujet, en pixels chiffrés. Quelle est la cause ?
+
+- A. Le mode ECB : chaque bloc est chiffré indépendamment avec la même clé
+- B. Le padding : le dernier bloc est complété
+- C. La clé trop courte : l'énumération devient possible
+- D. L'absence de sel : les empreintes se ressemblent
+
+- [ ] ✓ je savais
+
+**3.** Comment stocker les mots de passe des clients de DIGICHEESE dans la base ?
+
+- A. Chiffrés avec la clé de l'application, pour pouvoir les restituer
+- B. En empreinte salée, calculée par une fonction lente dédiée
+- C. En clair, avec un accès restreint au compte de service
+- D. En MD5, puisque l'empreinte est à sens unique
+
+- [ ] ✓ je savais
+
+**4.** Le service qui déchiffre les bordereaux renvoie « Clé incorrecte » ou « Format du chiffré invalide » selon le cas. Quel défaut cela constitue-t-il ?
+
+- A. Aucun : une erreur précise aide le support
+- B. Un message trop bavard : la différence d'information renseigne l'attaquant
+- C. Une fuite par chronométrage : la comparaison s'arrête trop tôt
+- D. Un algorithme obsolète : il faut passer à AES
+
+- [ ] ✓ je savais
+
+**5.** *Question ouverte (2-3 lignes).* La revue de code crypto du chapitre tient en six questions. Citez-en au moins trois, et dites pour chacune ce qu'elle attrape comme erreur réelle.
+
+- [ ] ✓ je savais
+
+---
+
+### Réponses
+
+**1. B.** « Ne roule jamais ta propre crypto » est l'une des rares règles absolues du domaine.
+**Pourquoi :** on ne voit pas ses propres faiblesses, les motifs du clair survivent (longueur, répétitions, fréquences), et l'implémentation trahit l'algorithme. La gestion des clés, elle, ne se délègue pas — c'est là que porte l'effort.
+
+**2. A.** C'est l'image du pingouin : ECB fuit la structure complète des données répétées, et la révélation est immédiate sur un CSV, un JSON ou une image.
+**Pourquoi :** deux blocs identiques donnent le même chiffré. Les remplacements sont CBC ou GCM.
+
+**3. B.** Chiffrer les mots de passe, c'est garder une clé qui rend tout lisible en cas de fuite de la base.
+**Pourquoi :** on ne « retrouve » jamais le mot de passe, on le vérifie — d'où une fonction lente dédiée et un sel propre à chaque utilisateur, sans quoi deux mêmes mots de passe donnent la même empreinte et s'attaquent en une passe.
+
+**4. B.** Un service qui déchiffre doit répondre de façon uniforme, sans distinguer ce qui a échoué.
+**Pourquoi :** chaque différence de message — comme chaque différence de temps de réponse — est une information gratuite pour l'attaquant.
+
+**5.** Attendu (trois parmi les six) : **bibliothèque standard ou pas ?** → attrape le chiffrement maison ; **la clé, d'où vient-elle ?** → clé en dur dans le dépôt ; **nonce unique ?** → IV ou nonce réutilisé, qui ruine GCM ; **comparaison constante ?** → `==` à la place de `hmac.compare_digest` ; **sel présent ?** → empreintes identiques pour mots de passe identiques ; **réponse uniforme ?** → messages d'erreur trop précis.
+**Pourquoi :** le plus difficile à repérer n'est pas l'algorithme mais ce qui l'entoure — un chiffrement impeccable se casse par le comportement du programme qui l'utilise.
+
+---
+
 [← Chapitre précédent](04-hachage-et-signature.md) · [Sommaire](Readme.md) · [Chapitre suivant →](06-alea-et-cles.md)

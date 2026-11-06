@@ -266,4 +266,69 @@ journée.*
 
 ---
 
+## 🧠 Vérifiez vos acquis
+
+*Formatif, jamais noté. Répondez sans relire le chapitre, puis cochez. Les réponses sont juste après le séparateur : ce qui compte est de repérer où vous vacillez, pas de faire 5 sur 5.*
+
+**1.** Pourquoi le chiffre de César cède-t-il en une fraction de seconde ?
+
+- A. Parce que l'algorithme est secret et mal documenté
+- B. Parce que la clé ne prend que 25 valeurs : on les essaie toutes
+- C. Parce que les lettres françaises ont une fréquence caractéristique
+- D. Parce que le décalage est inscrit dans le message chiffré
+
+- [ ] ✓ je savais
+
+**2.** La substitution mono-alphabétique offre environ 4 × 10^26 clés possibles et tombe pourtant. Comment ?
+
+- A. Par force brute, comme César
+- B. Par analyse de fréquence : le chiffrement laisse passer la structure de la langue
+- C. Parce que la table de correspondance voyage avec le message
+- D. Parce qu'elle ne réutilise jamais la même image deux fois
+
+- [ ] ✓ je savais
+
+**3.** Dans un fichier chiffré, deux portions identiques du clair produisent exactement le même texte chiffré : les motifs du document réapparaissent. Quel mode est en cause ?
+
+- A. ECB, parce que chaque bloc est chiffré indépendamment avec la même clé
+- B. CBC, parce que chaque bloc est mélangé avec le chiffré du bloc précédent
+- C. GCM, parce qu'il travaille en flot
+- D. Le padding, parce qu'il complète le dernier bloc
+
+- [ ] ✓ je savais
+
+**4.** Pour gagner de la place, un module qui chiffre en AES-CBC réutilise le même vecteur d'initialisation (IV) sur tous les messages. Que faut-il en dire ?
+
+- A. Aucun problème : l'IV n'a pas besoin d'être secret
+- B. C'est un défaut : un IV qui se répète ruine un AES parfaitement configuré
+- C. C'est souhaitable : un IV fixe rend le chiffrement déterministe, donc vérifiable
+- D. Cela n'a d'effet que si la clé est trop courte
+
+- [ ] ✓ je savais
+
+**5.** *Question ouverte (2-3 lignes).* Un module de l'application génère ses secrets de connexion avec `random`. Expliquez pourquoi c'est un défaut, ce qu'on met à la place, et ce que la graine (*seed*) a à voir là-dedans.
+
+- [ ] ✓ je savais
+
+---
+
+### Réponses
+
+**1. B.** La clé est un simple nombre de décalage : 25 valeurs, toutes essayables.
+**Pourquoi :** c'est l'attaque par force brute, et la leçon du chapitre — la robustesse se mesure au **nombre de clés possibles**, pas à la sophistication de la règle.
+
+**2. B.** L'analyse de fréquence ne s'intéresse pas aux clés mais au langage : en comparant la distribution des lettres du chiffré à celle du français, on retrouve la table sans l'avoir connue.
+**Pourquoi :** ce qui a tué la substitution n'est pas un calcul plus rapide, c'est une propriété du texte que le chiffrement laisse filtrer — d'où le principe directeur : ne laisser filtrer **aucune** structure du clair.
+
+**3. A.** C'est exactement le défaut d'ECB, et la raison pour laquelle ce mode est à proscrire.
+**Pourquoi :** CBC mélange chaque bloc avec le chiffré du précédent (les motifs disparaissent) et GCM chiffre **et** authentifie en une passe — c'est le mode à préférer aujourd'hui.
+
+**4. B.** Le chapitre est sans ambiguïté : un IV ou un nonce qui se répète ruine un AES parfaitement configuré — le hasard, ici, n'est pas un ornement.
+**Pourquoi :** l'IV fait diverger deux chiffrements faits avec la même clé, et le cours oppose les deux rôles (la clé est le secret, l'IV la valeur de départ). Le chapitre sur les erreurs classiques enfonce le clou : un IV ou un nonce réutilisé avec la même clé révèle la relation entre deux messages et invalide l'authentification en GCM.
+
+**5.** Attendu : `random` est un PRNG, un générateur pseudo-aléatoire dont la sortie se reconstitue dès qu'on connaît la graine ; on le remplace par `secrets` (ou `os.urandom`), un CSPRNG conçu pour la cryptographie. Une graine prévisible donne une suite prévisible, donc une clé devinable.
+**Pourquoi :** un ordinateur est déterministe — à mêmes entrées, mêmes sorties ; même graine, même suite. C'est pratique pour les tests, fatal pour les clés.
+
+---
+
 [← Chapitre précédent](01-histoire-et-services.md) · [Sommaire](Readme.md) · [Chapitre suivant →](03-chiffrement-asymetrique.md)

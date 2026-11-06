@@ -160,4 +160,69 @@ journée.*
 
 ---
 
+## 🧠 Vérifiez vos acquis
+
+*Formatif, jamais noté. Répondez sans relire le chapitre, puis cochez. Les réponses sont juste après le séparateur : ce qui compte est de repérer où vous vacillez, pas de faire 5 sur 5.*
+
+**1.** Qu'est-ce qu'un CSPRNG comme `secrets` ou `os.urandom` ajoute par rapport à `random` ?
+
+- A. Une sortie plus longue à chaque appel
+- B. De l'entropie : il puise dans l'activité imprévisible de la machine
+- C. Un algorithme tenu secret, donc incassable
+- D. Une graine fixe, qui rend la suite reproductible
+
+- [ ] ✓ je savais
+
+**2.** Pourquoi « une clé, un usage » ?
+
+- A. Parce qu'une clé ne peut techniquement servir qu'à un seul algorithme
+- B. Parce que mélanger les usages multiplie les dégâts d'une fuite : une clé qui tombe, on sait exactement ce qui est touché
+- C. Parce que les clés sont numérotées dans le coffre
+- D. Parce qu'un usage unique accélère le chiffrement
+
+- [ ] ✓ je savais
+
+**3.** On fait tourner la clé qui chiffre les exports de DIGICHEESE. Pourquoi versionner les clés (chaque message porte la référence de celle qui l'a produit) ?
+
+- A. Pour que les messages déjà chiffrés avec l'ancienne restent lisibles pendant la migration
+- B. Pour accélérer le chiffrement des nouveaux messages
+- C. Pour pouvoir détruire l'ancienne clé immédiatement
+- D. Pour prouver que la rotation a eu lieu auprès de l'auditeur
+
+- [ ] ✓ je savais
+
+**4.** Que fait une révocation de clé ?
+
+- A. Elle rend la clé inutilisable pour les opérations futures, mais ne protège pas ce qui a déjà été chiffré avec
+- B. Elle rend illisibles toutes les données chiffrées avec cette clé
+- C. Elle remplace la clé par une nouvelle, sans intervention
+- D. Elle n'a d'effet qu'après la publication de l'inventaire
+
+- [ ] ✓ je savais
+
+**5.** *Question ouverte (2-3 lignes).* Une clé de service utilisée depuis six mois est découverte dans un dépôt devenu public. Décrivez la réaction, dans l'ordre, et dites ce que la rotation régulière aurait changé rétrospectivement.
+
+- [ ] ✓ je savais
+
+---
+
+### Réponses
+
+**1. B.** L'entropie : horloge à haute résolution, bruit matériel, interruptions — et la conception fait qu'une partie de la sortie ne permet pas de prédire la suite.
+**Pourquoi :** une graine faible ou prévisible, c'est une clé devinable, donc un chiffrement qui ne protège rien si parfait soit l'algorithme.
+
+**2. B.** La clé qui chiffre les exports ne doit pas signer des jetons, ni celle qui authentifie un service chiffrer les sauvegardes.
+**Pourquoi :** quand une clé tombe, le périmètre touché doit être connu ; pour les données au repos, une KDF (*Key Derivation Function*) dérive une clé spécifique par usage depuis une clé maîtresse.
+
+**3. A.** On conserve l'ancienne clé en lecture seule le temps de la migration : générer la nouvelle, chiffrer les nouveaux messages avec elle, déchiffrer l'existant avec l'ancienne, migrer les données au repos, puis détruire l'ancienne et le constater.
+**Pourquoi :** une rotation qui rend les archives illisibles n'est pas une rotation, c'est une perte de données.
+
+**4. A.** La révocation est immédiate, avant même de comprendre la fuite — mais elle ne revient pas sur le passé.
+**Pourquoi :** c'est précisément là que la rotation régulière prend son sens : elle **borne la fenêtre d'exposition**.
+
+**5.** Attendu : révoquer **immédiatement** la clé exposée, émettre et injecter la nouvelle (hors dépôt : variable d'environnement, coffre), vérifier que le secret ne reste pas dans l'historique du dépôt et dans les copies, inventorier ce qu'elle protégeait et ce qui a pu être lu pendant six mois, puis documenter l'événement et déclencher la rotation des voisines. Rétrospectivement, une rotation régulière aurait **borné la fenêtre d'exposition** : six mois de validité, c'est la surface attaquable.
+**Pourquoi :** une clé dont on a perdu la trace est une clé compromise — l'inventaire (où sont mes clés, qui y a accès, quand elles ont tourné) précède tout choix d'algorithme.
+
+---
+
 [← Chapitre précédent](05-erreurs-classiques.md) · [Sommaire](Readme.md) · [Chapitre suivant →](07-tls-en-pratique.md)
