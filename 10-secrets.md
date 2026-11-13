@@ -49,6 +49,25 @@ C'est la leçon de l'incident de 2023 : ni algorithme cassé, ni injection soph
 juste **une chaîne de caractères laissée au mauvais endroit**, et un jeton dont
 personne n'avait borné la durée de vie ni la portée.
 
+L'éventail ci-dessous montre pourquoi on ne répare pas un secret commité en supprimant le
+fichier : la suppression ne coupe aucune branche.
+
+```mermaid
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#eef2f9','primaryBorderColor':'#3b5b8d','primaryTextColor':'#1f3f6b','lineColor':'#3b5b8d','secondaryColor':'#dbe6f5','tertiaryColor':'#fde8e8','fontFamily':'DejaVu Sans'}}}%%
+flowchart LR
+    C["Le commit qui contient le secret"] --> H["L'historique Git, pas la tête seule"]
+    H --> P1["Clones locaux et forks"]
+    H --> P2["Miroirs du dépôt"]
+    H --> P3["Caches de la CI"]
+    H --> P4["Sauvegardes du serveur Git"]
+    P1 --> R["Robots qui parcourent les dépôts publics"]
+    P2 --> R
+    R --> X["Exploitation en quelques minutes"]
+```
+
+Une fois l'éventail ouvert, il n'y a plus d'endroit unique à nettoyer. C'est ce qui rend
+l'ordre de la fin de chapitre évident : on ne rattrape pas les copies, on coupe la valeur.
+
 ### La clé à côté des données
 
 Le constat est plus ancien que l'incident ci-dessus, et il a un nom : la **PlayStation
@@ -162,6 +181,10 @@ trimestre) et **à chaque suspicion** d'exposition.
 
 Remplacer un secret utilisé par un service en production suit le même schéma que la
 migration d'une clé de chiffrement : une **période de recouvrement**.
+
+Le planning du chapitre sur l'aléa et la gestion des clés est celui-là même, avec deux clés
+de chiffrement au lieu de deux secrets : les deux valeurs sont valides en même temps, et le
+retrait de l'ancienne vient après la vérification, jamais avant.
 
 1. Émettre le nouveau secret, l'ajouter au coffre **à côté** de l'ancien.
 2. Faire accepter les deux par le service (les deux valeurs sont valides).
