@@ -36,11 +36,26 @@ dépôt temporaire (*staging*) → orchestrateur (Airflow, par exemple) → stoc
 (MinIO ou un équivalent S3) → entrepôt → outils de restitution. Chaque flèche de ce
 schéma est un **fil**, et chaque fil peut être écouté :
 
-```text
-Base de prod ──> Staging ──> Orchestrateur ──> Stockage objet ──> Entrepôt ──> BI
-     │              │              │                 │              │
-   TLS ?          TLS ?          TLS ?             TLS ?          TLS ?
+```mermaid
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#eef2f9','primaryBorderColor':'#3b5b8d','primaryTextColor':'#1f3f6b','lineColor':'#3b5b8d','secondaryColor':'#dbe6f5','tertiaryColor':'#fde8e8','fontFamily':'DejaVu Sans'}}}%%
+flowchart LR
+    subgraph ZC["Zone de confiance — le périmètre qu'on croit maîtriser"]
+        B["Base de prod"] -->|TLS ?| S["Staging"]
+        S -->|TLS ?| O["Orchestrateur"]
+        O -->|TLS ?| ST["Stockage objet"]
+        ST -->|TLS ?| E["Entrepôt"]
+        E -->|TLS ?| BI["Outils de restitution"]
+    end
+    E -->|export CSV| P["Portable de l'analyste"]
+    E -->|fichier livré| T["Un tiers, un partenaire"]
+    linkStyle 5,6 stroke:#b34040,stroke-width:3px
 ```
+
+Deux choses que la simple énumération des maillons ne disait pas. La première : les points de
+sortie, en rouge, qui ne sont pas des flux réseau et ne sont donc pas couverts par le
+transport. La seconde : les cinq « TLS ? » de la chaîne, qui sont cinq cases à remplir —
+et la case « inconnu » est la plus instructive, parce que c'est celle que personne ne
+surveille.
 
 L'objection classique est « tout cela reste dans notre réseau ». Elle ne tient plus :
 les clusters sont partagés, les services sont managés par des tiers, les accès de
