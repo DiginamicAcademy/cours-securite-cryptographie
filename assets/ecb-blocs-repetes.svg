@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 430" width="960" height="430" role="img" aria-label="Deux grilles de vingt blocs côte à côte : le clair à gauche, le chiffré en ECB à droite. Les quatre blocs sombres du clair donnent quatre blocs chiffrés identiques entre eux et toujours à la même place, si bien que le motif réapparaît dans le chiffré.">
+  <defs>
+    <marker id="fleche" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#3b5b8d"/>
+    </marker>
+  </defs>
+  <style>
+    .titre { font-family: DejaVu Sans, Arial, sans-serif; font-size: 24px; font-weight: bold; fill: #1f2937; text-anchor: middle; }
+    .sous { font-family: DejaVu Sans, Arial, sans-serif; font-size: 14px; fill: #4b5563; text-anchor: middle; }
+    .panneau { font-family: DejaVu Sans, Arial, sans-serif; font-size: 18px; font-weight: bold; fill: #1f2937; text-anchor: middle; }
+    .note { font-family: DejaVu Sans, Arial, sans-serif; font-size: 14px; fill: #b34040; text-anchor: middle; }
+    .lien { stroke: #3b5b8d; stroke-width: 2.5; fill: none; marker-end: url(#fleche); }
+  </style>
+
+  <text class="titre" x="480" y="30">Le mode ECB, bloc par bloc</text>
+  <text class="sous" x="480" y="52">chaque bloc est chiffré tout seul, avec la même clé</text>
+
+  <text class="panneau" x="215" y="82">Le clair</text>
+  <text class="panneau" x="705" y="82">Le même fichier, chiffré en ECB</text>
+
+  <!-- Clair, ligne 1 : cinq blocs clairs -->
+  <rect x="40" y="95" width="70" height="70" fill="#eef2f9" stroke="#3b5b8d" stroke-width="1.5"/>
+  <rect x="110" y="95" width="70" height="70" fill="#eef2f9" stroke="#3b5b8d" stroke-width="1.5"/>
+  <rect x="180" y="95" width="70" height="70" fill="#eef2f9" stroke="#3b5b8d" stroke-width="1.5"/>
+  <rect x="250" y="95" width="70" height="70" fill="#eef2f9" stroke="#3b5b8d" stroke-width="1.5"/>
+  <rect x="320" y="95" width="70" height="70" fill="#eef2f9" stroke="#3b5b8d" stroke-width="1.5"/>
+
+  <!-- Clair, ligne 2 : deux blocs sombres, puis trois clairs -->
+  <rect x="40" y="165" width="70" height="70" fill="#3b5b8d" stroke="#1f3f6b" stroke-width="1.5"/>
+  <rect x="110" y="165" width="70" height="70" fill="#3b5b8d" stroke="#1f3f6b" stroke-width="1.5"/>
+  <rect x="180" y="165" width="70" height="70" fill="#eef2f9" stroke="#3b5b8d" stroke-width="1.5"/>
+  <rect x="250" y="165" width="70" height="70" fill="#eef2f9" stroke="#3b5b8d" stroke-width="1.5"/>
+  <rect x="320" y="165" width="70" height="70" fill="#eef2f9" stroke="#3b5b8d" stroke-width="1.5"/>
+
+  <!-- Clair, ligne 3 : trois blocs clairs, puis deux sombres -->
+  <rect x="40" y="235" width="70" height="70" fill="#eef2f9" stroke="#3b5b8d" stroke-width="1.5"/>
+  <rect x="110" y="235" width="70" height="70" fill="#eef2f9" stroke="#3b5b8d" stroke-width="1.5"/>
+  <rect x="180" y="235" width="70" height="70" fill="#eef2f9" stroke="#3b5b8d" stroke-width="1.5"/>
+  <rect x="250" y="235" width="70" height="70" fill="#3b5b8d" stroke="#1f3f6b" stroke-width="1.5"/>
+  <rect x="320" y="235" width="70" height="70" fill="#3b5b8d" stroke="#1f3f6b" stroke-width="1.5"/>
+
+  <!-- Clair, ligne 4 : cinq blocs clairs -->
+  <rect x="40" y="305" width="70" height="70" fill="#eef2f9" stroke="#3b5b8d" stroke-width="1.5"/>
+  <rect x="110" y="305" width="70" height="70" fill="#eef2f9" stroke="#3b5b8d" stroke-width="1.5"/>
+  <rect x="180" y="305" width="70" height="70" fill="#eef2f9" stroke="#3b5b8d" stroke-width="1.5"/>
+  <rect x="250" y="305" width="70" height="70" fill="#eef2f9" stroke="#3b5b8d" stroke-width="1.5"/>
+  <rect x="320" y="305" width="70" height="70" fill="#eef2f9" stroke="#3b5b8d" stroke-width="1.5"/>
+
+  <!-- Chiffré, ligne 1 -->
+  <rect x="530" y="95" width="70" height="70" fill="#dbe6f5" stroke="#1f3f6b" stroke-width="1.5"/>
+  <rect x="600" y="95" width="70" height="70" fill="#dbe6f5" stroke="#1f3f6b" stroke-width="1.5"/>
+  <rect x="670" y="95" width="70" height="70" fill="#dbe6f5" stroke="#1f3f6b" stroke-width="1.5"/>
+  <rect x="740" y="95" width="70" height="70" fill="#dbe6f5" stroke="#1f3f6b" stroke-width="1.5"/>
+  <rect x="810" y="95" width="70" height="70" fill="#dbe6f5" stroke="#1f3f6b" stroke-width="1.5"/>
+
+  <!-- Chiffré, ligne 2 : les deux mêmes blocs, deux mêmes chiffrés -->
+  <rect x="530" y="165" width="70" height="70" fill="#1f3f6b" stroke="#3b5b8d" stroke-width="1.5"/>
+  <rect x="600" y="165" width="70" height="70" fill="#1f3f6b" stroke="#3b5b8d" stroke-width="1.5"/>
+  <rect x="670" y="165" width="70" height="70" fill="#dbe6f5" stroke="#1f3f6b" stroke-width="1.5"/>
+  <rect x="740" y="165" width="70" height="70" fill="#dbe6f5" stroke="#1f3f6b" stroke-width="1.5"/>
+  <rect x="810" y="165" width="70" height="70" fill="#dbe6f5" stroke="#1f3f6b" stroke-width="1.5"/>
+
+  <!-- Chiffré, ligne 3 : idem, de l'autre côté -->
+  <rect x="530" y="235" width="70" height="70" fill="#dbe6f5" stroke="#1f3f6b" stroke-width="1.5"/>
+  <rect x="600" y="235" width="70" height="70" fill="#dbe6f5" stroke="#1f3f6b" stroke-width="1.5"/>
+  <rect x="670" y="235" width="70" height="70" fill="#dbe6f5" stroke="#1f3f6b" stroke-width="1.5"/>
+  <rect x="740" y="235" width="70" height="70" fill="#1f3f6b" stroke="#3b5b8d" stroke-width="1.5"/>
+  <rect x="810" y="235" width="70" height="70" fill="#1f3f6b" stroke="#3b5b8d" stroke-width="1.5"/>
+
+  <!-- Chiffré, ligne 4 -->
+  <rect x="530" y="305" width="70" height="70" fill="#dbe6f5" stroke="#1f3f6b" stroke-width="1.5"/>
+  <rect x="600" y="305" width="70" height="70" fill="#dbe6f5" stroke="#1f3f6b" stroke-width="1.5"/>
+  <rect x="670" y="305" width="70" height="70" fill="#dbe6f5" stroke="#1f3f6b" stroke-width="1.5"/>
+  <rect x="740" y="305" width="70" height="70" fill="#dbe6f5" stroke="#1f3f6b" stroke-width="1.5"/>
+  <rect x="810" y="305" width="70" height="70" fill="#dbe6f5" stroke="#1f3f6b" stroke-width="1.5"/>
+
+  <!-- Correspondance bloc à bloc, dans le couloir central -->
+  <line class="lien" x1="398" y1="200" x2="522" y2="200"/>
+  <line class="lien" x1="398" y1="270" x2="522" y2="270"/>
+
+  <text class="note" x="480" y="400">Quatre blocs identiques dans le clair, quatre chiffrés identiques dans le chiffré.</text>
+  <text class="note" x="480" y="420">Le motif a changé d'aspect, pas de place : il reste lisible après chiffrement.</text>
+</svg>

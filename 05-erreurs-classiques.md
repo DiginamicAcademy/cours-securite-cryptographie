@@ -88,6 +88,16 @@ identiques donnent des chiffrés identiques, et l'image reste **reconnaissable d
 chiffré** — le contour du sujet apparaît en pixels chiffrés. Chiffré en ECB, le pingouin
 célèbre reste un pingouin.
 
+L'image ci-dessous rejoue la démonstration sans le pingouin, dont la version historique
+n'est pas libre : une grille de blocs, dont quatre se répètent.
+
+![Grille de vingt blocs, le clair puis le chiffré en ECB : les quatre blocs identiques du clair donnent quatre chiffrés identiques, toujours à la même place, et le motif survit au chiffrement](assets/ecb-blocs-repetes.svg)
+
+Ce que la grille rend visible, le pingouin le rendait spectaculaire : ce n'est pas le
+chiffrement qui est faible, c'est l'absence de mélange entre blocs qui rend la répétition
+lisible. Le chapitre sur le chiffrement symétrique montre ce que CBC et GCM mettent dans
+le bloc pour que cette grille disparaisse.
+
 > [!WARNING]
 > ECB ne fuit pas « un peu » : il fuit la structure complète des données répétées. Sur
 > des données structurées — un fichier CSV (comma-separated values), un export JSON
@@ -125,6 +135,29 @@ Deux utilisateurs qui choisissent le même mot de passe produisent la même empr
 on repère les mots de passe fréquents dans la base et on attaque tout le monde en une
 passe. Le **sel** — valeur aléatoire propre à chaque utilisateur, ajoutée avant le
 hachage — rend chaque empreinte unique.
+
+Le schéma ci-dessous reprend le parcours complet d'un mot de passe, de l'inscription à la
+connexion, pour montrer d'un seul tenant ce que le texte pose en trois temps : ce qui est
+stocké, et ce qui ne l'est pas.
+
+```mermaid
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#eef2f9','primaryBorderColor':'#3b5b8d','primaryTextColor':'#1f3f6b','lineColor':'#3b5b8d','secondaryColor':'#dbe6f5','tertiaryColor':'#fde8e8','fontFamily':'DejaVu Sans'}}}%%
+flowchart LR
+    subgraph IN["À l'inscription"]
+        M1["Le mot de passe"] --> K1["Fonction lente, PBKDF2, 100 000 itérations"]
+        S1["Un sel aléatoire, propre à l'utilisateur"] --> K1
+        K1 --> ST["Stockés : le sel, qui est public, et l'empreinte"]
+    end
+    subgraph CO["À la connexion"]
+        M2["Le mot de passe saisi"] --> K2["La même fonction, avec le sel stocké"]
+        S2["Le sel stocké à côté de l'empreinte"] --> K2
+        K2 --> CMP{"La même empreinte ?"}
+    end
+```
+
+Le sel n'est pas un secret et il ne peut pas l'être : sans lui, on ne sait plus revérifier
+une empreinte. Ce qu'il casse, c'est l'attaque en une passe — deux personnes ayant choisi
+le même mot de passe n'ont plus rien de commun dans la base.
 
 ### Les messages d'erreur trop bavards
 
