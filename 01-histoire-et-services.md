@@ -58,7 +58,7 @@ chiffrement asymétrique.
 
 > 🧪 **Atelier rapide (5 min)**
 >
-> La fromagerie **DIGICHEESE** (la fromagerie du fil rouge) doit prévenir son
+> La fromagerie **DIGICHEESE** (l'entreprise d'étude du parcours) doit prévenir son
 > transporteur de l'heure de passage.
 > Écrivez « Rendez-vous 22h », puis décalez chaque lettre de trois rangs dans
 > l'alphabet (A devient D, B devient E, et ainsi de suite). Que donne le message ?
@@ -119,7 +119,7 @@ scelle le contenu.
 
 #### Contexte
 
-La fromagerie **DIGICHEESE** (la fromagerie du fil rouge) finalise sa boutique en
+La fromagerie **DIGICHEESE** (l'entreprise d'étude du parcours) finalise sa boutique en
 ligne. L'équipe a noté ses besoins
 de sécurité au tableau blanc, mais personne n'est d'accord sur la technique à
 employer : « on chiffre tout », « on hache tout », « une signature, c'est pareil

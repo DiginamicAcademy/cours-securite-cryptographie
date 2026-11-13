@@ -18,7 +18,7 @@ Un mot de passe mal stocké, une sauvegarde non chiffrée, une clé laissée dan
 
 Les incidents le rappellent régulièrement : en 2011, l'attaque de la PlayStation Network a exposé les données de 77 millions de comptes. La leçon tient en une ligne : chiffrer ne sert à rien si la clé est à portée de l'attaquant.
 
-Ce cours donne les repères pour choisir et mettre en œuvre les bons outils : distinguer hachage, chiffrement et signature ; comprendre ce que garantissent TLS (Transport Layer Security) et les certificats ; chiffrer les données au repos ; gérer les secrets sans les laisser traîner. Tout au long des deux journées, les exemples suivent la fromagerie **DIGICHEESE** (la fromagerie du fil rouge) : ses prix fournisseurs, ses bons de commande, sa boutique en ligne et ses bases de données.
+Ce cours donne les repères pour choisir et mettre en œuvre les bons outils : distinguer hachage, chiffrement et signature ; comprendre ce que garantissent TLS (Transport Layer Security) et les certificats ; chiffrer les données au repos ; gérer les secrets sans les laisser traîner. Tout au long des deux journées, les exemples suivent la fromagerie **DIGICHEESE** (l'entreprise d'étude du parcours) : ses prix fournisseurs, ses bons de commande, sa boutique en ligne et ses bases de données.
 
 ## À l'issue de ce cours
 
