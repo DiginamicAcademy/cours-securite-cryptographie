@@ -105,6 +105,26 @@ le premier réflexe à prendre : chacun répond à une question différente.
 > autant. La cryptographie travaille sur le **contenu** des messages, pas sur leur
 > **présence**.
 
+Le tableau ci-dessus énumère les services dans l'ordre du cours. L'arbre ci-dessous les
+énonce dans l'ordre du problème : celui où l'on part de ce qu'on veut protéger, et où l'on
+remonte à la primitive.
+
+```mermaid
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#eef2f9','primaryBorderColor':'#3b5b8d','primaryTextColor':'#1f3f6b','lineColor':'#3b5b8d','secondaryColor':'#dbe6f5','tertiaryColor':'#fde8e8','fontFamily':'DejaVu Sans'}}}%%
+flowchart TD
+    Q{"Que veux-je garantir ?"}
+    Q -->|lecture restreinte| C["Chiffrement symétrique, ou hybride"]
+    Q -->|aucune modification| H["Hachage, ou HMAC à clé partagée"]
+    Q -->|auteur prouvé| S["Signature numérique"]
+    Q -->|les trois à la fois| T["Hybride et signature"]
+    C -.-> X1["ne prouve pas qui a écrit"]
+    H -.-> X2["ne cache rien du contenu"]
+    S -.-> X3["ne dit pas si le contenu est vrai"]
+```
+
+Chaque feuille dit aussi ce qu'elle **ne fait pas** : c'est la moitié de la réponse, et
+celle qu'on oublie le plus souvent en revue de code.
+
 ### La signature, en une phrase
 
 Le service de non-répudiation repose sur la **signature numérique** : en signant un bon
