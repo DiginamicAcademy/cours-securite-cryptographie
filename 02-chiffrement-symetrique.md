@@ -390,6 +390,30 @@ CBC exige des blocs de même taille : on complète le dernier avec du **padding
 octets de remplissage dont la valeur encode la longueur ajoutée). GCM travaille en
 flot : il combine une suite de bits avec le message, sans complétion.
 
+Le tableau ci-dessus dit ce que chaque mode **est**. Le schéma ci-dessous montre ce qui
+**entre dans le bloc** — et c'est ce qui explique pourquoi ECB répète et pourquoi CBC
+propage.
+
+```mermaid
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#eef2f9','primaryBorderColor':'#3b5b8d','primaryTextColor':'#1f3f6b','lineColor':'#3b5b8d','secondaryColor':'#dbe6f5','tertiaryColor':'#fde8e8','fontFamily':'DejaVu Sans'}}}%%
+flowchart LR
+    subgraph SE["ECB — chaque bloc chiffré tout seul"]
+        E0["Deux blocs clairs identiques"] --> E1["Chiffré 1"]
+        E0 --> E2["Chiffré 2, le même"]
+    end
+    subgraph SC["CBC — le chiffré précédent entre dans le bloc suivant"]
+        C0["Vecteur d'initialisation"] --> C1["Chiffré 1"]
+        C1 --> C2["Chiffré 2"]
+    end
+    subgraph SG["GCM — un compteur, plus une balise"]
+        G0["Nonce et compteur"] --> G1["Chiffré et balise d'intégrité"]
+    end
+```
+
+Rien n'entre dans un bloc ECB, c'est ce qui le rend répétitif. Tout y entre en CBC, par la
+chaîne des chiffrés successifs. GCM ne mélange pas les blocs entre eux : il produit une
+suite dépendante du nonce et ajoute la balise qui authentifie.
+
 ### La clé, le vecteur d'initialisation et le hasard
 
 Deux valeurs entrent en jeu, et on les confond souvent :
