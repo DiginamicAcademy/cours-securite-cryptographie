@@ -69,6 +69,26 @@ des milliards d'années.
 | Signer | Clé privée de l'émetteur | L'émetteur seul | Authentification, non-répudiation |
 | Vérifier une signature | Clé publique de l'émetteur | N'importe qui | Intégrité, preuve d'origine |
 
+Le tableau dit avec quelle clé on agit. Le schéma ci-dessous dit **qui la tient**, et
+c'est la seule chose à retenir de ce chapitre : une personne dans un cas, tout le monde
+dans l'autre.
+
+```mermaid
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#eef2f9','primaryBorderColor':'#3b5b8d','primaryTextColor':'#1f3f6b','lineColor':'#3b5b8d','secondaryColor':'#dbe6f5','tertiaryColor':'#fde8e8','fontFamily':'DejaVu Sans'}}}%%
+flowchart LR
+    subgraph S1["Confidentialité — on chiffre avec la publique de Bob"]
+        A["Alice"] -->|chiffre| P1["Clé publique de Bob, tenue par tout le monde"]
+        P1 --> B["Bob déchiffre avec sa privée, seule à l'avoir"]
+    end
+    subgraph S2["Signature — on signe avec la privée d'Alice"]
+        C["Alice"] -->|signe| P2["Clé privée d'Alice, seule à l'avoir"]
+        P2 --> D["N'importe qui vérifie avec la publique d'Alice"]
+    end
+```
+
+Inversez les deux couloirs et tout s'effondre : on ne signe jamais avec une clé publique,
+et on ne chiffre jamais pour un destinataire avec sa clé privée.
+
 Le point décisif : **sans la clé privée, on ne revient pas au clair**. On peut donc
 publier la clé publique sur un site ou dans un annuaire sans rien compromettre.
 
@@ -102,6 +122,25 @@ C'est le principe **hybride** : l'asymétrique résout la distribution, le sym�
 assure le volume. TLS (Transport Layer Security), les messageries chiffrées et les
 sauvegardes fonctionnent ainsi.
 
+Les quatre étapes ci-dessus sont écrites dans l'ordre, mais deux chiffrements tournent en
+parallèle sur deux objets différents. Le schéma les sépare en deux couloirs qui se
+rejoignent dans un seul paquet.
+
+```mermaid
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#eef2f9','primaryBorderColor':'#3b5b8d','primaryTextColor':'#1f3f6b','lineColor':'#3b5b8d','secondaryColor':'#dbe6f5','tertiaryColor':'#fde8e8','fontFamily':'DejaVu Sans'}}}%%
+flowchart LR
+    D["Les données"] -->|AES-GCM avec la clé de session| CH["Données chiffrées"]
+    K["Clé de session tirée au hasard"] -->|RSA avec la publique de Bob| SC["Clé de session scellée"]
+    CH --> PAQ["Un seul paquet, envoyé"]
+    SC --> PAQ
+    PAQ --> BOB["Bob"]
+    BOB -->|sa clé privée| K2["Clé de session reconstituée"]
+    K2 -->|AES-GCM| CLAIR["Les données au clair"]
+```
+
+L'asymétrique ne porte qu'une valeur courte, le symétrique porte le volume. C'est le
+schéma exact que le chapitre sur TLS retrouvera, en plus compact.
+
 ---
 
 ## III. Les courbes elliptiques et l'échange de clés
@@ -122,6 +161,29 @@ calculs aboutissent au même résultat.
 C'est le cœur de la poignée de main TLS : on convient d'une clé de session en quelques
 messages, puis on bascule en symétrique. L'asymétrique sert à **se rencontrer**, le
 symétrique à **discuter**.
+
+La séquence ci-dessous joue l'échange du point de vue de celui qui écoute. Elle pose à
+plat ce que la phrase précédente laisse en l'air : quelles valeurs traversent vraiment le
+canal, et laquelle n'y passe jamais.
+
+```mermaid
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#eef2f9','primaryBorderColor':'#3b5b8d','primaryTextColor':'#1f3f6b','lineColor':'#3b5b8d','secondaryColor':'#dbe6f5','tertiaryColor':'#fde8e8','fontFamily':'DejaVu Sans'}}}%%
+sequenceDiagram
+    participant A as Alice
+    participant C as Le canal, écouté
+    participant B as Bob
+    A->>C: sa valeur publique
+    C->>B: elle traverse, l'observateur la lit
+    B->>C: sa valeur publique
+    C->>A: elle traverse, l'observateur la lit
+    Note over A: combine sa valeur secrète avec la publique de Bob
+    Note over B: combine sa valeur secrète avec la publique d'Alice
+    Note over A,B: même résultat des deux côtés, et ce résultat ne passe jamais
+```
+
+Seules les deux valeurs publiques circulent. Le secret commun est fabriqué deux fois, de
+part et d'autre, et ne voyage pas — c'est là que s'arrête la protection, car rien dans
+cet échange ne prouve à Alice qui se trouve en face.
 
 > [!TIP]
 > En pratique, on retient trois temps : **authentifier** l'interlocuteur (certificat,
