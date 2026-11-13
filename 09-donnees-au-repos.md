@@ -91,6 +91,22 @@ Toutes les données sensibles ne se traitent pas de la même façon :
 Confondre les deux est coûteux : chiffrer un mot de passe rend sa fuite exploitable
 par quiconque détient la clé, et hacher un IBAN le rend inutilisable.
 
+L'arbre ci-dessous réduit ce choix à la seule question qui tranche, et montre les deux
+contresens côte à côte.
+
+```mermaid
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#eef2f9','primaryBorderColor':'#3b5b8d','primaryTextColor':'#1f3f6b','lineColor':'#3b5b8d','secondaryColor':'#dbe6f5','tertiaryColor':'#fde8e8','fontFamily':'DejaVu Sans'}}}%%
+flowchart TD
+    Q{"Cette donnée devra-t-elle être relue ?"}
+    Q -->|oui| C["Chiffrer — réversible, une clé, un IBAN à payer"]
+    Q -->|non| H["Hacher — empreinte salée, un mot de passe à vérifier"]
+    C -.->|contresens| X1["Chiffrer un mot de passe : sa fuite s'exploite avec la clé"]
+    H -.->|contresens| X2["Hacher un IBAN : il devient inutilisable"]
+```
+
+Ce n'est donc jamais la réputation de la technique qui décide, mais l'usage de la donnée.
+Une seule question, et elle se pose avant d'écrire la première ligne.
+
 ### En pratique, côté application
 
 Le principe tient en quelques lignes — la bibliothèque `cryptography` de Python
@@ -137,6 +153,23 @@ dont l'IBAN est celui-ci », deux approches :
 
 L'index aveugle révèle les **égalités** (deux lignes qui partagent la même valeur) —
 c'est un compromis assumé, à documenter.
+
+Le schéma ci-dessous assemble le dispositif avant l'exercice, qui vous le fera écrire : deux
+clés, deux colonnes, deux chemins de retour.
+
+```mermaid
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#eef2f9','primaryBorderColor':'#3b5b8d','primaryTextColor':'#1f3f6b','lineColor':'#3b5b8d','secondaryColor':'#dbe6f5','tertiaryColor':'#fde8e8','fontFamily':'DejaVu Sans'}}}%%
+flowchart LR
+    V["La valeur de l'IBAN"] -->|Fernet, clé de chiffrement| B1["Colonne chiffrée, des octets"]
+    V -->|HMAC, une autre clé| B2["Index de recherche, des empreintes"]
+    QRY["Retrouver la fiche d'un fournisseur"] -->|comparaison d'empreintes| B2
+    B2 -->|ligne trouvée| DEC["Déchiffrer la colonne chiffrée"]
+    B1 --> DEC
+```
+
+La recherche passe par l'index, la lecture par le chiffré, et les deux clés restent
+séparées : une fuite de la clé d'index ne doit pas livrer de quoi déchiffrer. Ce que
+l'index concède, lui, est dans le texte ci-dessus — les égalités se voient sans la clé.
 
 > 🧪 **Atelier rapide (8 min)**
 >
