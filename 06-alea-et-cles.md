@@ -110,6 +110,28 @@ l'a produit — et on conserve l'ancienne en lecture seule le temps de la migrat
 4. migrer les données au repos ;
 5. détruire l'ancienne clé, et le constater.
 
+Le planning ci-dessous est gradué en heures arbitraires à partir de l'émission de la
+nouvelle clé : l'unité importe peu. Ce qui se lit dessus, c'est la zone où les deux barres
+se recouvrent.
+
+```mermaid
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#eef2f9','primaryBorderColor':'#3b5b8d','primaryTextColor':'#1f3f6b','lineColor':'#3b5b8d','secondaryColor':'#dbe6f5','tertiaryColor':'#fde8e8','fontFamily':'DejaVu Sans'}}}%%
+gantt
+    title Une rotation de clé : les deux clés sont valides en même temps
+    dateFormat HH:mm
+    axisFormat %H:%M
+    section Clé v1
+    Écrit les nouveaux messages : 00:00, 08:00
+    Relit seule l'existant, puis est détruite : crit, 08:00, 16:00
+    section Clé v2
+    Émise, ne sert encore à rien : 03:00, 08:00
+    Prend la suite pour les nouveaux messages : 08:00, 16:00
+```
+
+La liste de cinq étapes dit l'ordre, le planning dit la coexistence : la nouvelle clé naît
+pendant que l'ancienne écrit encore, et l'ancienne ne meurt qu'après la migration. Le
+retrait est la dernière barre, jamais la première.
+
 ### Révoquer, c'est décider vite
 
 Une clé compromise se révoque **immédiatement**, avant même de comprendre comment la
