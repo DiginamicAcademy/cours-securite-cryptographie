@@ -33,6 +33,22 @@ empreinte de taille fixe, aussi appelée **condensat** ou *hash*. Changer un seu
 change complètement l'empreinte, et c'est un aller simple : de l'empreinte on ne
 revient pas au contenu.
 
+Le schéma ci-dessous montre les deux propriétés que les mots ne font que déclarer : une
+sortie de taille fixe quelle que soit l'entrée, et aucun chemin en sens inverse.
+
+```mermaid
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#eef2f9','primaryBorderColor':'#3b5b8d','primaryTextColor':'#1f3f6b','lineColor':'#3b5b8d','secondaryColor':'#dbe6f5','tertiaryColor':'#fde8e8','fontFamily':'DejaVu Sans'}}}%%
+flowchart LR
+    D1["Un rapport entier"] --> H["Fonction de hachage, aller simple"]
+    D2["Une phrase d'un seul mot"] --> H
+    D3["Un gros fichier"] --> H
+    H --> E["Empreinte, même taille quelle que soit l'entrée"]
+```
+
+Les trois entrées n'ont pas la même masse, la sortie oui. Tout le chapitre tient dans
+cette asymétrie : on compare des empreintes parce qu'elles sont courtes, comparables, et
+sans retour possible vers ce qu'elles décrivent.
+
 > 🧪 **Atelier rapide (8 min)**
 >
 > 1. Dans un terminal, hachez une phrase :
