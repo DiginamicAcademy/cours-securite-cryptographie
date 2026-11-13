@@ -73,12 +73,12 @@ protégées. L'attaquant qui prend l'un prend l'autre.
 
 > 🧪 **Atelier rapide (8 min)**
 >
-> Ouvrez le fichier `lab-digicheese/docker-compose.yml` de l'environnement de démonstration et
+> Ouvrez le fichier `lab-securite/docker-compose.yml` de l'environnement de démonstration et
 > cherchez `APP_SECRET_KEY`. Répondez, en notant vos réponses :
 >
 > 1. Où la valeur est-elle écrite, et qui peut la lire ?
 > 2. Que se passe-t-il si cette valeur est celle du dépôt de production ?
-> 3. Regardez ensuite comment l'application la lit (`lab-digicheese/secure/app.py`) : que
+> 3. Regardez ensuite comment l'application la lit (`lab-securite/secure/app.py`) : que
 >    constatez-vous sur le comportement par défaut quand la variable est absente ?
 >
 > Notez les trois réponses : l'exercice du bloc les reprend dans un projet plus large.
