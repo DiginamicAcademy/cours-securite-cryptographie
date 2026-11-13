@@ -120,7 +120,8 @@ fuité, et fermer la voie — sinon la clé suivante suivra le même chemin.
 Le ré-chiffrement d'un gros volume est un chantier : il prend du temps, mobilise les
 clés anciennes et nouvelles, et ne doit pas interrompre le service. La méthode est
 celle des migrations de clés : **période à deux clés**, migration progressive des
-enregistrements, vérification de la relecture, puis retrait de l'ancienne clé. Pendant
+enregistrements, vérification de la relecture, puis retrait de l'ancienne clé — le chapitre sur l'aléa et la gestion des clés
+en montre le déroulé. Pendant
 tout le chantier, la clé fuitée reste nécessaire pour déchiffrer l'ancien — d'où
 l'importance de l'étape 1 : l'isoler, même si on ne peut pas encore s'en passer.
 
